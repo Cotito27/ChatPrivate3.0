@@ -13,6 +13,9 @@ FacebookStrategy = require('passport-facebook').Strategy;
 // KEYS FIREBASE
 const { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_DATABASE_URL, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID } = process.env;
 
+// NAME DOMAIN
+const { LOCATION_URL_ORIGIN } = process.env;
+
 // Models
 const User = require('./models/User.model');
 
@@ -22,6 +25,9 @@ cookieParser = require('cookie-parser'),
 session = require('express-session'),
 secretCookie = process.env.SECRET_COOKIE_PARSER,
 PassportLocal = require('passport-local').Strategy;
+
+// NAME HOST
+// const os = require('os');
 
 // const firebaseCLient = require('firebase');
 
@@ -101,7 +107,7 @@ passport.use(new PassportLocal(async function(username, password, done) {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/google/callback"
+  callbackURL: `${LOCATION_URL_ORIGIN}/google/callback`
 },
 function(accessToken, refreshToken, profile, done) {
     return done(null, {
@@ -116,7 +122,7 @@ function(accessToken, refreshToken, profile, done) {
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: "http://localhost:3000/facebook/callback",
+  callbackURL: `${LOCATION_URL_ORIGIN}/facebook/callback`,
   profileFields: ['id', 'email', 'displayName', 'photos']
 },
 function(accessToken, refreshToken, profile, done) {
