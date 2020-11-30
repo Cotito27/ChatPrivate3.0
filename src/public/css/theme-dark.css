@@ -1,0 +1,118 @@
+body {
+  background: rgb(19, 18, 18);
+}
+.card {
+  border: 1px solid rgb(120, 120, 120) !important;
+  background-color: rgb(36, 36, 36) !important;
+  color: white !important;
+}
+.nomuser,
+.myUserName {
+  color: white !important;
+}
+.otherUserName {
+  color: rgb(200, 200, 200) !important;
+}
+.far,
+.fas,
+.fa {
+  color: whitesmoke !important;
+}
+.mymessage {
+  color: whitesmoke !important;
+  background-color: rgb(29, 27, 27) !important;
+}
+.othermessage {
+  color: whitesmoke !important;
+  background-color: rgb(36, 36, 36) !important;
+}
+.horamessage,
+.hora {
+  color: whitesmoke !important;
+}
+.messageschatnoti {
+  border-bottom: 1px solid rgb(120, 120, 120) !important;
+}
+.messageschatnoti:hover {
+  background-color: rgb(70, 70, 70) !important;
+}
+hr {
+  color: white !important;
+  background-color: white !important;
+}
+.card-header {
+  border-bottom: 1px solid rgb(120, 120, 120) !important;
+}
+
+.container-destino {
+  border-bottom: 1px solid rgb(120, 120, 120) !important;
+}
+.card-footer {
+  border-top: 1px solid rgb(120, 120, 120) !important;
+}
+#guardarCambios {
+  background-color: teal;
+}
+#guardarCambios:hover {
+  background-color: rgb(50, 90, 90);
+}
+#eliminarFoto {
+  background-color: brown;
+  border: none;
+}
+#eliminarFoto:hover {
+  background-color: rgb(114, 22, 22);
+}
+input[type="text"],
+textarea,
+#textMessage,
+.textMessage {
+  color: whitesmoke !important;
+  background-color: rgb(36, 36, 36);
+}
+.form-control:focus {
+  background-color: rgb(36, 36, 36);
+}
+.popover-body {
+  background: black;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+.bs-popover-auto[x-placement^="right"] > .arrow::after,
+.bs-popover-right > .arrow::after {
+  left: 1px;
+  border-width: 0.5rem 0.5rem 0.5rem 0;
+  border-right-color: black;
+}
+.bs-popover-auto[x-placement^="left"] > .arrow::after,
+.bs-popover-left > .arrow::after {
+  right: 1px;
+  border-width: 0.5rem 0 0.5rem 0.5rem;
+  border-right-color: black;
+}
+.bs-popover-auto[x-placement^="left"] > .arrow::after,
+.bs-popover-left > .arrow::after {
+  border-left-color: black;
+}
+#emojiWrapper {
+  background-color: rgb(36, 36, 36);
+}
+.newMessage {
+  background: rgb(86, 86, 86) !important;
+}
+.systemEdit {
+  text-align: center;
+  background-color: rgb(40, 40, 40);
+  color: white;
+}
+video {
+}
+.loader-page {
+  background-color: rgb(52, 61, 91) !important;
+}
+.inputPathUrl,
+.inputCodUrl {
+  color: whitesmoke !important;
+  background-color: rgb(36, 36, 36) !important;
+  border: 1px solid rgb(80, 80, 80);
+}

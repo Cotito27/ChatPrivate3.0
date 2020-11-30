@@ -1,0 +1,176 @@
+<% let selector = ""; %>
+
+<div class="row d-none all-panel" id="content-config"<%= selector %>>
+  <div class="col-md-12 mx-auto">
+    <div class="card">
+      <div class="loader-page d-flex"></div>
+      <img class="loader-imagen" src="/img/material-preloader.gif">
+      <div class="card-header">
+        <center>
+          <h3 id="settings" class="modal-title">Configuraciones</h3>
+        </center>
+      </div>
+      <div class="card-body card-config">
+        <!-- action="/images" -->
+        <form id="uploader" method="POST" enctype="multipart/form-data">
+         <div>
+           <div class="subtitle-noti">
+            <center>
+              <h4 class="titleajustenoti">Comparte Enlace o Código</h4>
+            </center>
+           </div>
+           <hr />
+            <center>
+              <div class="form-group" style="display: flex; align-items: center; justify-content: center;">
+                <input type="text" class="form-control inputPathUrl" id="inputPathUrl" value="<%= pathUrl %>" disabled>
+                <button type="button" class="btn btn-primary btnCopiarPathUrl" style="width: 200px;">Copiar Enlace</button>
+                
+            </div>
+                <label class="mb-2">O</label>
+            
+                <div class="form-group" style="display: flex; align-items: center; justify-content: center;">
+                  <input type="text" class="form-control inputCodUrl" id="inputCodUrl" value="<%= codUrl %>" disabled>
+                  <button type="button" class="btn btn-primary btnCopiarCodUrl" style="width: 220px;">Copiar Código</button>
+                  
+              </div>
+            </center>
+         </div>
+          <div class="container-config">
+            <center>
+              <div class="subtitle-noti">
+                <h4 class="titleajustenoti">Ajuste de notificaciones</h4>
+              </div>
+            </center>
+            <hr />
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="checkConfig"
+                value=""
+                id="defaultCheck1"
+                checked
+              />
+              <label class="form-check-label namesound" for="defaultCheck1">
+                Sonido de notificación
+              </label>
+            </div>
+            <br />
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="checkConfig2"
+                value=""
+                id="defaultCheck2"
+                checked
+              />
+              <label class="form-check-label namesound" for="defaultCheck2">
+                Notificar cuando ingrese un usuario nuevo
+              </label>
+            </div>
+            <br />
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="checkConfig3"
+                value=""
+                id="defaultCheck3"
+                checked
+              />
+              <label class="form-check-label namesound" for="defaultCheck3">
+                Notificar cuando salga un usuario
+              </label>
+            </div>
+            <br>
+            
+            <center>
+              <h4 id="settings" class="modal-title">Tema</h4>
+            </center>
+            <hr />
+            <div class="form-check">
+              <input
+                class="form-check-input theme"
+                type="radio"
+                name="checkConfig4"
+                value=""
+                id="theme-light"
+                checked
+              />
+              <label class="form-check-label namesound" for="theme-light">
+                Claro
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input theme"
+                type="radio"
+                name="checkConfig4"
+                value=""
+                id="theme-dark"
+                
+              />
+              <label class="form-check-label namesound" for="theme-dark">
+                Oscuro
+              </label>
+            </div>
+            <br>
+            <center>
+              <div class="subtitle-noti">
+                <h4 class="titlecolornoti">Color de mensaje</h4>
+              </div>
+            </center>
+
+            <hr />
+            <div class="contentcolors">
+              <div class="contenedorcolors">
+                <center>
+                  <input type="color" name="color" class="selector-color" value="#000" />
+                </center>
+              </div>
+            </div>
+            
+          <br>
+          <center>
+            <div class="cambio-foto">
+              <h4>Cambiar Foto</h4>
+            </div>
+          
+          <hr />
+          <img id="imgUserConfig" name="imgUserConfig" src="<%= fotoUser %>" alt="">  
+          <strong class="nameUserConfig" style="font-size: 20px;"><%= nameUser %></strong>
+          <input type="hidden" class="inputUser" name="username" value="">
+          <br>
+          <br>        
+          </center>
+          <input type="hidden" name="id" value="<%= idUser %>">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="file-foto" name="archivo">
+            <label class="custom-file-label" name="file" for="file-foto">Elige la foto</label>
+          </div>
+        </div>
+          <input type="button" id="eliminarFoto" class="btn btn-danger btn-block" value="Eliminar Foto">
+        
+          <div class="form-group mt-3">
+            <button type="submit" id="guardarCambios" class="btn btn-dark btn-block">Guardar Cambios
+            </button>
+          </div>
+            
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col">
+                <a href="/" class="btn btn-warning btn-block btnSalirSala">Salir de la sala</a>
+              </div>
+              <div class="col">
+                <a href="/logout" class="btn btn-secondary btn-block btnSalirCuenta">Salir de la cuenta</a>
+              </div>
+            </div>
+          </div>
+          
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+

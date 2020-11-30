@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/img/ventana-de-chat.png" />
+    <!-- <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">  -->
+    <title><%= title %></title>
+    <%- include ('partials/head')%>
+    
+</head>
+
+<body>
+  <!--<audio id="audio" class="audio" src="/audio/samsung-sound.mp3"></audio>-->
+    
+    <div class="container p-3">
+      <% if(isValidate) { %>
+        <%- include ('partials/navigation')%>
+        <%- include ('partials/content-message')%>
+        <%- include ('partials/content-history')%>
+        <%- include ('partials/content-users')%>
+        <%- include ('partials/content-config')%>
+      <% } else { %>    
+        <% if(redirect == 'newSession') { %>
+          <%- include ('sessions/newSession')%>
+        <% }else if(redirect == 'login-form') { %>       
+        <%- include ('authentication/login-form')%>
+        <% } else { %>
+          <%- include ('authentication/register-form')%>  
+        <% } %>
+      <% } %>
+    </div>
+  
+    <%- include ('partials/footer')%>
+</body>
+</html>

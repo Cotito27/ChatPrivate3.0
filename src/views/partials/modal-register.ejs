@@ -1,0 +1,78 @@
+<div
+  id="myModal"
+  class="modal fade"
+  data-backdrop="static"
+  data-keyboard="false"
+>
+  <div class="modal-dialog modal-login">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="avatar">
+          <!--<input type="file" class="imagefile" id="imagefile" />-->
+          <label class="input-file__btn" for="imagefile">
+            <img class="imgRegister" src="/img/avatar-login3.png" alt="Avatar" />
+          </label>
+        </div>
+        <h4 class="modal-title">Member Register</h4>
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+      </div>
+      <div class="modal-body">
+        <form action="/" id="formRegister" method="post">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              name="nombre"
+              id="nomuser"
+              placeholder="Nombre"
+              required="required"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="email"
+              class="form-control"
+              name="username"
+              id="correouser"
+              placeholder="Correo | Usuario"
+              required="required"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control"
+              name="password"
+              id="passuser"
+              placeholder="Contraseña"
+              required="required"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control"
+              name="password_2"
+              id="passuser2"
+              placeholder="Vuelva a ingresar contraseña"
+              required="required"
+            />
+          </div>
+          <div class="form-group">
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg btn-block login-btn"
+            >
+              Register
+            </button>
+          </div>
+          <center>
+            <small>¿Ya tienes una cuenta?</small>
+            <br />
+            <a href="/">Ingresa aqui</a>
+          </center>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

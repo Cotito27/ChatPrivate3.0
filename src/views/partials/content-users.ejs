@@ -1,0 +1,50 @@
+<% let selector = ""; %>
+
+<div class="row d-none all-panel" id="content-users"<%= selector %>>
+  <div class="col-md-12 mx-auto">
+    <div class="card">
+      <div class="loader-page d-flex"></div>
+      <img class="loader-imagen" src="/img/material-preloader.gif">
+      <div class="card-header">
+        
+        <div class="form-buscador">
+          <input
+            type="text"
+            class="form-control"
+            id="buscadorUser"
+            name="buscadorUser"
+            placeholder="Busque a algun compañero"
+            required="required"
+          />
+          <i class="fas fa-search iconSearch"></i>
+        </div>
+      </div>
+      <div class="card-body card-users">
+        <div class="container-users">
+          <div class="todouserhistory">
+            <div class="users-history">
+              <% let varUserColor = ""; %>
+              <h3 class="titulousers">Usuarios Conectados (1)</h3>
+              <hr style="color: black; background: black; font-weight: bold;" />
+              <div class="contenidousers">
+                <div class="subcontenidousers<%= varUserColor %>">
+                  <div class="cotenidoimguser">
+                    <img
+                      class="imguser_mini"
+                      id="imageuser1"
+                      src="/img/avatar-login3.png"
+                    />
+                  </div>
+                  <div class="nomuser">
+                    <strong id="user1"></strong>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
