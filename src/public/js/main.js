@@ -1,3 +1,4 @@
+
 import helpers from './helpers.js';
 
 $(document).ready(function() {
@@ -189,7 +190,7 @@ $(document).ready(function() {
 
   let replaceuser = "";
   let replaceuser2 = "";
-
+  
   function verifyUserConnet(socket) {
     socket.on('listUser', (data, numData) => {
     if($("#buscadorUser").val() != '') 
@@ -203,7 +204,7 @@ $(document).ready(function() {
       $('.titulousers').text(`Usuarios Conectados (${numData})`);
       numberUsers.textContent = numData;
       data.forEach((dat) => {
-        if(dat.name.includes($('#buscadorUser').val().toUpperCase())) {
+        if(dat.name.toUpperCase().includes($('#buscadorUser').val().toUpperCase())) {
         if(dat.user == sessionStorage.user) {
           containerUsers.innerHTML += `
           <div class="contenidousers">
@@ -509,16 +510,17 @@ $(document).ready(function() {
       panelMessages.classList.remove('selectedItem');
       panelHistory.classList.add('selectedItem');
     }
-    if(e.target.classList.contains(''))
+    // if(e.target.classList.contains(''))
       // if((e.target.classList.contains('btnStickers') || e.target.classList.contains('fa-sticky-note')) && $emojiwrapper.css('display') == 'flex') {
       //   $emojiwrapper.css('display','none');
       // }
-
-      if(e.target.classList == "img-gif") {
+    // console.log(e.target.classList);
+      if(e.target.classList.contains('img-gif')) {
         let destino_user = DestinoUser;
         // '<img class="emoji" src="/img/emoji/'
         // '.gif" />'
         let stick = `[sticker:${e.target.title}]`;
+        // console.log(stick);
         // console.log(stick);
         socket.emit('sendMessage', {
           user: sessionStorage.user,

@@ -44,7 +44,7 @@ module.exports = [
         // console.log(io.sockets);
         
         users[socket.user] = {id: socket.id, user: data.user, name: data.name, sessionId: data.sessionId, foto: data.foto};
-        // console.log(users);
+        console.log(users);
         updateUsers();
         socket.to(socket.sessionId).emit('notifyConnect', objGlobal);
         socket.emit('stopLoader');
@@ -191,13 +191,16 @@ module.exports = [
           let objE2 = [];
           for(key in users) {
               if(users[key].sessionId == socket.sessionId) {
-                if(users[key].name.includes(data.toUpperCase())) {
+                if(users[key].name.toUpperCase().includes(data.toUpperCase())) {
                   objE2.push({
                     user: users[key].user,
                     name: users[key].name,
                     foto: users[key].foto
                   });
+                  // console.log(users[key].name.toUpperCase(), data.toUpperCase());
+                  // console.log(objE2);
                 } 
+                
               }
             }
             //console.log(users);
