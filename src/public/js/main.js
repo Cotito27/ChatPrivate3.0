@@ -1641,6 +1641,33 @@ $(document).ready(function() {
     switchSheet();
     console.log('cambiando...');
   });
+  function resizePage() {   
+    if ($(window).width() <= 550) {
+      $(".card-message").css("height", $(window).height() - 202 + "px");
+      $(".card-message").css("max-height", $(window).height() - 202 + "px");
+      $(".card-users").css("height", $(window).height() - 127 + "px");
+      $(".card-users").css("max-height", $(window).height() - 127 + "px");
+      $(".card-config").css("height", $(window).height() - 129 + "px");
+      $(".card-config").css("max-height", $(window).height() - 129 + "px");
+      $(".card-history").css("height", $(window).height() - 62 + "px");
+      $(".card-history").css("max-height", $(window).height() - 62 + "px");
+    } else {
+      $(".card-message").css("height", $(window).height() - 238 + "px");
+      $(".card-message").css("max-height", $(window).height() - 238 + "px");
+      $(".card-users").css("height", $(window).height() - 163 + "px");
+      $(".card-users").css("max-height", $(window).height() - 163 + "px");
+      $(".card-config").css("height", $(window).height() - 165 + "px");
+      $(".card-config").css("max-height", $(window).height() - 165 + "px");
+      $(".card-history").css("height", $(window).height() - 98 + "px");
+      $(".card-history").css("max-height", $(window).height() - 98 + "px");
+    }
+  }
+  $(window).resize(function () {
+    resizePage();
+  });
+  $(window).scroll(function() {
+    resizePage();
+  });
 });
   
 
