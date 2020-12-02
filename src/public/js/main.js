@@ -80,7 +80,7 @@ $(document).ready(function() {
   //   // console.log(sessionId);
   // let userUser = idUser.replace(/[_\W]+/g,'_') + sessionId;     
   sessionStorage.name = nameUser;
-  sessionStorage.user = idUser;
+  sessionStorage.user = idUser + sessionId;
   sessionStorage.sessionId = sessionId;
   sessionStorage.foto = fotoUser || fotoDefault;
     
@@ -697,7 +697,12 @@ $(document).ready(function() {
       if(data.destino == sessionStorage.user) {
         
         if(!$(`#${data.user}`)[0]) {
-          addPanelMessage(data.user, data.name, true);
+          if(sessionStorage.user == data.user) {
+            DestinoUser = addPanelMessage(data.user, data.name, true);
+          } else {
+            addPanelMessage(data.user, data.name, true);
+          }
+          
         }
         if($(`.${data.user}`)[0]) {
           if(data.message.includes('<video') && data.message.includes('<source')) {
@@ -747,7 +752,11 @@ $(document).ready(function() {
         
       } else {
         if(!$(`#${data.destino}`)[0]) {
-          addPanelMessage(data.destino, data.name, false);
+          if(sessionStorage.user == data.user) {
+            DestinoUser = addPanelMessage(data.destino, data.name, true);
+          } else {
+            addPanelMessage(data.destino, data.name, false);
+          }
         }
         if($(`.${data.destino}`)[0]) {
           
@@ -926,9 +935,9 @@ $(document).ready(function() {
             <div class="container-message" id="${idOtherUser}">
             </div>
           </div>
-          <div class="spaceStickers">
+          <!--<div class="spaceStickers">
             <div id="emojiWrapper" class="emojiWrapper"></div>
-          </div>
+          </div>-->
           <div class="card-footer">
             <div class="form-group form-message">
               <div class="focus-message">
@@ -978,7 +987,7 @@ $(document).ready(function() {
               </div>`);
         }
         $(`#panelM${idOtherUser}`).addClass('d-none');
-        DestinoUser = idOtherUser;
+        
         
         // console.log(dataUserGlobal, filterDataUser);
         editNickName([{
@@ -990,6 +999,7 @@ $(document).ready(function() {
           name: sessionStorage.name,
           foto: sessionStorage.foto
         }], true);
+        return idOtherUser;
   }
   containerUsers.addEventListener('click', e => {
     if(e.target.classList.contains('popover1')) {
@@ -999,7 +1009,7 @@ $(document).ready(function() {
           let idOtherUser = $(e.target).prop('id').replace('popover', '');
           let nameOtherUser = $(e.target.parentElement).find(`#user${idOtherUser}`).text();
           if(!$(`#panelM${idOtherUser}`)[0]) {
-            addPanelMessage(idOtherUser, nameOtherUser, false);
+            DestinoUser = addPanelMessage(idOtherUser, nameOtherUser, false);
             
           }
             panelUsers.classList.add('d-none');
@@ -1474,6 +1484,7 @@ $(document).ready(function() {
         } else {
           responseEdit = $('.inputEdit').val();
         }
+        console.log(DestinoUser);
         socket.emit('cambiarApodo', {
           originalName: nombre,
           identOtherUser: usuario,
@@ -1668,6 +1679,7 @@ $(document).ready(function() {
   $(window).scroll(function() {
     resizePage();
   });
+  resizePage();
 });
   
 

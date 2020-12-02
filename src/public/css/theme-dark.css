@@ -102,8 +102,8 @@ textarea,
 }
 .systemEdit {
   text-align: center;
-  background-color: rgb(40, 40, 40);
-  color: white;
+  background-color: rgb(40, 40, 40) !important;
+  color: white !important;
 }
 video {
 }
