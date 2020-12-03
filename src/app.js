@@ -164,5 +164,13 @@ app.use(multer({
 // routes
 app.use(require('./routes/index').router);   
 
+// 404 handler
+app.use((req, res, next) => {
+  res.status(404).render('404', {
+    isValidate: true,
+    redirect: 'login-form',
+  });
+});
+
 // starting the server
 module.exports = {app, sessionMiddleware};

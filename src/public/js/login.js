@@ -108,20 +108,42 @@ $(document).ready(function() {
     return regexp.test(s);
   }
   if(btnUnirse) {
-    btnUnirse.addEventListener('click', () => {
+    btnUnirse.addEventListener('click', async () => {
       let urlEncode = codUrl.value;
       console.log(urlEncode.substr(urlEncode.length-4, urlEncode.length-1));
       if(isUrl(urlEncode) || urlEncode.substr(urlEncode.length-4, urlEncode.length-1) == '.com') {
-        if(!urlEncode.includes(`${location.origin}/`)) 
+        if(!urlEncode.includes(`/`)) 
         {
           (async() => {
             swal("Error!", "Url no válida", "error");
           })();
           return;
         }
-        location.href = urlEncode;
+        const urlData = urlEncode.replace('/session/','/verifySession/');
+        const responseData = await fetch(urlData, {
+          method: 'GET',
+        });
+        const responseText = await responseData.text();
+        if(responseText == 'Success') {
+          location.href = urlData.replace('/verifySession/', '/session/');
+        } else {
+          (async() => {
+            swal("Error!", "La sala ingresada no existe", "error");
+          })();
+        }
       } else {
-        location.href = location.origin + `/session/${urlEncode}`;
+        const urlData = `/verifySession/${urlEncode}`;
+        const responseData = await fetch(urlData, {
+          method: 'GET',
+        });
+        const responseText = await responseData.text();
+        if(responseText == 'Success') {
+          location.href = urlData.replace('/verifySession/', '/session/');
+        } else {
+          (async() => {
+            swal("Error!", "La sala ingresada no existe", "error");
+          })();
+        }
       }
     });
   }

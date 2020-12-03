@@ -15,7 +15,10 @@ ctrl.index = async (req, res) => {
   const idUser = req.user.id;
   const veriSession = sessionsRoom.filter((v) => v==sessionId);
   if(veriSession.length <= 0) {
-    return res.redirect('/');
+    return res.status(404).render('404', {
+      isValidate: true,
+      redirect: 'login-form',
+    });
   }
   req.session.user = req.user;
   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -126,6 +129,16 @@ ctrl.logout = (req, res) => {
   // console.log(req.session);
   // console.log('Logout');
   res.redirect('/login');
+}
+
+ctrl.verifySession = (req, res) => {
+  let { sessionId } = req.params;
+  sessionId = sessionId.replace('/verifySession/', '');
+  const veriSession = sessionsRoom.filter((v) => v==sessionId);
+  if(veriSession.length <= 0) {
+    return res.send('Error');
+  }
+  res.send('Success');
 }
 
 module.exports = ctrl;

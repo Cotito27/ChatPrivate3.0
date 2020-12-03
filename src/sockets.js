@@ -124,7 +124,7 @@ module.exports = [
         // socket.leave(socket.user);
         // socket.leave(socket.sessionId);
         
-        
+        // delete socket.request.session.redirectTo;
         updateUsers();
       });
       socket.on('createUser', async (data) => {
