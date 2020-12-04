@@ -110,7 +110,7 @@ $(document).ready(function() {
   $('#content-message').on('click', '.btnStickers', (e) => {
     let $emojiwrapper = $('.emojiWrapper');
     // console.log($emojiwrapper[0]);
-    console.log($emojiwrapper.prop('class'));
+    // console.log($emojiwrapper.prop('class'));
     if(!$emojiwrapper.hasClass('d-flex')) {
       $emojiwrapper.addClass('d-flex');
     } else {
@@ -331,7 +331,7 @@ $(document).ready(function() {
     let popover2Id = "";
     if(popoverGlobalId != "" ) {
       console.log('Popover agregado');
-      console.log(popoverGlobalId, $(`#${popoverGlobalId}`)[0]);
+      // console.log(popoverGlobalId, $(`#${popoverGlobalId}`)[0]);
       $(`#${popoverGlobalId}`).click();
     //   $(`#${popoverGlobalId}`).popover('update');
     }
@@ -1072,7 +1072,7 @@ $(document).ready(function() {
             //$(`#userhistory${idOtherUser}`).click();
             $(`#userhistory${idOtherUser}`).click();
             // console.log($(`#userhistory${idOtherUser}`)[0]);
-          console.log('Clicked Popover', idOtherUser);
+          // console.log('Clicked Popover', idOtherUser);
         });
       });
       $(e.target).on('hidden.bs.popover', function() {
@@ -1109,7 +1109,7 @@ $(document).ready(function() {
             // $(`#panelM${idOtherUser}`).removeClass('d-none');
             $(`#userhistory${idOtherUser}`).click();
             // console.log($(`#userhistory${idOtherUser}`)[0]);
-          console.log('Clicked Popover', idOtherUser);
+          // console.log('Clicked Popover', idOtherUser);
         });
       });
       $(e.target.parentElement).on('hidden.bs.popover', function() {
@@ -1216,7 +1216,7 @@ $(document).ready(function() {
     // console.log(`imageuser${data.username}`);
     // console.log($(`.message${data.username}`)[0]);
     $('.imghistory').each(function() {
-      console.log(data.fotoPrevious, $(this).prop('src'));
+      // console.log(data.fotoPrevious, $(this).prop('src'));
       if($(this).prop('src').includes(data.fotoPrevious)) {
         $(this).prop('src', data.foto);
       }
