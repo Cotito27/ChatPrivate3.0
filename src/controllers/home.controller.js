@@ -8,11 +8,14 @@ ctrl.index = async (req, res) => {
   // console.log(req.params);
 
   // console.log(req.sessionID);
-  const { sessionId } = req.params;
+  let { sessionId } = req.params;
   const nameUser = req.user.name;
   // console.log(req.session.foto, req.user.foto);
   const fotoUser = req.user.foto;
   const idUser = req.user.id;
+  if(sessionId.includes('?')) {
+    sessionId = sessionId.split('?')[0];
+  }
   const veriSession = sessionsRoom.filter((v) => v==sessionId);
   if(veriSession.length <= 0) {
     return res.status(404).render('404', {
@@ -134,6 +137,9 @@ ctrl.logout = (req, res) => {
 ctrl.verifySession = (req, res) => {
   let { sessionId } = req.params;
   sessionId = sessionId.replace('/verifySession/', '');
+  if(sessionId.includes('?')) {
+    sessionId = sessionId.split('?')[0];
+  }
   const veriSession = sessionsRoom.filter((v) => v==sessionId);
   if(veriSession.length <= 0) {
     return res.send('Error');

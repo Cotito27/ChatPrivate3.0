@@ -84,7 +84,7 @@ $(document).ready(function() {
   sessionStorage.sessionId = sessionId;
   sessionStorage.foto = fotoUser.replace(/amp;/g, '') || fotoDefault;
   
-  console.log(sessionStorage.foto);
+  // console.log(sessionStorage.foto);
     
   userConnect(socket, sessionStorage.user, sessionStorage.name);
   function actualizarEstado() {
