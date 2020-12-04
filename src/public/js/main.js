@@ -327,7 +327,8 @@ $(document).ready(function() {
     // console.log(popoverGlobalId);
     if(popoverGlobalId != "" ) {
       console.log('Popover agregado');
-      $(`#${popoverGlobalId}`).popover('hide');
+      $(`.popover1`).popover('hide');
+      $(`.popover1`).popover('update');
       $(`#${popoverGlobalId}`).popover('show');
       $(`#${popoverGlobalId}`).popover('update');
     }
@@ -339,7 +340,8 @@ $(document).ready(function() {
   } 
   $(window).blur(function() {
     if(popoverGlobalId!="" && !$(`.popover-body`)[0]) {
-      $(`#${popoverGlobalId}`).popover('hide');
+      $(`.popover1`).popover('hide');
+      $(`.popover1`).popover('update');
       $(`#${popoverGlobalId}`).popover('show');
       $(`#${popoverGlobalId}`).popover('update');
     }
