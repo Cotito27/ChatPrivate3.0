@@ -87,6 +87,12 @@ body {
   margin-left: -30px;
   margin-top: 12px;
 }
+.iconDeleteText {
+  font-size: 18px;
+  margin-left: -30px;
+  margin-top: 9px;
+  cursor: pointer;
+}
 .container-destino {
   text-align: left;
 
@@ -98,13 +104,15 @@ body {
 }
 .title-destino {
   margin-top: 7px;
-  margin-left: 10px;
+  margin-left: 7px;
   font-size: 20px;
 }
 
 .fa-chevron-left {
+  font-size: 18px;
+  padding: 5px;
   color: rgb(140, 140, 140);
-  margin-top: 2px;
+  margin-top: 1.2px;
   margin-left: 2px;
   cursor: pointer;
 }
@@ -162,6 +170,10 @@ body {
 }
 .todochathistory {
   /*position: relative;*/
+  display: none;
+}
+
+.iconDeleteText {
   display: none;
 }
 
@@ -828,7 +840,7 @@ input[type="file"]#file {
   color: red;
   margin-top: 2px;
   margin-left: 8px;
-  margin-right: 3px;
+  margin-right: 0;
   border: 1px red solid;
   width: 7px; /*misma altura y anchura*/
   height: 7px;

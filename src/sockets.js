@@ -44,9 +44,10 @@ module.exports = [
         // console.log(io.sockets);
         
         users[socket.user] = {id: socket.id, user: data.user, name: data.name, sessionId: data.sessionId, foto: data.foto};
-        console.log(users);
+        
+        // console.log(users);
         updateUsers();
-        socket.to(socket.sessionId).emit('notifyConnect', objGlobal);
+        socket.to(socket.sessionId).emit('notifyConnect', users[socket.user]);
         socket.emit('stopLoader');
       });
       socket.on('sendMessage', async (data) => {
@@ -146,6 +147,7 @@ module.exports = [
       });
 
       socket.on('cambiarFoto', (data) => {
+        users[data.username].foto = data.foto;
         io.sockets.emit('cambiarFoto', data);
       });
 
@@ -183,7 +185,15 @@ module.exports = [
             });
           }
         }
-        objGlobal = objE;
+        objE = objE.sort(function (a, b){
+          if ( a.name < b.name )
+            return -1;
+            if ( a.name > b.name )
+              return 1;
+            return 0;
+        });
+        // console.log(objName, objE);
+        // objGlobal = objE;
         //console.log(users);
         // console.log(objUsers, objE, users);
         if(data) {
@@ -203,6 +213,7 @@ module.exports = [
                 
               }
             }
+            
             //console.log(users);
             // console.log(objUsers, objE, users); 
             socket.emit('listUser', objE2, objE.length);

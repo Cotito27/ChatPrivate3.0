@@ -82,7 +82,9 @@ $(document).ready(function() {
   sessionStorage.name = nameUser;
   sessionStorage.user = idUser + sessionId;
   sessionStorage.sessionId = sessionId;
-  sessionStorage.foto = fotoUser || fotoDefault;
+  sessionStorage.foto = fotoUser.replace(/amp;/g, '') || fotoDefault;
+  
+  console.log(sessionStorage.foto);
     
   userConnect(socket, sessionStorage.user, sessionStorage.name);
   function actualizarEstado() {
@@ -190,9 +192,13 @@ $(document).ready(function() {
 
   let replaceuser = "";
   let replaceuser2 = "";
-  
+
   function verifyUserConnet(socket) {
     socket.on('listUser', (data, numData) => {
+      let verifyPop = "";
+      // if($('.popover1').prop('aria-describedby')) {
+      //   verifyPop = $('.popover1').prop('id');
+      // }
     if($("#buscadorUser").val() != '') 
     {
       
@@ -315,27 +321,45 @@ $(document).ready(function() {
       });
       numberUsers.textContent = data.length;
     }
+    
     editNickName(data, false);
     dataUserGlobal = data;
-    sessionStorage.foto = $(`#imageuser${sessionStorage.user}`).prop('src');
+    // console.log(popoverGlobalId);
+    if(popoverGlobalId != "") {
+      console.log('Popover agregado');
+      $(`#${popoverGlobalId}`).popover('show');
+      $(`#${popoverGlobalId}`).popover('update');
+    }
+    
+    // sessionStorage.foto = $(`#imageuser${sessionStorage.user}`).prop('src');
     //  console.log($(`#imageuser${sessionStorage.user}`).prop('src'));
     });
    
   } 
+  $(window).blur(function() {
+    if(popoverGlobalId!="" && !$(`.popover-body`)[0]) {
+      $(`#${popoverGlobalId}`).popover('show');
+      $(`#${popoverGlobalId}`).popover('update');
+    }
+  });
   let dataUserGlobal = [];
   socket.on('notifyConnect', (data) => {
+    // console.log(data);
     let verificar;
     let fotoLastUser;
     let userlast = "";
-    if(data != [] && data) {
-        verificar = data[data.length-1].user;
-        fotoLastUser = data[data.length-1].foto;
-        userlast = data[data.length-1].name;
-    } else {
-        verificar = data[0].user;
-        fotoLastUser = data[0].foto;
-        userlast = data[0].name;
-    }
+    // if(data != [] && data) {
+    //     verificar = data[data.length-1].user;
+    //     fotoLastUser = data[data.length-1].foto;
+    //     userlast = data[data.length-1].name;
+    // } else {
+    //     verificar = data[0].user;
+    //     fotoLastUser = data[0].foto;
+    //     userlast = data[0].name;
+    // }
+    verificar = data.user;
+    fotoLastUser = data.foto;
+    userlast = data.name;
     
     // console.log(data);
     // userlast = data.map((dat) => {
@@ -1001,8 +1025,10 @@ $(document).ready(function() {
         }], true);
         return idOtherUser;
   }
+  let popoverGlobalId = "";
   containerUsers.addEventListener('click', e => {
     if(e.target.classList.contains('popover1')) {
+      popoverGlobalId = e.target.id;
       $(e.target).popover('show');
       $(e.target).on('shown.bs.popover', function() {
         $('.popover-body').off('click').on('click',function() {
@@ -1029,8 +1055,12 @@ $(document).ready(function() {
           console.log('Clicked Popover', idOtherUser);
         });
       });
+      $(e.target).on('hidden.bs.popover', function() {
+        popoverGlobalId = "";
+      });
     }
     if(e.target.classList.contains('fa-comment-dots')) {
+      popoverGlobalId = e.target.parentElement.id;
       $(e.target.parentElement).popover('show');
       $(e.target.parentElement).on('shown.bs.popover', function() {
         $('.popover-body').off('click').on('click',function() {
@@ -1056,6 +1086,9 @@ $(document).ready(function() {
             // console.log($(`#userhistory${idOtherUser}`)[0]);
           console.log('Clicked Popover', idOtherUser);
         });
+      });
+      $(e.target.parentElement).on('hidden.bs.popover', function() {
+        popoverGlobalId = "";
       });
     }
   });
@@ -1318,8 +1351,22 @@ $(document).ready(function() {
     }
   }
   $("#buscadorUser").keyup(function () {
+    if($(this).val() == '') {
+      $('.iconSearch').show();
+      $('.iconDeleteText').hide();
+    } else {
+      $('.iconSearch').hide();
+      $('.iconDeleteText').show();
+    }
     buscarUser($(this).val());
     // console.log('asfas');
+  });
+  $('.iconDeleteText').click(function() {
+    $('#buscadorUser').val('');
+    $('.iconSearch').show();
+    $('.iconDeleteText').hide();
+    buscarUser($(this).val());
+    $('#buscadorUser').focus();
   });
   let buscarUsuario = false;
   function buscarUser(user) {

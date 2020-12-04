@@ -1,3 +1,9 @@
+<script>
+  const sessionId = "<%= sessionId %>";
+  const nameUser = "<%= nameUser %>";
+  const fotoUser = "<%= fotoUser %>";
+  const idUser = "<%= idUser %>";
+</script>
 <% let selector = ""; %>
 <div class="row all-panel" id="content-message"<%= selector %>>
   <div class="col-md-12 mx-auto components-message">
@@ -130,10 +136,5 @@
   </div>
  
 </div>
-<script>
-  const sessionId = "<%= sessionId %>";
-  const nameUser = "<%= nameUser %>";
-  const fotoUser = "<%= fotoUser %>";
-  const idUser = "<%= idUser %>";
-</script>
 <audio class="soundChat" src="/audio/chat.mp3"></audio>
+<input type="hidden" value="<%= fotoUser %>" id="myUserFoto">
