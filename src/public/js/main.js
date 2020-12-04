@@ -87,7 +87,7 @@ $(document).ready(function() {
   // console.log(sessionStorage.foto);
     
   userConnect(socket, sessionStorage.user, sessionStorage.name);
-  function actualizarEstado() {
+  function actualizarEstado(e) {
     //console.log('...');
     if(!$(`#user${sessionStorage.user}`)[0]) {
       if(sessionStorage.user) {
@@ -95,6 +95,7 @@ $(document).ready(function() {
         console.log('Actualizado');
       }
     }
+    
   }
   function isMobile(){
     return (
@@ -196,7 +197,7 @@ $(document).ready(function() {
   function verifyUserConnet(socket) {
     socket.on('listUser', (data, numData) => {
       let verifyPop = "";
-      $(`.popover1`).popover('hide');
+      $(`.popover1`).popover('dispose');
       $(`.popover1`).popover('update');
       // if($('.popover1').prop('aria-describedby')) {
       //   verifyPop = $('.popover1').prop('id');
@@ -252,7 +253,7 @@ $(document).ready(function() {
                   data-container="body"
                   data-toggle="popover"
                   data-placement="left"
-                  data-trigger="focus"
+                  data-trigger="click"
                   data-content="Enviar mensaje"
                 >
                   <i class="far fa-comment-dots" aria-hidden="true"></i>
@@ -311,7 +312,7 @@ $(document).ready(function() {
                   data-container="body"
                   data-toggle="popover"
                   data-placement="left"
-                  data-trigger="focus"
+                  data-trigger="click"
                   data-content="Enviar mensaje"
                 >
                   <i class="far fa-comment-dots" aria-hidden="true"></i>
@@ -327,11 +328,12 @@ $(document).ready(function() {
     editNickName(data, false);
     dataUserGlobal = data;
     // console.log(popoverGlobalId);
+    let popover2Id = "";
     if(popoverGlobalId != "" ) {
       console.log('Popover agregado');
-      
-      $(`#${popoverGlobalId}`).popover('show');
-      $(`#${popoverGlobalId}`).popover('update');
+      console.log(popoverGlobalId, $(`#${popoverGlobalId}`)[0]);
+      $(`#${popoverGlobalId}`).click();
+    //   $(`#${popoverGlobalId}`).popover('update');
     }
   
     // sessionStorage.foto = $(`#imageuser${sessionStorage.user}`).prop('src');
@@ -340,12 +342,13 @@ $(document).ready(function() {
    
   } 
   $(window).blur(function() {
-    if(popoverGlobalId!="" && !$(`.popover-body`)[0]) {
-      $(`.popover1`).popover('hide');
-      $(`.popover1`).popover('update');
-      $(`#${popoverGlobalId}`).popover('show');
-      $(`#${popoverGlobalId}`).popover('update');
-    }
+    // if(popoverGlobalId!="" && !$(`.popover-body`)[0]) {
+    //   $(`.popover1`).popover('hide');
+    //   $(`.popover1`).popover('update');
+    //   $(`#${popoverGlobalId}`).popover('show');
+    //   console.log(popoverGlobalId);
+    // //   $(`#${popoverGlobalId}`).popover('update');
+    // }
   });
   let dataUserGlobal = [];
   socket.on('notifyConnect', (data) => {
@@ -473,6 +476,12 @@ $(document).ready(function() {
   navConfig.addEventListener('click', addEventNavBar);
   document.addEventListener('click', actualizarEstado);
   window.addEventListener('focus', actualizarEstado);
+  $('body').click(e => {
+    if(!e.target.classList.contains('fa-comment-dots') && !e.target.classList.contains('popover1')) {
+        $('.popover1').popover('hide');
+        $('.popover1').popover('dispose');
+    }
+  });
   // $('.components-message').on('click', '.btnEnvio', function(e) {
   //   console.log($(this)[0]);
   //   let elementMessage = e.currentTarget.parentElement;
@@ -1034,9 +1043,15 @@ $(document).ready(function() {
   containerUsers.addEventListener('click', e => {
     if(e.target.classList.contains('popover1')) {
       popoverGlobalId = e.target.id;
-      $(e.target).popover('show');
+      if(!$('.popover-body')[0]) {
+          $(e.target).popover('show');
+      } else {
+          $(e.target).popover('hide');
+          $(e.target).popover('dispose');
+      }
       $(e.target).on('shown.bs.popover', function() {
         $('.popover-body').off('click').on('click',function() {
+            
           let idOtherUser = $(e.target).prop('id').replace('popover', '');
           let nameOtherUser = $(e.target.parentElement).find(`#user${idOtherUser}`).text();
           if(!$(`#panelM${idOtherUser}`)[0]) {
@@ -1065,8 +1080,13 @@ $(document).ready(function() {
       });
     }
     if(e.target.classList.contains('fa-comment-dots')) {
-      popoverGlobalId = e.target.parentElement.id;
-      $(e.target.parentElement).popover('show');
+      popoverGlobalId = e.target.parentElement.id;   
+      if(!$('.popover-body')[0]) {
+          $(e.target.parentElement).popover('show');
+      } else {
+          $(e.target.parentElement).popover('hide');
+          $(e.target.parentElement).popover('dispose');
+      }
       $(e.target.parentElement).on('shown.bs.popover', function() {
         $('.popover-body').off('click').on('click',function() {
           let idOtherUser = $(e.target.parentElement).prop('id').replace('popover', '');
@@ -1343,7 +1363,7 @@ $(document).ready(function() {
                   data-container="body"
                   data-toggle="popover"
                   data-placement="left"
-                  data-trigger="focus"
+                  data-trigger="click"
                   data-content="Enviar mensaje"
                 >
                   <i class="far fa-comment-dots" aria-hidden="true"></i>
