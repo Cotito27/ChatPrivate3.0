@@ -325,12 +325,14 @@ $(document).ready(function() {
     editNickName(data, false);
     dataUserGlobal = data;
     // console.log(popoverGlobalId);
-    if(popoverGlobalId != "") {
+    if(popoverGlobalId != "" ) {
       console.log('Popover agregado');
-      // $(`#${popoverGlobalId}`).popover('show');
+      if($('.popover1').popover().length <= 0) {
+        $(`#${popoverGlobalId}`).popover('show');
+      }
       $(`#${popoverGlobalId}`).popover('update');
     }
-    
+  
     // sessionStorage.foto = $(`#imageuser${sessionStorage.user}`).prop('src');
     //  console.log($(`#imageuser${sessionStorage.user}`).prop('src'));
     });
@@ -338,7 +340,9 @@ $(document).ready(function() {
   } 
   $(window).blur(function() {
     if(popoverGlobalId!="" && !$(`.popover-body`)[0]) {
-      // $(`#${popoverGlobalId}`).popover('show');
+      if($('.popover1').popover().length <= 0) {
+        $(`#${popoverGlobalId}`).popover('show');
+      }
       $(`#${popoverGlobalId}`).popover('update');
     }
   });
