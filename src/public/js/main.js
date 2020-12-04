@@ -196,6 +196,8 @@ $(document).ready(function() {
   function verifyUserConnet(socket) {
     socket.on('listUser', (data, numData) => {
       let verifyPop = "";
+      $(`.popover1`).popover('hide');
+      $(`.popover1`).popover('update');
       // if($('.popover1').prop('aria-describedby')) {
       //   verifyPop = $('.popover1').prop('id');
       // }
@@ -327,8 +329,7 @@ $(document).ready(function() {
     // console.log(popoverGlobalId);
     if(popoverGlobalId != "" ) {
       console.log('Popover agregado');
-      $(`.popover1`).popover('hide');
-      $(`.popover1`).popover('update');
+      
       $(`#${popoverGlobalId}`).popover('show');
       $(`#${popoverGlobalId}`).popover('update');
     }
