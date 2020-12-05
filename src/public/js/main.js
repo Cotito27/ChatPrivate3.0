@@ -619,6 +619,11 @@ $(document).ready(function() {
       
   });
 
+  function isUrl(s) {   
+    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    return regexp.test(s);
+  }
+
   let DestinoUser = "Todos";
   function sendMessage(socket, elementMessage) {
     let message = $(elementMessage).find('.textMessage').val();
@@ -629,7 +634,27 @@ $(document).ready(function() {
     //     destino_user = $(this).find('.container-destino').find('input').val();
     //   }
     // });
+    
     message = message.replace(/</g, '<&').replace(/>/g, '>&').replace(/[[]/g, '{').replace(/]/g, '}');
+    let vecUrl = message.split(' ');
+    let almacenador = "";
+    vecUrl.forEach(element => {
+      //console.log(isUrl(element), element);
+      //console.log(element.substr(element.length-4, element.length-1));
+    if(element.substr(element.length-4, element.length-1) == '.com' || element.substr(element.length-7, element.length-1) == '.com.pe') {
+        almacenador+=` <a target="_blank" class="userLink" href="https://${element}">${element}</a>`
+      } else {
+        if(isUrl(element)) {
+          almacenador+=` <a target="_blank" class="userLink" href="${element}">${element}</a>`
+        } else {
+          almacenador+=" "+element;
+        }
+      }
+      
+    });
+    if(vecUrl.length) {
+      message = almacenador.trim();
+    }
     socket.emit('sendMessage', {
       user: sessionStorage.user,
       name: sessionStorage.name,
