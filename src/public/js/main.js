@@ -2,7 +2,11 @@
 import helpers from './helpers.js';
 
 $(document).ready(function() {
-  const socket = io();
+  const socket = io({
+    'reconnect': true,
+    'reconnection delay': 500,
+    'max reconnection attempts': 10
+  });
   const navMessages = document.querySelector('.btnmessage');
   const navUsers = document.querySelector('.btnusers');
   const navConfig = document.querySelector('.btnconfig');
@@ -87,6 +91,12 @@ $(document).ready(function() {
   // console.log(sessionStorage.foto);
     
   userConnect(socket, sessionStorage.user, sessionStorage.name);
+
+  socket.on('disconnect', function () { 
+    console.log('reconnecting...');
+    socket.connect() 
+  });
+
   function actualizarEstado(e) {
     //console.log('...');
     if(!$(`#user${sessionStorage.user}`)[0]) {
@@ -396,9 +406,8 @@ $(document).ready(function() {
   socket.on('stopLoader', () => {
     $('.loader-page').removeClass('d-flex');
   });
-
+  let audio = document.querySelector('.soundChat');  
   function addSound() {
-    let audio = document.querySelector('.soundChat');
     if(audio) {
       audio.play();
     } 
@@ -474,8 +483,8 @@ $(document).ready(function() {
   navMessages.addEventListener('click', addEventNavBar);
   navUsers.addEventListener('click', addEventNavBar);
   navConfig.addEventListener('click', addEventNavBar);
-  document.addEventListener('click', actualizarEstado);
-  window.addEventListener('focus', actualizarEstado);
+  // document.addEventListener('click', actualizarEstado);
+  // window.addEventListener('focus', actualizarEstado);
   $('body').click(e => {
     if(!e.target.classList.contains('fa-comment-dots') && !e.target.classList.contains('popover1')) {
         $('.popover1').popover('hide');
@@ -1777,6 +1786,70 @@ $(document).ready(function() {
     resizePage();
   });
   resizePage();
+
+  function getMinutesInactive(min) {
+    return min * 60000;
+  }
+  //getMinutesInactive(10)
+  function addDetectInactivity() {
+    $(document).inactivity( {
+      timeout: getMinutesInactive(10), // the timeout until the inactivity event fire [default: 3000]
+      mouse: true, // listen for mouse inactivity [default: true]
+      keyboard: true, // listen for keyboard inactivity [default: true]
+      touch: true, // listen for touch inactivity [default: true]
+      customEvents: "", // listen for custom events [default: ""]
+      triggerAll: true, // if set to false only the first "activity" event will be fired [default: false]
+    });
+  }
+  
+  let soundExitPage = document.querySelector('.soundExitPage');
+  $(document).on("inactivity", function(){
+    // function that fires on inactivity
+    // alert('Logout');
+    let timerInterval;
+    window.onbeforeunload = () => null;
+    Swal.fire({
+      title: 'Tu sesión ha expirado',
+      html: 'Se te declaro ausente por inactividad<br>Redireccionando...',
+      allowOutsideClick:false,
+      allowEscapeKey: false,
+      timer: 1500,
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        
+        Swal.showLoading()
+        timerInterval = setInterval(() => {
+          const content = Swal.getContent()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft()
+            }
+          }
+        }, 100)
+      },
+      onClose: () => {
+        clearInterval(timerInterval);
+        Swal.fire({
+            title:"Redireccionando...",
+            allowOutsideClick:false,
+            allowEscapeKey: false,
+            showConfirmButton: false
+          });
+          soundExitPage.play();
+          $(soundExitPage).bind('ended', function(){
+            location.href = '/';
+          });          
+      }
+    });
+    
+  });
+  $(window).on('focus', function() {
+    $(document).inactivity("destroy");
+    addDetectInactivity();
+    // $(window).click();
+  });
+  addDetectInactivity();
 });
   
 
