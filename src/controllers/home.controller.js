@@ -16,6 +16,7 @@ ctrl.index = async (req, res) => {
   if(sessionId.includes('?')) {
     sessionId = sessionId.split('?')[0];
   }
+  console.log(sessionsRoom);
   const veriSession = sessionsRoom.filter((v) => v==sessionId);
   if(veriSession.length <= 0) {
     return res.status(404).render('404', {
@@ -131,6 +132,7 @@ ctrl.logout = (req, res) => {
   req.logout();
   // console.log(req.session);
   // console.log('Logout');
+
   res.redirect('/login');
 }
 

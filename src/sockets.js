@@ -95,31 +95,39 @@ module.exports = [
       });
       socket.on('disconnect', function() {
         if(!socket.user) return;
+        // if(!socket.sessionId) return;
         // socket.request.session.destroy();
         socket.to(socket.sessionId).emit('disconnectUser', users[socket.user]);
         // console.log(socket.adapter.rooms);
         delete users[socket.user];
         let contSessions = 0;
+        let otherSession = socket.sessionId;
         setTimeout(function() {
+          contSessions = 0;
           for(key in users) {
-            if(users[key].sessionId == socket.sessionId) {
+            if(users[key].sessionId == otherSession) {
               contSessions++;
             }
           }
           
           if(contSessions <= 0) {
             // remover sessionId
-            sessionsRoom.splice(sessionsRoom.indexOf(socket.sessionId, 1));
+            if(sessionsRoom.indexOf(otherSession) != -1) {
+              sessionsRoom.splice(sessionsRoom.indexOf(otherSession), 1);
+            }
+            
             audioStorage.forEach(async (au, index, arr) => {
-              if(au.session == socket.sessionId) {
+              if(au.session == otherSession) {
                 await fs.unlink(path.resolve(`src/public/${au.audio}`)).then().catch((err) => console.log(err));
-                arr.splice(arr.indexOf(au), 1);
+                if(arr.indexOf(au) != -1) {
+                  arr.splice(arr.indexOf(au), 1);
+                }
               }
             });
             // console.log(audioStorage);
           }
           console.log(sessionsRoom);
-        },1000);
+        },2000);
         
         // console.log(rooms, socket.sessionId);
         // socket.leave(socket.user);

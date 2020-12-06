@@ -4,7 +4,9 @@ const passport = require("passport");
 let { sessionsRoom } = require('../variables');
 // let { usersSession } = require('../variables');
 
+
 function validarUser(req, res, next) {
+  // console.log(req.session);
   if (req.isAuthenticated()) {
     return next();
   }

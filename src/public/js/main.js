@@ -7,6 +7,7 @@ $(document).ready(function() {
     'reconnection delay': 500,
     'max reconnection attempts': 10
   });
+  // console.log(socket.connect());
   const navMessages = document.querySelector('.btnmessage');
   const navUsers = document.querySelector('.btnusers');
   const navConfig = document.querySelector('.btnconfig');
@@ -94,7 +95,7 @@ $(document).ready(function() {
 
   socket.on('disconnect', function () { 
     console.log('reconnecting...');
-    socket.connect() 
+    userConnect(socket, sessionStorage.user, sessionStorage.name);
   });
 
   function actualizarEstado(e) {
@@ -702,6 +703,13 @@ $(document).ready(function() {
     // console.log($element[0]);
   }
   let compThis, classThis;
+  let controlfocusmessage = true;
+  $(window).blur(function() {
+    controlfocusmessage = false;
+  });
+  $(window).focus(function() {
+    controlfocusmessage = true;
+  });
   function findResponseMessage(socket) {
     socket.on('getMessage', (data) => {
       // alert(data);
@@ -976,6 +984,10 @@ $(document).ready(function() {
       // $(`.message${data.user}`).css('color', $('.selector-color').val());
       if(confirmador || sessionStorage.user == data.user) {
           scrollDown($(chatarea));
+      }
+      // Notificar mensaje
+      if(!controlfocusmessage && sessionStorage.user != data.user) {
+        notifyMe("Tienes un mensaje nuevo.", data.message);
       }
     });
   }
@@ -1758,6 +1770,10 @@ $(document).ready(function() {
     switchSheet();
     console.log('cambiando...');
   });
+  $('.btnActivarNoti').click(function() {
+      verifyNotiUser(true);
+      $(this).attr('disabled', 'disabled');
+  });
   function resizePage() {   
     if ($(window).width() <= 550) {
       $(".card-message").css("height", $(window).height() - 202 + "px");
@@ -1850,6 +1866,82 @@ $(document).ready(function() {
     // $(window).click();
   });
   addDetectInactivity();
+  verifyNotiUser(false);
+  function verifyNotiUser(data) {
+    if  (!("Notification"  in  window))  {   
+      alert("Este navegador no soporta notificaciones de escritorio");  
+    }  
+    else  if  (Notification.permission  ===  "granted")  {
+      $('.btnActivarNoti').prop('disabled', 'disabled');
+    }
+    else  if  (Notification.permission  !==  'denied')  {
+      if(data) {
+        Notification.requestPermission(function (permission)  {
+          if  (!('permission'  in  Notification))  {
+            Notification.permission  =  permission;
+          }
+          if  (permission  ===  "granted")  {
+  
+          } else {
+            $('.btnActivarNoti').removeAttr('disabled');
+          }
+          
+        });
+      } else {
+        $('.btnActivarNoti').removeAttr('disabled');
+      }     
+    }
+  }
+
+  function  notifyMe(valor,message)  {  
+    if  (!("Notification"  in  window))  {   
+        alert("Este navegador no soporta notificaciones de escritorio");  
+    }  
+    else  if  (Notification.permission  ===  "granted")  {
+        var  options  =   {
+            body:   valor,
+            lang: 'ES',
+            //tag: 'notificacionmessage'+idnotify,
+            icon:   "images/chat-icon.png",
+            dir :   "ltr"//or auto
+        };
+        if(valor!=undefined&&valor!=null&&valor!=""&&message!=undefined&&message!=null&&message!=""){
+        var  notification  =  new  Notification(message, options);
+        setTimeout(notification.close.bind(notification), 5000); 
+        notification.onclick = function(event) {
+            //event.preventDefault(); // Previene al buscador de mover el foco a la pestaña del Notification
+            $(window).focus();
+            this.close();
+          }
+        }
+    }  
+    else  if  (Notification.permission  !==  'denied')  {
+        Notification.requestPermission(function (permission)  {
+            // if  (!('permission'  in  Notification))  {
+            //     Notification.permission  =  permission;
+            // }
+            if  (permission  ===  "granted")  {
+                var  options  =   {
+                    body:   valor,
+                    lang: 'ES',
+                    //tag: 'notificacionmessage'+idnotify,
+                    icon:   "images/chat-icon.png",
+                    dir :   "ltr"//or auto
+                };     
+                if(valor!=undefined&&valor!=null&&valor!=""&&message!=undefined&&message!=null&&message!=""){
+                var  notification  =  new  Notification(message, options);
+                setTimeout(notification.close.bind(notification), 5000);
+                notification.onclick = function(event) {
+                    //event.preventDefault(); // Previene al buscador de mover el foco a la pestaña del Notification
+                    $(window).focus();
+                    this.close();
+                  }
+                }
+            }   
+        });  
+    }
+}
+
 });
   
 
