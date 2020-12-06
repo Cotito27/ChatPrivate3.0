@@ -54,6 +54,14 @@ $(document).ready(function() {
   window.onbeforeunload = function() {
     return "Bye now!";
   };
+  if(!isMobile()) {
+    $('[data-toggle="tooltip"]:not(.btnmessage)').tooltip({
+      delay: { "show": 250, "hide": 100 }
+    });
+    $('[data-toggle="tooltip"]').on('mouseleave', function() {
+      $('[data-toggle="tooltip"]').tooltip('hide');
+    });
+  }
   socket.on('disconnectUser', detectarLogout);
   function detectarLogout(user) {
     let userlast = user.name;
@@ -467,8 +475,29 @@ $(document).ready(function() {
         panel.classList.add('d-none');
       });
       panelConfig.classList.remove('d-none');
-     
+      
+
     }
+    $('[data-toggle="tooltip"]').tooltip('hide');
+    navAll.forEach((nav) => {
+      if(nav != this) {
+        nav.dataset.toggle = 'tooltip';
+        nav.dataset.originalTitle = nav.dataset.nameNav;
+      } else {
+        delete nav.dataset.toggle;
+        delete nav.dataset.originalTitle;
+      }
+    });
+    
+    if(!isMobile()) {
+      $('[data-toggle="tooltip"]').tooltip({
+        delay: { "show": 250, "hide": 100 }
+      });
+      $('[data-toggle="tooltip"]').on('mouseleave', function() {
+        $('[data-toggle="tooltip"]').tooltip('hide');
+      });
+    }
+    
     //this.classList.add('selectedOption');
     //console.timeEnd('navLoader()');
   }
@@ -1011,7 +1040,7 @@ $(document).ready(function() {
           <div class="loader-page"></div>
           <img class="loader-imagen" src="/img/material-preloader.gif">
           <div class="container-destino">
-            <i class="circle Blink"></i><i class="fas fa-chevron-left btn-prepanel"></i> <label class="title-destino" id="destinoM${idOtherUser}">${nameOtherUser}</label>
+            <i class="circle Blink"></i><i class="fas fa-chevron-left btn-prepanel" data-toggle="tooltip" data-placement="bottom" title="Panel anterior"></i> <label class="title-destino" id="destinoM${idOtherUser}">${nameOtherUser}</label>
             <input type="hidden" class="selectorUser" value="${idOtherUser}">
             <div class="iconEdit" data-toggle="modal" data-target="#modalEditNick${idOtherUser}"><i class="far fa-edit"></i></div>
           </div>
@@ -1071,7 +1100,14 @@ $(document).ready(function() {
               </div>`);
         }
         $(`#panelM${idOtherUser}`).addClass('d-none');
-        
+        if(!isMobile()) {
+          $('[data-toggle="tooltip"]').tooltip({
+            delay: { "show": 250, "hide": 100 }
+          });
+          $('[data-toggle="tooltip"]').on('mouseleave', function() {
+            $('[data-toggle="tooltip"]').tooltip('hide');
+          });
+        }
         
         // console.log(dataUserGlobal, filterDataUser);
         editNickName([{
