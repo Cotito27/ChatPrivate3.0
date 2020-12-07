@@ -92,7 +92,7 @@ $(document).ready(function() {
   // let fotoUser = fotoUser;
   //   // console.log(sessionId);
   // let userUser = idUser.replace(/[_\W]+/g,'_') + sessionId;     
-  sessionStorage.name = nameUser;
+  sessionStorage.name = nameUser.toUpperCase();
   sessionStorage.user = idUser + sessionId;
   sessionStorage.sessionId = sessionId;
   sessionStorage.foto = fotoUser.replace(/amp;/g, '') || fotoDefault;
