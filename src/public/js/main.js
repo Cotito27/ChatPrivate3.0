@@ -212,7 +212,10 @@ $(document).ready(function() {
 
   let replaceuser = "";
   let replaceuser2 = "";
-
+  let noMobileAct = false;
+  if(!isMobile()) {
+    noMobileAct = true;
+  }
   function verifyUserConnet(socket) {
     socket.on('listUser', (data, numData) => {
       let verifyPop = "";
@@ -221,6 +224,10 @@ $(document).ready(function() {
       // if($('.popover1').prop('aria-describedby')) {
       //   verifyPop = $('.popover1').prop('id');
       // }
+      let verifyAddTooltip = "";
+      if(noMobileAct) {
+        verifyAddTooltip = `<span class="tiptextCustom">Controles de usuario</span>`
+      }
     if($("#buscadorUser").val() != '') 
     {
       
@@ -245,7 +252,7 @@ $(document).ready(function() {
                 />
               </div>
               <div class="nomuser">
-                <strong id="user${dat.user}">${dat.name}</strong>
+                <span class="myNameUser" id="user${dat.user}">${dat.name}</span>
               </div>
             </div>
           </div>
@@ -262,19 +269,19 @@ $(document).ready(function() {
                 />
               </div>
               <div class="nomuser">
-                <strong id="user${dat.user}">${dat.name}</strong>
+                <span class="otherNameUser" id="user${dat.user}">${dat.name}</span>
               </div>
             </div>
             <button
                   type="button"
                   id="popover${dat.user}"
-                  class="popover1"
+                  class="popover1 tooltipCustom leftCustom"
                   data-container="body"
-                  data-toggle="popover"
-                  data-placement="left"
+                  data-toggle="popover" data-placement="left"
                   data-trigger="click"
                   data-content="Enviar mensaje"
                 >
+                  ${verifyAddTooltip}
                   <i class="far fa-comment-dots" aria-hidden="true"></i>
                 </button>
           </div>
@@ -304,7 +311,7 @@ $(document).ready(function() {
                 />
               </div>
               <div class="nomuser">
-                <strong id="user${dat.user}">${dat.name}</strong>
+                <span class="myNameUser" id="user${dat.user}">${dat.name}</span>
               </div>
             </div>
           </div>
@@ -321,19 +328,20 @@ $(document).ready(function() {
                 />
               </div>
               <div class="nomuser">
-                <strong id="user${dat.user}">${dat.name}</strong>
+                <span class="otherNameUser" id="user${dat.user}">${dat.name}</span>
               </div>
             </div>
             <button
                   type="button"
                   id="popover${dat.user}"
-                  class="popover1"
+                  class="popover1 tooltipCustom leftCustom"
                   data-container="body"
                   data-toggle="popover"
                   data-placement="left"
                   data-trigger="click"
                   data-content="Enviar mensaje"
                 >
+                  ${verifyAddTooltip}
                   <i class="far fa-comment-dots" aria-hidden="true"></i>
                 </button>
           </div>
@@ -352,9 +360,17 @@ $(document).ready(function() {
       console.log('Popover agregado');
       // console.log(popoverGlobalId, $(`#${popoverGlobalId}`)[0]);
       $(`#${popoverGlobalId}`).click();
+      
     //   $(`#${popoverGlobalId}`).popover('update');
     }
-  
+    // if(!isMobile()) {
+    //   $('[data-toggle="tooltip"]').tooltip({
+    //     delay: { "show": 250, "hide": 100 }
+    //   });
+    //   $('[data-toggle="tooltip"]').on('mouseleave', function() {
+    //     $('[data-toggle="tooltip"]').tooltip('hide');
+    //   });
+    // }
     // sessionStorage.foto = $(`#imageuser${sessionStorage.user}`).prop('src');
     //  console.log($(`#imageuser${sessionStorage.user}`).prop('src'));
     });
@@ -519,6 +535,9 @@ $(document).ready(function() {
     if(!e.target.classList.contains('fa-comment-dots') && !e.target.classList.contains('popover1')) {
         $('.popover1').popover('hide');
         $('.popover1').popover('dispose');
+        if(noMobileAct) {
+          $('.tiptextCustom').removeClass('d-none');
+        }
     }
   });
   // $('.components-message').on('click', '.btnEnvio', function(e) {
@@ -609,43 +628,68 @@ $(document).ready(function() {
         });
       }
   });
+  let backEffectColor = "rgb(70, 70, 70)";
   $('.container-history').on('click', '.messageschatnoti', function(e) {
-    
-    let responseId = $(this).prop('id').replace('userhistory','');
-    let numPrevious = parseInt($(this).find('.myNumberNoti').text());
-    let numTotal = parseInt($('.numberNoti').text());
-    let resTotal = numTotal - numPrevious;
-    $('.numberNoti').text(resTotal);
-    $(this).find('.myNumberNoti').text('0');
-    if(parseInt($('.numberNoti').text()) > 0) {
-      $('.numberNoti').show();
-    } else {
-      $('.numberNoti').hide();
-    }
+      let responseId = $(this).prop('id').replace('userhistory','');
+      let numPrevious = parseInt($(this).find('.myNumberNoti').text());
+      let numTotal = parseInt($('.numberNoti').text());
+      let resTotal = numTotal - numPrevious;
+      $('.numberNoti').text(resTotal);
+      $(this).find('.myNumberNoti').text('0');
+      if(parseInt($('.numberNoti').text()) > 0) {
+        $('.numberNoti').show();
+      } else {
+        $('.numberNoti').hide();
+      }
 
-    $(this).find('.myNumberNoti').hide();
-    $(this).removeClass('newMessage');
-    if(resTotal <= 0) {
-      // console.log('asfas');
-      $('.circle').css('visibility', 'hidden');
-    }
-    panelMessages.classList.remove('d-none');
-    panelHistory.classList.add('d-none');
-    panelMessages.classList.add('selectedItem');
-    panelHistory.classList.remove('selectedItem');
-    // console.log(responseId);
-    $('.panel-message').addClass('d-none');
-    if(responseId == '-1') {
-      $(`#panelM`).removeClass('d-none');
-      scrollDown($(`#panelM`).find('.card-message'));
-      DestinoUser = "Todos";
-    } else {
-      $(`#panelM${responseId}`).removeClass('d-none');
-      scrollDown($(`#panelM${responseId}`).find('.card-message'));
-      DestinoUser = responseId;
-    }
-    
-    
+      $(this).find('.myNumberNoti').hide();
+      $(this).removeClass('newMessage');
+      if(resTotal <= 0) {
+        // console.log('asfas');
+        $('.circle').css('visibility', 'hidden');
+      }
+      panelMessages.classList.remove('d-none');
+      panelHistory.classList.add('d-none');
+      panelMessages.classList.add('selectedItem');
+      panelHistory.classList.remove('selectedItem');
+      // console.log(responseId);
+      $('.panel-message').addClass('d-none');
+      if(responseId == '-1') {
+        $(`#panelM`).removeClass('d-none');
+        scrollDown($(`#panelM`).find('.card-message'));
+        $(`#panelM`).find('.textMessage').focus();
+        DestinoUser = "Todos";
+      } else {
+        $(`#panelM${responseId}`).removeClass('d-none');
+        scrollDown($(`#panelM${responseId}`).find('.card-message'));
+        $(`#panelM${responseId}`).find('.textMessage').focus();
+        DestinoUser = responseId;
+      }  
+      if($(`#${DestinoUser}`).find('.identMessage:last')[0]) {
+        let userDirect = $(`#${DestinoUser}`).find('.identMessage:last').prop('id').replace('mensaje','');
+        // console.log(userDirect);
+        if(DestinoUser == "Todos") {
+          socket.emit('sendViewed', {
+            user: userDirect,
+            name: sessionStorage.name,
+            foto: sessionStorage.foto,
+            destino: DestinoUser,
+            sessionId: sessionId
+          });
+        } else {
+          socket.emit('sendViewed', {
+            user: userDirect,
+            name: sessionStorage.name,
+            foto: sessionStorage.foto,
+            destino: sessionStorage.user,
+            sessionId: sessionId
+          });
+        }
+        // if(userDirect != sessionStorage.user) {
+          
+        // }
+      }
+      
   });
   document.body.addEventListener('click', e => {
     let $emojiwrapper = $('#emojiWrapper');
@@ -738,6 +782,29 @@ $(document).ready(function() {
   });
   $(window).focus(function() {
     controlfocusmessage = true;
+    if($(`#${DestinoUser}`).find('.identMessage:last')[0]) {
+      let userDirect = $(`#${DestinoUser}`).find('.identMessage:last').prop('id').replace('mensaje','');
+      // console.log(userDirect);
+      // if(userDirect != sessionStorage.user) {
+        if(DestinoUser == "Todos") {
+          socket.emit('sendViewed', {
+            user: userDirect,
+            name: sessionStorage.name,
+            foto: sessionStorage.foto,
+            destino: DestinoUser,
+            sessionId: sessionId
+          });
+        } else {
+          socket.emit('sendViewed', {
+            user: userDirect,
+            name: sessionStorage.name,
+            foto: sessionStorage.foto,
+            destino: sessionStorage.user,
+            sessionId: sessionId
+          });
+        }
+      // }
+    }  
   });
   function findResponseMessage(socket) {
     socket.on('getMessage', (data) => {
@@ -793,15 +860,17 @@ $(document).ready(function() {
       // console.log($(chatarea)[0]);
       if (chatarea.offsetHeight + chatarea.scrollTop ==
             chatarea.scrollHeight + 2 ||
-          chatarea.offsetHeight + chatarea.scrollTop >= chatarea.scrollHeight) {
+          chatarea.offsetHeight + chatarea.scrollTop+20 >= chatarea.scrollHeight) {
           confirmador = true;
       } else {
           confirmador = false;
       }
       var dateTime = moment().format("hh:mm a").toUpperCase();
       let decisiveUserMessage = 'mymessage';
+      let decisiveViewedMessage = `<label id="check1" class="check1"><i class="fas fa-check-double icon-ready"></i></label>`;
       if(sessionStorage.user != data.user) {
         decisiveUserMessage = 'othermessage';
+        decisiveViewedMessage = '';
       }
       if(data.destino == sessionStorage.user) {
         
@@ -837,7 +906,7 @@ $(document).ready(function() {
             </div><div class="horamessage">
               <small class="hora">${dateTime}</small>
             </div>
-            <label id="check1"><i class="fas fa-check icon-ready"></i></label>
+            ${decisiveViewedMessage}
           </div>
           `);
         } else {
@@ -854,7 +923,7 @@ $(document).ready(function() {
             </div><div class="horamessage">
                 <small class="hora">${dateTime}</small>
             </div>
-            <label id="check1"><i class="fas fa-check icon-ready"></i></label>
+            ${decisiveViewedMessage}
           </div>
         `);
         }
@@ -895,7 +964,7 @@ $(document).ready(function() {
             </div><div class="horamessage">
               <small class="hora">${dateTime}</small>
             </div>
-            <label id="check1"><i class="fas fa-check icon-ready"></i></label>
+            ${decisiveViewedMessage}
           </div>
           `);
         } else {
@@ -912,7 +981,7 @@ $(document).ready(function() {
           </div><div class="horamessage">
               <small class="hora">${dateTime}</small>
           </div>
-          <label id="check1"><i class="fas fa-check icon-ready"></i></label>
+          ${decisiveViewedMessage}
         </div>
       `);  
         }
@@ -1018,6 +1087,60 @@ $(document).ready(function() {
       if(!controlfocusmessage && sessionStorage.user != data.user) {
         notifyMe("Tienes un mensaje nuevo.", data.message);
       }
+      if(sessionStorage.user != data.user) {
+        if(controlfocusmessage) {
+          if(!$(`#content-message`).hasClass('d-none')) {
+            if(data.destino == "Todos") {
+              if(!$(`#${data.destino}`).parent().parent().hasClass('d-none')) {
+                // console.log(data.destino, $(`#${data.destino}`)[0], $(`#${data.user}`)[0]);
+                  // Vistear mensaje
+                // console.log('En visto');
+                socket.emit('sendViewed', {
+                  user: data.user,
+                  name: data.name,
+                  foto: data.foto,
+                  destino: data.destino,
+                  sessionId: sessionId
+                });
+              }
+            } else {
+              if(!$(`#${data.user}`).parent().parent().hasClass('d-none')) {
+                // console.log(data.destino, $(`#${data.destino}`)[0], $(`#${data.user}`)[0]);
+                  // Vistear mensaje
+                // console.log('En visto');
+                socket.emit('sendViewed', {
+                  user: data.user,
+                  name: data.name,
+                  foto: data.foto,
+                  destino: data.destino,
+                  sessionId: sessionId
+                });
+              }
+            }
+            
+            // else if (!$(`#${data.user}`).hasClass('d-none')) {
+            //   socket.emit('sendViewed', {
+            //     user: data.user,
+            //     name: data.name,
+            //     foto: data.foto,
+            //     destino: data.user,
+            //     sessionId: sessionId
+            //   });
+            // }
+        }
+        }
+      }
+    });
+  }
+  socket.on('getViewed', getViewedUsers);
+
+  function getViewedUsers(data) {
+    // console.log(data);
+    $(`#${data.destino}`).find('.check1').each(function() {
+      if(!this.dataset.viewed) {
+        $(this).find('.icon-ready').attr('style', `color: purple !important;`);
+        this.dataset.viewed = 'viewed';
+      }
     });
   }
 
@@ -1029,12 +1152,21 @@ $(document).ready(function() {
     });
   }
   verificarFocusAll();
+
+  if(isMobile()) {
+    $('.tiptextCustom').remove();
+  }
+
   findResponseMessage(socket);
   function addPanelMessage(idOtherUser, nameOtherUser, data) {
     let veriEmojis = '<button class="btn btn-primary btnEmojis emoji_01"><i class="fa fa-smile-o" aria-hidden="true"></i></button>';
     if(isMobile()) {
       veriEmojis = '';
     } 
+    let veriTooltipApodo = ``;
+    if(noMobileAct) {
+      veriTooltipApodo = `<span class="tiptextCustom">Cambiar Apodo</span>`
+    }
     $('.components-message').append(`
           <div class="card panel-message" id="panelM${idOtherUser}">
           <div class="loader-page"></div>
@@ -1042,7 +1174,10 @@ $(document).ready(function() {
           <div class="container-destino">
             <i class="circle Blink"></i><i class="fas fa-chevron-left btn-prepanel" data-toggle="tooltip" data-placement="bottom" title="Panel anterior"></i> <label class="title-destino" id="destinoM${idOtherUser}">${nameOtherUser}</label>
             <input type="hidden" class="selectorUser" value="${idOtherUser}">
-            <div class="iconEdit" data-toggle="modal" data-target="#modalEditNick${idOtherUser}"><i class="far fa-edit"></i></div>
+            <div class="iconEdit tooltipCustom bottomCustom" data-toggle="modal" data-target="#modalEditNick${idOtherUser}">
+            ${veriTooltipApodo}
+            <i class="far fa-edit"></i>
+            </div>
           </div>
           <div class="card-body card-message">
             <div class="container-message" id="${idOtherUser}">
@@ -1068,7 +1203,7 @@ $(document).ready(function() {
         let filterDataUser = dataUserGlobal.find((dato) => dato.user==idOtherUser);
         if(data) {
           let compHistory = "";
-            compHistory += `<div class="messageschatnoti ${idOtherUser}" id="userhistory${idOtherUser}">
+            compHistory += `<div class="messageschatnoti ${idOtherUser} waveCustom" data-wave-color="" id="userhistory${idOtherUser}">
             <div class="contenidoimg">
               <img class="imguser imghistory" src="${filterDataUser.foto}">
               </div>
@@ -1085,7 +1220,7 @@ $(document).ready(function() {
                 $('.chatnotify').html(compHistory);
         } else {
           $(".chatnotify")
-          .append(`<div class="messageschatnoti ${idOtherUser}" id="userhistory${idOtherUser}">
+          .append(`<div class="messageschatnoti ${idOtherUser} waveCustom" data-wave-color="" id="userhistory${idOtherUser}">
           <div class="contenidoimg">
             <img class="imguser imghistory" src="${filterDataUser.foto}">
             </div>
@@ -1100,7 +1235,7 @@ $(document).ready(function() {
               </div>`);
         }
         $(`#panelM${idOtherUser}`).addClass('d-none');
-        if(!isMobile()) {
+        if(noMobileAct) {
           $('[data-toggle="tooltip"]').tooltip({
             delay: { "show": 250, "hide": 100 }
           });
@@ -1126,10 +1261,16 @@ $(document).ready(function() {
     if(e.target.classList.contains('popover1')) {
       popoverGlobalId = e.target.id;
       if(!$('.popover-body')[0]) {
+          if(noMobileAct) {
+            e.target.children[0].classList.add('d-none');
+          }
           $(e.target).popover('show');
       } else {
           $(e.target).popover('hide');
           $(e.target).popover('dispose');
+          if(noMobileAct) {
+            e.target.children[0].classList.remove('d-none');
+          }
       }
       $(e.target).on('shown.bs.popover', function() {
         $('.popover-body').off('click').on('click',function() {
@@ -1157,17 +1298,23 @@ $(document).ready(function() {
           // console.log('Clicked Popover', idOtherUser);
         });
       });
-      $(e.target).on('hidden.bs.popover', function() {
+      $("[data-toggle='popover']").on('hide.bs.popover', function(){
         popoverGlobalId = "";
       });
     }
     if(e.target.classList.contains('fa-comment-dots')) {
       popoverGlobalId = e.target.parentElement.id;   
       if(!$('.popover-body')[0]) {
+          if(noMobileAct) {
+            e.target.parentElement.children[0].classList.add('d-none');
+          }
           $(e.target.parentElement).popover('show');
       } else {
           $(e.target.parentElement).popover('hide');
           $(e.target.parentElement).popover('dispose');
+          if(noMobileAct) {
+            e.target.parentElement.children[0].classList.remove('d-none');
+          }
       }
       $(e.target.parentElement).on('shown.bs.popover', function() {
         $('.popover-body').off('click').on('click',function() {
@@ -1194,7 +1341,7 @@ $(document).ready(function() {
           // console.log('Clicked Popover', idOtherUser);
         });
       });
-      $(e.target.parentElement).on('hidden.bs.popover', function() {
+      $("[data-toggle='popover']").on('hide.bs.popover', function(){
         popoverGlobalId = "";
       });
     }
@@ -1418,7 +1565,7 @@ $(document).ready(function() {
                 />
               </div>
               <div class="nomuser">
-                <strong id="user${dat.user}">${dat.name}</strong>
+                <span class="myNameUser" id="user${dat.user}">${dat.name}</span>
               </div>
             </div>
           </div>
@@ -1435,19 +1582,20 @@ $(document).ready(function() {
                 />
               </div>
               <div class="nomuser">
-                <strong id="user${dat.user}">${dat.name}</strong>
+                <span class="otherNameUser" id="user${dat.user}">${dat.name}</span>
               </div>
             </div>
             <button
                   type="button"
                   id="popover${dat.user}"
-                  class="popover1"
+                  class="popover1 tooltipCustom leftCustom"
                   data-container="body"
                   data-toggle="popover"
                   data-placement="left"
                   data-trigger="click"
                   data-content="Enviar mensaje"
                 >
+                  <span class="tiptextCustom">Controles de usuario</span>
                   <i class="far fa-comment-dots" aria-hidden="true"></i>
                 </button>
           </div>
@@ -1569,7 +1717,7 @@ $(document).ready(function() {
       html+=`<div class="user-edit iduserEdit${users[i].user} nameuserEdit">
         <img class="img-edit message${users[i].user}" src="${users[i].foto}">
         <label class="name-edit">${users[i].name}</label>
-        <button class="btn float-right btnCambiarApodo text-white"  data-toggle="modal" data-target="#modalChangeNick"><i class="fas fa-pencil-alt"></i> Establecer apodo</button>
+        <button class="btn float-right btnCambiarApodo text-white" data-toggle="modal" data-target="#modalChangeNick"><i class="fas fa-pencil-alt"></i> Establecer apodo</button>
         <input type="hidden" class="apodoName${users[i].user}" value="">
       </div>`;
     }
@@ -1952,29 +2100,29 @@ $(document).ready(function() {
         }
     }  
     else  if  (Notification.permission  !==  'denied')  {
-        Notification.requestPermission(function (permission)  {
-            // if  (!('permission'  in  Notification))  {
-            //     Notification.permission  =  permission;
-            // }
-            if  (permission  ===  "granted")  {
-                var  options  =   {
-                    body:   valor,
-                    lang: 'ES',
-                    //tag: 'notificacionmessage'+idnotify,
-                    icon:   "images/chat-icon.png",
-                    dir :   "ltr"//or auto
-                };     
-                if(valor!=undefined&&valor!=null&&valor!=""&&message!=undefined&&message!=null&&message!=""){
-                var  notification  =  new  Notification(message, options);
-                setTimeout(notification.close.bind(notification), 5000);
-                notification.onclick = function(event) {
-                    //event.preventDefault(); // Previene al buscador de mover el foco a la pestaña del Notification
-                    $(window).focus();
-                    this.close();
-                  }
-                }
-            }   
-        });  
+        // Notification.requestPermission(function (permission)  {
+        //     // if  (!('permission'  in  Notification))  {
+        //     //     Notification.permission  =  permission;
+        //     // }
+        //     if  (permission  ===  "granted")  {
+        //         var  options  =   {
+        //             body:   valor,
+        //             lang: 'ES',
+        //             //tag: 'notificacionmessage'+idnotify,
+        //             icon:   "images/chat-icon.png",
+        //             dir :   "ltr"//or auto
+        //         };     
+        //         if(valor!=undefined&&valor!=null&&valor!=""&&message!=undefined&&message!=null&&message!=""){
+        //         var  notification  =  new  Notification(message, options);
+        //         setTimeout(notification.close.bind(notification), 5000);
+        //         notification.onclick = function(event) {
+        //             //event.preventDefault(); // Previene al buscador de mover el foco a la pestaña del Notification
+        //             $(window).focus();
+        //             this.close();
+        //           }
+        //         }
+        //     }   
+        // });  
     }
 }
 

@@ -167,6 +167,12 @@ module.exports = [
         updateUsers(user);
       });
 
+      socket.on('sendViewed', (data) => {
+        if(socket.sessionId == data.sessionId) {
+          socket.to(data.user).emit('getViewed', data);
+        }
+      });
+
       socket.on("cambiarApodo", function(data) {
         // console.log(data.destino);
         if(data.destino == 'Todos') {

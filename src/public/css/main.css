@@ -108,6 +108,11 @@ body {
   font-size: 20px;
 }
 
+.tooltipMsg {
+  width: 100%;
+  height: 100%;
+}
+
 .fa-chevron-left {
   font-size: 18px;
   padding-right: 5px;
@@ -403,9 +408,16 @@ hr {
 }
 
 .nomuser {
-  margin-top: 4.5px;
+  margin-top: 2.5px;
   font-size: 0.9rem;
-  color: rgb(70, 70, 70);
+}
+.myNameUser {
+  font-weight: 600;
+  color: #000;
+}
+.otherNameUser {
+  font-weight: 600;
+  color: rgb(30, 30, 30);
 }
 .todouserhistory {
   overflow: auto;
@@ -732,9 +744,11 @@ input[type="file"]#file {
 }
 .iconEdit {
   float: right;
-  position: absolute;
+  position: absolute !important;
   right: 15px;
   cursor: pointer;
+}
+.fa-edit {
   font-size: 18px;
 }
 .iconEdit:hover {
@@ -768,6 +782,128 @@ input[type="file"]#file {
 }
 .userLink {
   color: #039be5 !important;
+}
+
+/* .tooltip {
+  font-weight: normal;
+  color: #3c48e5;
+  text-decoration: none;
+  position: relative;
+}
+
+.tooltip:hover {
+  text-decoration: underline;
+}
+
+.tooltip:hover .tooltip-box {
+  display: inline-block;
+}
+
+.tooltip-box {
+  display: none;
+  position: absolute;
+  background: #000;
+  line-height: 20px;
+  z-index: 500;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+}
+
+.tooltip-box::after {
+  content: "";
+  display: block;
+  border-top: 7px solid #000;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  position: absolute;
+  bottom: -7px;
+  left: calc(50% - 7px);
+} */
+
+.tooltipCustom {
+  position: relative;
+  display: inline-block;
+}
+.tooltipCustom .tiptextCustom {
+  margin-top: 4px;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.3s linear, opacity 0.3s linear;
+  width: 150px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 3px;
+  padding: 4px 0;
+  position: absolute;
+  z-index: 1;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+}
+.tooltipCustom .tiptextCustom::after {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+}
+.tooltipCustom:hover .tiptextCustom {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0.3s linear, opacity 0.3s linear;
+}
+.tooltipCustom.leftCustom .tiptextCustom {
+  top: -5px;
+  right: 110%;
+}
+.tooltipCustom.leftCustom .tiptextCustom::after {
+  margin-top: -5px;
+  top: 50%;
+  left: 100%;
+  border-color: transparent transparent transparent #2e2e2e;
+}
+
+.tooltipCustom.bottomCustom .tiptextCustom {
+  font-size: 12px !important;
+  max-width: 100px;
+  margin-left: -53px;
+  top: 150%;
+  left: 50%;
+}
+.tooltipCustom.bottomCustom .tiptextCustom::after {
+  margin-left: -5px;
+  bottom: 100%;
+  left: 50%;
+  border-color: transparent transparent #2e2e2e transparent;
+}
+
+.tiptextCustom:hover {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.waveCustom {
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+.waveCustom-effect {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 0;
+  margin: 0;
+  opacity: 0.6;
+  --webkit-transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0);
 }
 
 @media only screen and (max-width: 550px) {
