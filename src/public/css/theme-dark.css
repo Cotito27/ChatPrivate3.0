@@ -18,6 +18,26 @@ body {
 .fa {
   color: whitesmoke !important;
 }
+
+.fa-user-friends,
+.fa-comment,
+.fa-cog {
+  color: white !important;
+}
+
+.icon-ready {
+  color: rgb(190, 190, 190) !important;
+}
+
+/* .tooltipCustom .tiptextCustom {
+  background-color: rgb(200, 200, 200) !important;
+  color: rgb(40, 40, 40) !important;
+}
+
+.tooltipCustom.leftCustom .tiptextCustom::after {
+  border-color: transparent transparent transparent rgb(200, 200, 200) !important;
+} */
+
 .mymessage {
   color: whitesmoke !important;
   background-color: rgb(29, 27, 27) !important;
@@ -74,25 +94,25 @@ textarea,
   background-color: rgb(36, 36, 36);
 }
 .popover-body {
-  background: black;
-  color: rgb(255, 255, 255);
+  background-color: rgb(200, 200, 200) !important;
+  color: rgb(40, 40, 40) !important;
   cursor: pointer;
 }
 .bs-popover-auto[x-placement^="right"] > .arrow::after,
 .bs-popover-right > .arrow::after {
   left: 1px;
   border-width: 0.5rem 0.5rem 0.5rem 0;
-  border-right-color: black;
+  border-right-color: rgb(200, 200, 200);
 }
 .bs-popover-auto[x-placement^="left"] > .arrow::after,
 .bs-popover-left > .arrow::after {
   right: 1px;
   border-width: 0.5rem 0 0.5rem 0.5rem;
-  border-right-color: black;
+  border-right-color: rgb(200, 200, 200);
 }
 .bs-popover-auto[x-placement^="left"] > .arrow::after,
 .bs-popover-left > .arrow::after {
-  border-left-color: black;
+  border-left-color: rgb(200, 200, 200);
 }
 #emojiWrapper {
   background-color: rgb(36, 36, 36);
@@ -115,4 +135,16 @@ video {
   color: whitesmoke !important;
   background-color: rgb(36, 36, 36) !important;
   border: 1px solid rgb(80, 80, 80);
+}
+
+.myNameUser {
+  color: whitesmoke !important;
+}
+
+.otherNameUser {
+  color: white !important;
+}
+
+.nom-user-message {
+  color: whitesmoke !important;
 }

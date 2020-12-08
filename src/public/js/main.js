@@ -101,7 +101,7 @@ $(document).ready(function() {
   sessionStorage.name = nameUser.toUpperCase();
   sessionStorage.user = idUser + sessionId;
   sessionStorage.sessionId = sessionId;
-  sessionStorage.foto = fotoUser.replace(/amp;/g, '').replace('http://', 'https://') || fotoDefault;
+  sessionStorage.foto = fotoUser.replace(/amp;/g, '') || fotoDefault;
   
   // console.log(sessionStorage.foto);
     
@@ -109,7 +109,9 @@ $(document).ready(function() {
 
   socket.on('disconnect', function () { 
     console.log('reconnecting...');
-    userConnect(socket, sessionStorage.user, sessionStorage.name);
+    // userConnect(socket, sessionStorage.user, sessionStorage.name);
+    window.onbeforeunload = () => null;
+    location.reload();
   });
 
   function actualizarEstado(e) {
@@ -2205,6 +2207,7 @@ $(document).ready(function() {
         setTimeout(notification.close.bind(notification), 5000); 
         notification.onclick = function(event) {
             //event.preventDefault(); // Previene al buscador de mover el foco a la pestaña del Notification
+            // console.log('ADD NOTIFY');
             $(window).focus();
             $(`#userhistory${this.tag}`).click();
             $('#toast-container').remove();

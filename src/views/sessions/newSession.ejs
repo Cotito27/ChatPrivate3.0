@@ -1,37 +1,40 @@
-<div class="navbar navbar-expand navbar-dark bg-dark">
-  <a class="navbar-brand text-white mx-auto">¡Crea o ingresa a una sala!</a>
-</div>
-<div class="card">
-  <div class="card-body bg-danger">
-    <div class="form-group" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
-          <button class="btn btn-light mr-2 mb-4 btnCrearSala">Crea una nueva sala</button>
-          <button class="btn btn-light mr-2 mb-4 btnEntrarSala" data-toggle="modal"  data-target="#modalSession">Ingresa a una sala existente</button>
-          <a href="/logout" class="btn btn-light mr-2 mb-4">Salir de la cuenta</a>
+<!-- <div class="center-flex-row-custom"> -->
+  <div class="card">
+    <div class="navbar navbar-expand navbar-dark bg-dark">
+      <a class="navbar-brand text-white mx-auto">¡Crea o ingresa a una sala!</a>
+    </div>
+    <div class="card-body bg-danger">
+      <div class="form-group" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+            <button class="btn btn-light mr-2 mb-4 btnCrearSala">Crea una nueva sala</button>
+            <button class="btn btn-light mr-2 mb-4 btnEntrarSala" data-toggle="modal"  data-target="#modalSession">Ingresa a una sala existente</button>
+            <a href="/logout" class="btn btn-light mr-2 mb-4">Salir de la cuenta</a>
+      </div>
     </div>
   </div>
-</div>
-<div
-  id="modalSession"
-  class="modal fade"
->
-  <div class="modal-dialog modal-session modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Ingrese código o enlace para ingresar</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <input type="text" class="form-control" name="codUrl" id="codUrl" placeholder="Ingrese código o enlace para ingresar">
-          <br>
-          <button type="button" class="btn btn-dark btnUnirse">Unirme</button>
+  <div
+    id="modalSession"
+    class="modal fade"
+  >
+    <div class="modal-dialog modal-session modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Ingrese código o enlace para ingresar</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input type="text" class="form-control" name="codUrl" id="codUrl" placeholder="Ingrese código o enlace para ingresar">
+            <br>
+            <button type="button" class="btn btn-dark btnUnirse">Unirme</button>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: block">
         </div>
       </div>
-      <div class="modal-footer" style="display: block">
-      </div>
     </div>
   </div>
-</div>
+  
+<!-- </div> -->

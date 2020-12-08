@@ -8,6 +8,7 @@ let { sessionsRoom } = require('../variables');
 function validarUser(req, res, next) {
   // console.log(req.session);
   if (req.isAuthenticated()) {
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, post-check=1, pre-check=0');
     return next();
   }
   const sessionId =req.path.replace('/session/', '');

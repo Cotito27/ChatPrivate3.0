@@ -11,7 +11,7 @@ ctrl.index = async (req, res) => {
   let { sessionId } = req.params;
   const nameUser = req.user.name;
   // console.log(req.session.foto, req.user.foto);
-  const fotoUser = req.user.foto;
+  const fotoUser = req.user.foto.replace('http://', 'https://');
   const idUser = req.user.id;
   if(sessionId.includes('?')) {
     sessionId = sessionId.split('?')[0];

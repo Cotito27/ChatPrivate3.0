@@ -928,6 +928,13 @@ input[type="file"]#file {
   transform: translate3d(-50%, -50%, 0);
 }
 
+.center-flex-row-custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 @media only screen and (max-width: 550px) {
   .container {
     padding: 0 !important;
