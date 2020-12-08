@@ -85,6 +85,7 @@
       </div>
       
       <div class="card-footer">
+        <!-- <p class="font-weight-light d-none textWarningMsg"><i class="fas fa-info-circle" style="color:rgb(60,60,60)"></i> Acá no hay nadie con quien chatear</p> -->
         <div class="form-group form-message">
           <div class="focus-message">
             
@@ -139,6 +140,28 @@
   </div>
  
 </div>
+
+<!-- Modal Viewed -->
+<div class="modal fade" id="modalViewedUser" tabindex="-1" role="dialog" aria-labelledby="modalViewedUserTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Visto por:</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body content-viewed">
+        
+      </div>
+      <!--<div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+
 <audio class="soundChat" src="/audio/chat.mp3"></audio>
 <audio class="soundExitPage" src="/audio/desconnect-user3.mp3"></audio>
 <input type="hidden" value="<%= fotoUser %>" id="myUserFoto">

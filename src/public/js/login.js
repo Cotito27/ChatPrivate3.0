@@ -48,6 +48,14 @@ $(document).ready(function() {
   
   const registrarse = document.getElementById('registrarse');
   const formRegister = document.getElementById('form-register');
+  const btnEntrarSala = document.querySelector('.btnEntrarSala');
+  if(btnEntrarSala) {
+    btnEntrarSala.addEventListener('click', () => {
+      setTimeout(() => {
+        codUrl.focus();
+      }, 500);
+    });
+  }
   let auth;
   let fs;
   // let keysFirabase;

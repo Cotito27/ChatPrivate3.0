@@ -66,6 +66,12 @@ $(document).ready(function() {
   function detectarLogout(user) {
     let userlast = user.name;
     // console.log(userlast);
+    let userIdent = user.user;
+    if($(`#panelM${userIdent}`)[0]) {
+      $(`#panelM${userIdent}`).find('.focus-message').addClass('d-none');
+      $(`#panelM${userIdent}`).find('.textWarningMsg').removeClass('d-none');
+    }
+    // console.log(userIdent, $(`#panelM${userIdent}`)[0]);
     let fotoLastUser = user.foto;
     if(sessionStorage.user != user.user) {
       if(sessionStorage.userdisconnect=="disconnect"){
@@ -95,7 +101,7 @@ $(document).ready(function() {
   sessionStorage.name = nameUser.toUpperCase();
   sessionStorage.user = idUser + sessionId;
   sessionStorage.sessionId = sessionId;
-  sessionStorage.foto = fotoUser.replace(/amp;/g, '') || fotoDefault;
+  sessionStorage.foto = fotoUser.replace(/amp;/g, '').replace('http://', 'https://') || fotoDefault;
   
   // console.log(sessionStorage.foto);
     
@@ -403,7 +409,10 @@ $(document).ready(function() {
     verificar = data.user;
     fotoLastUser = data.foto;
     userlast = data.name;
-    
+    if($(`#panelM${verificar}`)[0]) {
+      $(`#panelM${verificar}`).find('.focus-message').removeClass('d-none');
+      $(`#panelM${verificar}`).find('.textWarningMsg').addClass('d-none');
+    }
     // console.log(data);
     // userlast = data.map((dat) => {
     //   if(dat.user == verificar) {
@@ -627,6 +636,52 @@ $(document).ready(function() {
           foto: sessionStorage.foto
         });
       }
+      if(e.target.classList.contains('check1')) {
+        if($(e.target).attr('bd-list-viewed')) {
+          let vecTarget = JSON.parse($(e.target).attr('bd-list-viewed'));
+          // console.log(vecTarget, 'Object Viewed');
+          let html = "";
+          vecTarget.forEach((v) => {
+            html += `
+             <div class="user-viewed">
+              <img class="img-viewed message${v.user}" src="${v.foto}">
+              <label class="name-viewed">${v.name}</label>
+             </div>
+            `;
+          });
+          $('.content-viewed').html(html);
+        } else {
+          if(e.target.dataset.toggle) {
+            $('.content-viewed').html(`<label class="name-viewed empty-viewed">Nadie aún</label>`);
+          } 
+        }
+        // let index = $(e.target).index();
+        // console.log($(e.target)[0], $(e.target).index());
+        // $('.content-viewed').attr('data-keys-viewed', index);
+      }
+      if(e.target.classList.contains('icon-ready')) {
+        if($(e.target.parentElement).attr('bd-list-viewed')) {
+          let vecTarget = JSON.parse($(e.target.parentElement).attr('bd-list-viewed'));
+          // console.log(vecTarget, 'Object Viewed');
+          let html = "";
+          vecTarget.forEach((v) => {
+            html += `
+             <div class="user-viewed">
+              <img class="img-viewed message${v.user}" src="${v.foto}">
+              <label class="name-viewed">${v.name}</label>
+             </div>
+            `;
+          });
+          $('.content-viewed').html(html);
+        } else {
+          if(e.target.parentElement.dataset.toggle) {
+            $('.content-viewed').html(`<label class="name-viewed empty-viewed">Nadie aún</label>`);
+          } 
+        }
+        // let index = $(e.target.parentElement).index();
+        // console.log($(e.target.parentElement)[0], $(e.target.parentElement).index());
+        // $('.content-viewed').attr('data-keys-viewed', index);
+      }
   });
   let backEffectColor = "rgb(70, 70, 70)";
   $('.container-history').on('click', '.messageschatnoti', function(e) {
@@ -667,6 +722,9 @@ $(document).ready(function() {
       }  
       if($(`#${DestinoUser}`).find('.identMessage:last')[0]) {
         let userDirect = $(`#${DestinoUser}`).find('.identMessage:last').prop('id').replace('mensaje','');
+        // let nameDirect = $(`#${DestinoUser}`).find('.nom-user-message:last').text();
+        // let fotoDirect = $(`#${DestinoUser}`).find('.imguser:last').prop('src');
+        
         // console.log(userDirect);
         if(DestinoUser == "Todos") {
           socket.emit('sendViewed', {
@@ -674,6 +732,7 @@ $(document).ready(function() {
             name: sessionStorage.name,
             foto: sessionStorage.foto,
             destino: DestinoUser,
+            userEmit: sessionStorage.user,
             sessionId: sessionId
           });
         } else {
@@ -682,6 +741,7 @@ $(document).ready(function() {
             name: sessionStorage.name,
             foto: sessionStorage.foto,
             destino: sessionStorage.user,
+            userEmit: sessionStorage.user,
             sessionId: sessionId
           });
         }
@@ -772,7 +832,9 @@ $(document).ready(function() {
   optionsToast();
 
   function scrollDown($element) {
+    resizePage();
     $element.scrollTop($element.prop('scrollHeight'));
+    // console.log($element[0]);
     // console.log($element[0]);
   }
   let compThis, classThis;
@@ -784,6 +846,8 @@ $(document).ready(function() {
     controlfocusmessage = true;
     if($(`#${DestinoUser}`).find('.identMessage:last')[0]) {
       let userDirect = $(`#${DestinoUser}`).find('.identMessage:last').prop('id').replace('mensaje','');
+      // let nameDirect = $(`#${DestinoUser}`).find('.nom-user-message:last').text();
+      // let fotoDirect = $(`#${DestinoUser}`).find('.imguser:last').prop('src');
       // console.log(userDirect);
       // if(userDirect != sessionStorage.user) {
         if(DestinoUser == "Todos") {
@@ -792,6 +856,7 @@ $(document).ready(function() {
             name: sessionStorage.name,
             foto: sessionStorage.foto,
             destino: DestinoUser,
+            userEmit: sessionStorage.user,
             sessionId: sessionId
           });
         } else {
@@ -800,6 +865,7 @@ $(document).ready(function() {
             name: sessionStorage.name,
             foto: sessionStorage.foto,
             destino: sessionStorage.user,
+            userEmit: sessionStorage.user,
             sessionId: sessionId
           });
         }
@@ -867,8 +933,16 @@ $(document).ready(function() {
       }
       var dateTime = moment().format("hh:mm a").toUpperCase();
       let decisiveUserMessage = 'mymessage';
-      let decisiveViewedMessage = `<label id="check1" class="check1"><i class="fas fa-check-double icon-ready"></i></label>`;
-      if(sessionStorage.user != data.user) {
+      
+      let decisiveViewedMessage = ``;
+      if(sessionStorage.user == data.user) {
+        if(data.destino == "Todos") {
+          decisiveViewedMessage = `<label id="check1" class="check1" data-toggle="modal" data-target="#modalViewedUser"><i class="fas fa-check-double icon-ready"></i></label>`;
+        } else {
+          decisiveViewedMessage = `<label id="check1" class="check1"><i class="fas fa-check-double icon-ready"></i></label>`
+        }
+      }
+      else if(sessionStorage.user != data.user) {
         decisiveUserMessage = 'othermessage';
         decisiveViewedMessage = '';
       }
@@ -1085,7 +1159,7 @@ $(document).ready(function() {
       }
       // Notificar mensaje
       if(!controlfocusmessage && sessionStorage.user != data.user) {
-        notifyMe("Tienes un mensaje nuevo.", data.message);
+        notifyMe("Tienes un mensaje nuevo.", data.message, data.user);
       }
       if(sessionStorage.user != data.user) {
         if(controlfocusmessage) {
@@ -1097,9 +1171,10 @@ $(document).ready(function() {
                 // console.log('En visto');
                 socket.emit('sendViewed', {
                   user: data.user,
-                  name: data.name,
-                  foto: data.foto,
+                  name: sessionStorage.name,
+                  foto: sessionStorage.foto,
                   destino: data.destino,
+                  userEmit: sessionStorage.user,
                   sessionId: sessionId
                 });
               }
@@ -1110,9 +1185,10 @@ $(document).ready(function() {
                 // console.log('En visto');
                 socket.emit('sendViewed', {
                   user: data.user,
-                  name: data.name,
-                  foto: data.foto,
+                  name: sessionStorage.name,
+                  foto: sessionStorage.foto,
                   destino: data.destino,
+                  userEmit: sessionStorage.user,
                   sessionId: sessionId
                 });
               }
@@ -1134,9 +1210,41 @@ $(document).ready(function() {
   }
   socket.on('getViewed', getViewedUsers);
 
+  
+
   function getViewedUsers(data) {
     // console.log(data);
+    let vecDataViewed = [];
+    // let contViewed = $(`#${data.destino}`).find('.check1').count();
+    let contControl = 0;
     $(`#${data.destino}`).find('.check1').each(function() {
+      if(data.destino == "Todos") {
+        vecDataViewed = $(this).attr('bd-list-viewed') || [];
+        if($(this).attr('bd-list-viewed')) {
+          vecDataViewed = JSON.parse($(this).attr('bd-list-viewed')) || [];
+        }
+        let veriAddViewed = vecDataViewed.find((v) => v.user==data.userEmit);
+        // console.log(veriAddViewed);
+        
+        if(veriAddViewed) return;
+        contControl++;
+        if(contControl<=1) {
+          $('.empty-viewed').remove();
+          $('.content-viewed').append(`
+            <div class="user-viewed">
+              <img class="img-viewed message${data.userEmit}" src="${data.foto}">
+              <label class="name-viewed">${data.name}</label>
+             </div>
+         `);
+        }
+        vecDataViewed.push({
+          // key: contViewed,
+          user: data.userEmit,
+          name: data.name,
+          foto: data.foto
+        });
+        $(this).attr('bd-list-viewed', JSON.stringify(vecDataViewed));
+      }
       if(!this.dataset.viewed) {
         $(this).find('.icon-ready').attr('style', `color: purple !important;`);
         this.dataset.viewed = 'viewed';
@@ -1187,6 +1295,7 @@ $(document).ready(function() {
             <div id="emojiWrapper" class="emojiWrapper"></div>
           </div>-->
           <div class="card-footer">
+            <p class="font-weight-light d-none textWarningMsg"><i class="fas fa-info-circle" style="color:rgb(60,60,60)"></i> Acá no hay nadie con quien chatear</p>
             <div class="form-group form-message">
               <div class="focus-message">
                 <textarea class="form-control textMessage" id="textMessage" placeholder="Escriba algo" maxlength="3000"></textarea>
@@ -1786,7 +1895,7 @@ $(document).ready(function() {
         } else {
           responseEdit = $('.inputEdit').val();
         }
-        console.log(DestinoUser);
+        // console.log(DestinoUser);
         socket.emit('cambiarApodo', {
           originalName: nombre,
           identOtherUser: usuario,
@@ -2077,7 +2186,7 @@ $(document).ready(function() {
     }
   }
 
-  function  notifyMe(valor,message)  {  
+  function  notifyMe(valor, message, iduser)  {  
     if  (!("Notification"  in  window))  {   
         alert("Este navegador no soporta notificaciones de escritorio");  
     }  
@@ -2085,16 +2194,20 @@ $(document).ready(function() {
         var  options  =   {
             body:   valor,
             lang: 'ES',
+            tag: iduser,
             //tag: 'notificacionmessage'+idnotify,
-            icon:   "images/chat-icon.png",
+            icon:   "/img/ventana-de-chat.png",
             dir :   "ltr"//or auto
         };
         if(valor!=undefined&&valor!=null&&valor!=""&&message!=undefined&&message!=null&&message!=""){
         var  notification  =  new  Notification(message, options);
+        // console.log(notification);
         setTimeout(notification.close.bind(notification), 5000); 
         notification.onclick = function(event) {
             //event.preventDefault(); // Previene al buscador de mover el foco a la pestaña del Notification
             $(window).focus();
+            $(`#userhistory${this.tag}`).click();
+            $('#toast-container').remove();
             this.close();
           }
         }
