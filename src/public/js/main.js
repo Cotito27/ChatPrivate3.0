@@ -602,14 +602,14 @@ $(document).ready(function() {
       if($(elementMessage).find('.textMessage').val() == '') return;
       let elementContainer = e.target.parentElement.parentElement.parentElement.parentElement;
       sendMessage(socket, elementMessage);
-      $(elementMessage).find('.textMessage').val('');
+      $(elementMessage).find('.textMessage').val('').focus();
     }
     if(e.target.classList.contains('fa-paper-plane')) {
       let elementMessage = e.target.parentElement.parentElement;
       if($(elementMessage).find('.textMessage').val() == '') return;
       let elementContainer = e.target.parentElement.parentElement.parentElement.parentElement.parentElement;
       sendMessage(socket, elementMessage);
-      $(elementMessage).find('.textMessage').val('');
+      $(elementMessage).find('.textMessage').val('').focus();
     }
     if(e.target.classList.contains('btn-prepanel')) {
       panelMessages.classList.add('d-none');
@@ -645,7 +645,7 @@ $(document).ready(function() {
           let html = "";
           vecTarget.forEach((v) => {
             html += `
-             <div class="user-viewed">
+             <div class="user-viewed" data-key-user="${v.user}">
               <img class="img-viewed message${v.user}" src="${v.foto}">
               <label class="name-viewed">${v.name}</label>
              </div>
@@ -657,6 +657,7 @@ $(document).ready(function() {
             $('.content-viewed').html(`<label class="name-viewed empty-viewed">Nadie aún</label>`);
           } 
         }
+        clickedViewed = e.target;
         // let index = $(e.target).index();
         // console.log($(e.target)[0], $(e.target).index());
         // $('.content-viewed').attr('data-keys-viewed', index);
@@ -668,7 +669,7 @@ $(document).ready(function() {
           let html = "";
           vecTarget.forEach((v) => {
             html += `
-             <div class="user-viewed">
+             <div class="user-viewed" data-key-user="${v.user}">
               <img class="img-viewed message${v.user}" src="${v.foto}">
               <label class="name-viewed">${v.name}</label>
              </div>
@@ -680,11 +681,13 @@ $(document).ready(function() {
             $('.content-viewed').html(`<label class="name-viewed empty-viewed">Nadie aún</label>`);
           } 
         }
+        clickedViewed = e.target.parentElement;
         // let index = $(e.target.parentElement).index();
         // console.log($(e.target.parentElement)[0], $(e.target.parentElement).index());
         // $('.content-viewed').attr('data-keys-viewed', index);
       }
   });
+  let clickedViewed = "";
   let backEffectColor = "rgb(70, 70, 70)";
   $('.container-history').on('click', '.messageschatnoti', function(e) {
       let responseId = $(this).prop('id').replace('userhistory','');
@@ -1161,7 +1164,8 @@ $(document).ready(function() {
       }
       // Notificar mensaje
       if(!controlfocusmessage && sessionStorage.user != data.user) {
-        notifyMe("Tienes un mensaje nuevo.", data.message, data.user);
+        //"Tienes un mensaje nuevo."
+        notifyMe(data.message, data.name, data.user);
       }
       if(sessionStorage.user != data.user) {
         if(controlfocusmessage) {
@@ -1230,15 +1234,25 @@ $(document).ready(function() {
         
         if(veriAddViewed) return;
         contControl++;
-        if(contControl<=1) {
-          $('.empty-viewed').remove();
-          $('.content-viewed').append(`
-            <div class="user-viewed">
-              <img class="img-viewed message${data.userEmit}" src="${data.foto}">
-              <label class="name-viewed">${data.name}</label>
-             </div>
-         `);
+        let idUserViewed = document.querySelector(`[data-key-user="${vecDataViewed.user}"]`);
+        // console.log(idUserViewed);
+        if(clickedViewed == this || clickedViewed == "") {
+          if(!idUserViewed) {
+            if(contControl<=1) {
+              $('.empty-viewed').remove();
+              $('.content-viewed').append(`
+                <div class="user-viewed">
+                  <img class="img-viewed message${data.userEmit}" src="${data.foto}">
+                  <label class="name-viewed">${data.name}</label>
+                 </div>
+             `);
+            }  
+          }
         }
+        
+          
+        
+        
         vecDataViewed.push({
           // key: contViewed,
           user: data.userEmit,
@@ -1269,7 +1283,7 @@ $(document).ready(function() {
 
   findResponseMessage(socket);
   function addPanelMessage(idOtherUser, nameOtherUser, data) {
-    let veriEmojis = '<button class="btn btn-primary btnEmojis emoji_01"><i class="fa fa-smile-o" aria-hidden="true"></i></button>';
+    let veriEmojis = '<button class="btn btn-primary btnEmojis emoji_01 btnMessageIcons"><i class="fa fa-smile-o" aria-hidden="true"></i></button>';
     if(isMobile()) {
       veriEmojis = '';
     } 
@@ -1302,9 +1316,20 @@ $(document).ready(function() {
               <div class="focus-message">
                 <textarea class="form-control textMessage" id="textMessage" placeholder="Escriba algo" maxlength="3000"></textarea>
                 ${veriEmojis}
-                <button class="btn btn-primary btnAudio" data-toggle="modal" data-target="#modalAudio"><i class="fas fa-microphone"></i></button>
-                <button class="btn btn-primary btnStickers"><i class="far fa-sticky-note"></i></button>
-                <button class="btn btn-primary btnEnvio"><i class="far fa-paper-plane"></i></button>
+                <button class="btn btn-primary btnAudio btnMessageIcons"><i class="fas fa-microphone"></i></button>
+                <button class="btn btn-primary btnStickers btnMessageIcons"><i class="far fa-sticky-note"></i></button>
+                <button class="btn btn-primary btnEnvio btnMessageIcons"><i class="far fa-paper-plane"></i></button>
+                <div class="grab_audio d-none" style="">
+                  <i class="far fa-check-circle confirmAudio" aria-hidden="true" style=""></i>
+
+                  <div style="">
+                    <i
+                      class="circle Blink redAudioGrab"
+                    ></i
+                    ><span id="duracionGrab" class="duracionGrab">00:00:00</span>
+                  </div>
+                  <i class="far fa-times-circle cancelAudio" aria-hidden="true" style=""></i>
+                </div>
                 <br> 
               </div>
             </div>
@@ -2188,13 +2213,23 @@ $(document).ready(function() {
     }
   }
 
-  function  notifyMe(valor, message, iduser)  {  
+  function  notifyMe(message, valor, iduser)  {  
     if  (!("Notification"  in  window))  {   
         alert("Este navegador no soporta notificaciones de escritorio");  
     }  
     else  if  (Notification.permission  ===  "granted")  {
+      // <video width="340" height="50" controls="">
+      //     <source src="/upload/8e4c64bc-26e2-4ce8-adf0-87072e2e5871.webm" type="video/webm">
+      //   </video>
+      console.log(message);
+        if(message.includes('<img class="emoji" src="')) {
+          message = 'Ha enviado un sticker.';
+        }
+        if(message.includes('<video width="340" height="50" controls>')) {
+          message = 'Ha enviado un audio.';
+        }
         var  options  =   {
-            body:   valor,
+            body:   message,
             lang: 'ES',
             tag: iduser,
             //tag: 'notificacionmessage'+idnotify,
@@ -2202,7 +2237,7 @@ $(document).ready(function() {
             dir :   "ltr"//or auto
         };
         if(valor!=undefined&&valor!=null&&valor!=""&&message!=undefined&&message!=null&&message!=""){
-        var  notification  =  new  Notification(message, options);
+        var  notification  =  new  Notification(valor, options);
         // console.log(notification);
         setTimeout(notification.close.bind(notification), 5000); 
         notification.onclick = function(event) {
@@ -2241,7 +2276,211 @@ $(document).ready(function() {
         // });  
     }
 }
+const init = () => {
+  const tieneSoporteUserMedia = () =>
+      !!(navigator.mediaDevices.getUserMedia)
 
+  // Si no soporta...
+  // Amable aviso para que el mundo comience a usar navegadores decentes ;)
+  if (typeof MediaRecorder === "undefined" || !tieneSoporteUserMedia())
+      return alert("Tu navegador web no cumple los requisitos; por favor, actualiza a un navegador decente como Firefox o Google Chrome");
+
+
+  // Declaración de elementos del DOM
+  const $listaDeDispositivos = document.querySelector(".listaDeDispositivos"),
+      $duracion = document.querySelector(".duracionGrab"),
+      $btnComenzarGrabacion = document.querySelector(".btnAudio"),
+      $btnDetenerGrabacion = document.querySelector(".confirmAudio"),
+      $btnCancelarGrabacion = document.querySelector(".cancelAudio");
+      let clickCancel = "";
+      let clickGrab = "";
+
+  // Algunas funciones útiles
+  const limpiarSelect = () => {
+      for (let x = $listaDeDispositivos.options.length - 1; x >= 0; x--) {
+          $listaDeDispositivos.options.remove(x);
+      }
+  }
+
+  const segundosATiempo = numeroDeSegundos => {
+      let horas = Math.floor(numeroDeSegundos / 60 / 60);
+      numeroDeSegundos -= horas * 60 * 60;
+      let minutos = Math.floor(numeroDeSegundos / 60);
+      numeroDeSegundos -= minutos * 60;
+      numeroDeSegundos = parseInt(numeroDeSegundos);
+      if (horas < 10) horas = "0" + horas;
+      if (minutos < 10) minutos = "0" + minutos;
+      if (numeroDeSegundos < 10) numeroDeSegundos = "0" + numeroDeSegundos;
+
+      return `${horas}:${minutos}:${numeroDeSegundos}`;
+  };
+  // Variables "globales"
+  let tiempoInicio, mediaRecorder, idIntervalo;
+  const refrescar = () => {
+          clickGrab.textContent = segundosATiempo((Date.now() - tiempoInicio) / 1000);
+      }
+      // Consulta la lista de dispositivos de entrada de audio y llena el select
+  const llenarLista = () => {
+      navigator
+          .mediaDevices
+          .enumerateDevices()
+          .then(dispositivos => {
+              limpiarSelect();
+              dispositivos.forEach((dispositivo, indice) => {
+                  if (dispositivo.kind === "audioinput") {
+                      const $opcion = document.createElement("option");
+                      // Firefox no trae nada con label, que viva la privacidad
+                      // y que muera la compatibilidad
+                      $opcion.text = dispositivo.label || `Dispositivo ${indice + 1}`;
+                      $opcion.value = dispositivo.deviceId;
+                      $listaDeDispositivos.appendChild($opcion);
+                  }
+              })
+          })
+  };
+  // Ayudante para la duración; no ayuda en nada pero muestra algo informativo
+  const comenzarAContar = () => {
+      tiempoInicio = Date.now();
+      idIntervalo = setInterval(refrescar, 500);
+  };
+
+  // Comienza a grabar el audio con el dispositivo seleccionado
+  const comenzarAGrabar = (e) => {
+      if (!$listaDeDispositivos.options.length) return alert("No hay dispositivos");
+      // No permitir que se grabe doblemente
+      if (mediaRecorder) return alert("Ya se está grabando");
+      clickGrab = e.currentTarget.parentElement.querySelector('.duracionGrab');
+      
+      navigator.mediaDevices.getUserMedia({
+              audio: {
+                  deviceId: $listaDeDispositivos.value,
+              }
+          })
+          .then(stream => {
+            $('.grab_audio').removeClass('d-none');
+            $('.btnMessageIcons').hide();
+              // Comenzar a grabar con el stream
+              mediaRecorder = new MediaRecorder(stream);
+              mediaRecorder.start();
+              comenzarAContar();
+              // En el arreglo pondremos los datos que traiga el evento dataavailable
+              const fragmentosDeAudio = [];
+              // Escuchar cuando haya datos disponibles
+              mediaRecorder.addEventListener("dataavailable", evento => {
+                  // Y agregarlos a los fragmentos
+                  //evento.data.name = 'imageUser';
+                  fragmentosDeAudio.push(evento.data);
+              });
+              // Cuando se detenga (haciendo click en el botón) se ejecuta esto
+              mediaRecorder.addEventListener("stop", () => {
+                  // Detener el stream
+                  stream.getTracks().forEach(track => track.stop());
+                  // Detener la cuenta regresiva
+                  detenerConteo();
+                  // Convertir los fragmentos a un objeto binario
+                  
+                  if(!clickCancel.contains('confirmAudio')) {
+                    clickGrab.textContent = "00:00:00";
+                    $('.grab_audio').addClass('d-none');
+                    $('.btnMessageIcons').show();
+                    return;
+                  }
+                  const blobAudio = new Blob(fragmentosDeAudio);
+                  const formData = new FormData();
+                  // Enviar el BinaryLargeObject con FormData
+                //   console.log(blobAudio);
+                  formData.append("archivo", blobAudio);
+              
+                  const RUTA_SERVIDOR = location.origin + "/audio";
+                  // $duracion.textContent = "00:00:00";
+                  fetch(RUTA_SERVIDOR, {
+                          method: "POST",
+                          body: formData,
+                      })
+                      .then(respuestaRaw => respuestaRaw.text()) // Decodificar como texto
+                      .then(respuestaComoTexto => {
+                          // Aquí haz algo con la respuesta ;)
+                          console.log("La respuesta: ", respuestaComoTexto);
+                          // Abrir el archivo, es opcional y solo lo pongo como demostración
+                          let destino_user = DestinoUser;
+                            // $('.panel-message').each(function() {
+                            //   if(!$(this).hasClass('d-none')) {
+                            //     destino_user = $(this).find('.container-destino').find('input').val();
+                            //   }
+                            // });
+                            let URLaudio = `/upload/${respuestaComoTexto}`;
+                            socket.emit('sendMessage', {
+                                user: sessionStorage.user,
+                                name: sessionStorage.name,
+                                message: `[audio:${URLaudio}]`,
+                                destino: destino_user,
+                                sessionId: sessionId,
+                                foto: sessionStorage.foto || fotoDefault
+                            });
+                            clickGrab.textContent = "00:00:00";
+                            $('.grab_audio').addClass('d-none');
+                            $('.btnMessageIcons').show();
+                        //   $duracion.innerHTML = `<strong>Audio subido correctamente.</strong>&nbsp; <a target="_blank" class="identAudio" href="/upload/${respuestaComoTexto}">Abrir</a>`;
+                        //   $('.identAudio').show();
+                      })
+              });
+             
+          })
+          .catch(error => {
+              // Aquí maneja el error, tal vez no dieron permiso
+              clickGrab.textContent = "00:00:00";
+                    $('.grab_audio').addClass('d-none');
+                    $('.btnMessageIcons').show();
+                    alert(error);
+              console.log(error);
+          });
+  };
+
+
+  const detenerConteo = () => {
+      clearInterval(idIntervalo);
+      tiempoInicio = null;
+      clickGrab.textContent = "";
+  }
+
+  const detenerGrabacion = (e) => {
+    // console.log(e.target);
+    //   if(!e.currentTarget.classList) return;
+      if (!mediaRecorder) return alert("No se está grabando");
+      clickCancel = e.currentTarget.classList || e.target.classList;
+      mediaRecorder.stop();
+      mediaRecorder = null;
+  };
+  
+  $('body').on('click', '.btnAudio', comenzarAGrabar);
+  $('body').on('click', '.confirmAudio', detenerGrabacion);
+  $('body').on('click', '.cancelAudio', detenerGrabacion);
+  $(document).on("click.grab_audio",function(event) {
+    var target = $(event.target);   
+    // console.log($('.grab_audio').hasClass('d-none'));
+    if(!$('.grab_audio').hasClass('d-none')) {
+      if (!target.closest(".grab_audio").length) {
+        // closeMenu(function() {
+        //     $(document).off("click.grab_audio");
+        // });
+        detenerGrabacion(event);
+    }      
+    }
+  }); 
+  // window.addEventListener('click', (e) => {
+  //     if(!e.target.classList.contains('confirmAudio') && !e.target.classList.contains('btnAudio')&& !e.target.classList.contains('cancelAudio')) {
+  //       detenerGrabacion(e);
+  //     }
+  // });
+  // $btnComenzarGrabacion.addEventListener("click", comenzarAGrabar);
+  // $btnDetenerGrabacion.addEventListener("click", detenerGrabacion);
+  // $btnCancelarGrabacion.addEventListener("click", detenerGrabacion);
+  // Cuando ya hemos configurado lo necesario allá arriba llenamos la lista
+
+  llenarLista();
+}
+init();
+// Esperar a que el documento esté listo...
+// document.addEventListener("DOMContentLoaded", init);
 });
   
-

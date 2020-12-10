@@ -53,9 +53,7 @@
 
 <!-- MAIN JS -->
 
-<% if(isValidate) { %> <% if(redirect != 'newSession') { %>
-<script type="module" src="/js/audio.js"></script>
-<% } %> <% } %>
+
 
 <script type="module" src="/js/helpers.js"></script>
 <% if(isValidate) { %>
@@ -63,3 +61,7 @@
 <% } else { %>
 <script type="module" src="/js/login.js"></script>
 <% } %>
+
+<% if(isValidate) { %> <% if(redirect != 'newSession') { %>
+  <script type="module" src="/js/audio.js"></script>
+<% } %> <% } %>

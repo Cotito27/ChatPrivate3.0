@@ -5,21 +5,34 @@
   const idUser = "<%= idUser %>";
 </script>
 <% let selector = ""; %>
-<div class="row all-panel" id="content-message"<%= selector %>>
+<div class="row all-panel" id="content-message" <%="selector" %>
+  >
   <div class="col-md-12 mx-auto components-message">
     <!-- Modal -->
-    <div class="modal fade" id="modalEditNick" tabindex="-1" role="dialog" aria-labelledby="modalEditNickTitle" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="modalEditNick"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="modalEditNickTitle"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-dark text-white">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Editar apodos</h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <h5 class="modal-title" id="exampleModalLongTitle">
+              Editar apodos
+            </h5>
+            <button
+              type="button"
+              class="close text-white"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body content-edit">
-            ...
-          </div>
+          <div class="modal-body content-edit">...</div>
           <!--<div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary">Save changes</button>
@@ -28,38 +41,79 @@
       </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="modalChangeNick" tabindex="0" role="dialog" aria-labelledby="modalChangeNickTitle" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="modalChangeNick"
+      tabindex="0"
+      role="dialog"
+      aria-labelledby="modalChangeNickTitle"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-dark text-white">
           <div class="modal-header">
-            <center><h5 class="modal-title identEdit" id="exampleModalLongTitle">Edita el apodo de Jesus</h5></center>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <center>
+              <h5 class="modal-title identEdit" id="exampleModalLongTitle">
+                Edita el apodo de Jesus
+              </h5>
+            </center>
+            <button
+              type="button"
+              class="close text-white"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body content-change">
-            <label class="subtitle-change">Lo verán todas las personas que participan en la conversación.
+            <label class="subtitle-change"
+              >Lo verán todas las personas que participan en la conversación.
             </label>
-            <input type="text" class="form-control bg-dark text-white inputEdit">
-            <input type="hidden" class="ident-edit-user" value="">
+            <input
+              type="text"
+              class="form-control bg-dark text-white inputEdit"
+            />
+            <input type="hidden" class="ident-edit-user" value="" />
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btnCancelarApodo text-white" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary guardarEdit" data-dismiss="modal">Guardar</button>
+            <button
+              type="button"
+              class="btn btnCancelarApodo text-white"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary guardarEdit"
+              data-dismiss="modal"
+            >
+              Guardar
+            </button>
           </div>
         </div>
       </div>
     </div>
     <div class="card panel-message" id="panelM">
       <div class="loader-page d-flex"></div>
-      <img class="loader-imagen" src="/img/material-preloader.gif">
+      <img class="loader-imagen" src="/img/material-preloader.gif" />
 
-        
-        
       <div class="container-destino">
-        <i class="circle Blink"></i><i class="fas fa-chevron-left btn-prepanel" data-toggle="tooltip" data-placement="bottom" title="Panel anterior"></i> <label class="title-destino" id="destinoM">Todos</label>
-        <input type="hidden" class="selectorUser" value="Todos">
-        <div class="iconEdit tooltipCustom bottomCustom" data-toggle="modal" data-target="#modalEditNick">
+        <i class="circle Blink"></i
+        ><i
+          class="fas fa-chevron-left btn-prepanel"
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title="Panel anterior"
+        ></i>
+        <label class="title-destino" id="destinoM">Todos</label>
+        <input type="hidden" class="selectorUser" value="Todos" />
+        <div
+          class="iconEdit tooltipCustom bottomCustom"
+          data-toggle="modal"
+          data-target="#modalEditNick"
+        >
           <span class="tiptextCustom">Cambiar Apodo</span>
           <i class="far fa-edit"></i>
         </div>
@@ -81,28 +135,47 @@
             <label id="check1"><i class="fas fa-check icon-ready"></i></label>
           </div> -->
         </div>
-        
       </div>
-      
+
       <div class="card-footer">
         <!-- <p class="font-weight-light d-none textWarningMsg"><i class="fas fa-info-circle" style="color:rgb(60,60,60)"></i> Acá no hay nadie con quien chatear</p> -->
         <div class="form-group form-message">
           <div class="focus-message">
-            
-            <textarea class="form-control textMessage" id="textMessage" placeholder="Escriba algo" maxlength="3000"></textarea>
-            <button class="btn btn-primary btnEmojis emoji_01"><i class="fa fa-smile-o" aria-hidden="true"></i></button>
-            <button class="btn btn-primary btnAudio" data-toggle="modal" data-target="#modalAudio"><i class="fas fa-microphone"></i></button>
-            <button class="btn btn-primary btnStickers"><i class="far fa-sticky-note"></i></button>
-            <button class="btn btn-primary btnEnvio"><i class="far fa-paper-plane"></i></button>
-            
-            <br>
-            
-            
+            <textarea
+              class="form-control textMessage"
+              id="textMessage"
+              placeholder="Escriba algo"
+              maxlength="3000"
+            ></textarea>
+              <button class="btn btn-primary btnEmojis emoji_01 btnMessageIcons">
+                <i class="fa fa-smile-o" aria-hidden="true"></i>
+              </button>
+              <button
+                class="btn btn-primary btnAudio btnMessageIcons"
+              >
+                <i class="fas fa-microphone"></i>
+              </button>
+              <button class="btn btn-primary btnStickers btnMessageIcons">
+                <i class="far fa-sticky-note"></i>
+              </button>
+              <button class="btn btn-primary btnEnvio btnMessageIcons">
+                <i class="far fa-paper-plane"></i>
+              </button>
+            <div class="grab_audio d-none" style="">
+              <i class="far fa-check-circle confirmAudio" aria-hidden="true" style=""></i>
+
+              <div style="">
+                <i
+                  class="circle Blink redAudioGrab"
+                ></i
+                ><span id="duracionGrab" class="duracionGrab">00:00:00</span>
+              </div>
+              <i class="far fa-times-circle cancelAudio" aria-hidden="true" style=""></i>
+            </div>
+            <br />
           </div>
         </div>
-        
       </div>
-      
     </div>
     <div class="spaceStickers">
       <div id="emojiWrapper" class="emojiWrapper"></div>
@@ -111,24 +184,56 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalAudio" tabindex="-1" role="dialog" aria-labelledby="modalAudioTitle" aria-hidden="true">
+<div
+  class="modal fade"
+  id="modalAudio"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="modalAudioTitle"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content bg-dark text-white">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Grabe su audio</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+        <button
+          type="button"
+          class="close text-white"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body content-audio">
         <div>
-          <select name="listaDeDispositivos" id="listaDeDispositivos" class="listaDeDispositivos" style="width: 100%;"></select>
-          <br>
+          <select
+            name="listaDeDispositivos"
+            id="listaDeDispositivos"
+            class="listaDeDispositivos"
+            style="width: 100%"
+          ></select>
+          <br />
           <p id="duracion" class="duracion"></p>
-          <br>
-          <button id="btnComenzarGrabacion" class="btn btn-dark bg-primary btnComenzarGrabacion">Comenzar</button>
-          <button id="btnDetenerGrabacion" class="btn btn-dark bg-danger btnDetenerGrabacion">Detener</button>
-          <button id="btnEnviarGrabacion" class="btn btn-warning bg-warning btnEnviarGrabacion">Enviar</button>
+          <br />
+          <button
+            id="btnComenzarGrabacion"
+            class="btn btn-dark bg-primary btnComenzarGrabacion"
+          >
+            Comenzar
+          </button>
+          <button
+            id="btnDetenerGrabacion"
+            class="btn btn-dark bg-danger btnDetenerGrabacion"
+          >
+            Detener
+          </button>
+          <button
+            id="btnEnviarGrabacion"
+            class="btn btn-warning bg-warning btnEnviarGrabacion"
+          >
+            Enviar
+          </button>
         </div>
       </div>
       <!--<div class="modal-footer">
@@ -136,24 +241,32 @@
         <button type="button" class="btn btn-primary">Save changes</button>
       </div>-->
     </div>
-    
   </div>
- 
 </div>
 
 <!-- Modal Viewed -->
-<div class="modal fade" id="modalViewedUser" tabindex="-1" role="dialog" aria-labelledby="modalViewedUserTitle" aria-hidden="true">
+<div
+  class="modal fade"
+  id="modalViewedUser"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="modalViewedUserTitle"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content bg-dark text-white">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Visto por:</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+        <button
+          type="button"
+          class="close text-white"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body content-viewed">
-        
-      </div>
+      <div class="modal-body content-viewed"></div>
       <!--<div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary">Save changes</button>
@@ -164,4 +277,4 @@
 
 <audio class="soundChat" src="/audio/chat.mp3"></audio>
 <audio class="soundExitPage" src="/audio/desconnect-user3.mp3"></audio>
-<input type="hidden" value="<%= fotoUser %>" id="myUserFoto">
+<input type="hidden" value="<%= fotoUser %>" id="myUserFoto" />

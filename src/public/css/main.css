@@ -935,7 +935,47 @@ input[type="file"]#file {
   height: 100%;
 }
 
+/* margin-right: 6px --> microphone button */
+
+.grab_audio {
+  width: 300px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: azure;
+  border-radius: 15px;
+  border: 1px solid rgb(0, 0, 0, 0.1);
+}
+
+.confirmAudio {
+  color: green;
+  font-size: 28px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.cancelAudio {
+  color: red;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.redAudioGrab {
+  visibility: visible !important;
+  padding: 6px !important;
+  margin-right: 10px !important;
+  margin-top: 2px !important;
+}
+
+.duracionGrab {
+  margin-right: 12px;
+  margin-top: -2px;
+}
+
 @media only screen and (max-width: 550px) {
+  .grab_audio {
+    width: 400px !important;
+  }
   .container {
     padding: 0 !important;
     width: 100vw !important;
