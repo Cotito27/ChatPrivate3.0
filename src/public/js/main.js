@@ -215,7 +215,7 @@ $(document).ready(function() {
   if(!isMobile()) {
     addEmojiVisibleLight();
   } else {
-    $('.btnEmojis').hide();
+    $('.btnEmojis').remove();
   }
 
   let replaceuser = "";
