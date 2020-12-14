@@ -1,10 +1,10 @@
 body {
-  background: rgb(19, 18, 18);
+  background: #3b3b3b;
 }
 .card {
   border: 1px solid rgb(120, 120, 120) !important;
-  background-color: rgb(36, 36, 36) !important;
-  color: white !important;
+  background-color: #0f0d0dc0 !important;
+  color: #f1eded !important;
 }
 .nomuser,
 .myUserName {
@@ -16,7 +16,7 @@ body {
 .far,
 .fas,
 .fa {
-  color: whitesmoke !important;
+  color: rgb(214, 214, 218) !important;
 }
 
 .fa-user-friends,
@@ -27,6 +27,34 @@ body {
 
 .icon-ready {
   color: rgb(190, 190, 190) !important;
+}
+
+.card-stickers-res {
+  background-color: rgb(27 22 22) !important;
+}
+
+.body_stickers {
+  background-color: rgb(43 39 39) !important;
+}
+
+.content-hash {
+  background-color: rgb(29, 28, 28) !important;
+}
+
+.grab_audio {
+  background-color: rgb(49, 49, 49) !important;
+}
+.cancelAudio {
+  color: rgb(196, 52, 52) !important;
+}
+.confirmAudio {
+  color: green !important;
+}
+.wrapper_stickers:hover {
+  background-color: #393a3c !important;
+}
+.selectedStickHead {
+  background-color: #393a3c !important;
 }
 
 /* .tooltipCustom .tiptextCustom {
@@ -87,7 +115,7 @@ input[type="text"],
 textarea,
 #textMessage,
 .textMessage {
-  color: whitesmoke !important;
+  color: #f1f1f2 !important;
   background-color: rgb(36, 36, 36);
 }
 .form-control:focus {

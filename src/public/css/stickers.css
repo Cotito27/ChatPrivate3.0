@@ -1,0 +1,97 @@
+.content-stickers {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  max-height: 200px;
+  overflow: auto;
+}
+.imgStickerPrivate {
+  /* background-image: url(https://i600.photobucket.com/albums/tt82/ugmhemhe/preloader.gif); */
+  background-size: 100px;
+  width: 90px !important;
+  height: 90px !important;
+  cursor: pointer;
+}
+.btnRightStickers,
+.btnLeftStickers {
+  color: rgb(146, 144, 144);
+  font-size: 20px;
+}
+.btnRightStickers {
+  /* position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 2; */
+  float: right;
+}
+.imgStickerPrivate {
+  /* display: none; */
+}
+.key-sticker {
+  width: 50px;
+  /* margin-top: 50px; */
+  cursor: pointer;
+}
+.header-stickers {
+  position: relative;
+  max-height: 70px;
+  display: grid;
+  grid-template-columns: repeat(261, 1fr);
+  gap: 1em;
+  grid-auto-rows: minmax(100px, auto);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.loader-stickers-head,
+.loader-stickers-body {
+  position: absolute;
+  z-index: 2;
+  background: rgb(255, 255, 255);
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  display: none;
+}
+.loader-stickers-head::before,
+.loader-stickers-body::before {
+  content: "";
+  position: absolute;
+  border: 2px solid rgb(102, 0, 204);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border-left: 2px solid rgba(102, 0, 204, 0);
+  border-top: 2px solid rgba(102, 0, 204, 0);
+  animation: rotarload 1s linear infinite;
+  transform: rotate(0deg);
+}
+@keyframes rotarload {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loader-stickers-head::after,
+.loader-stickers-body::after {
+  content: "";
+  position: absolute;
+  border: 2px solid rgba(102, 0, 204, 0.5);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border-left: 2px solid rgba(102, 0, 204, 0);
+  border-top: 2px solid rgba(102, 0, 204, 0);
+  animation: rotarload 1s ease-out infinite;
+  transform: rotate(0deg);
+}

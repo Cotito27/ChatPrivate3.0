@@ -1,5 +1,6 @@
 
 import helpers from './helpers.js';
+import vStickers from "./key-stickers.js";
 
 $(document).ready(function() {
   const socket = io({
@@ -30,7 +31,7 @@ $(document).ready(function() {
   
   // console.log(RoomId);
   // Initialize Firebase
- 
+  $('#privateSessionIdUser').remove();
   const fotoDefault = '/img/avatar-login3.png';
   const fotoToastDefault = '/img/avatar-login4.png';
   sessionStorage.userconnect="connect";
@@ -67,6 +68,9 @@ $(document).ready(function() {
     let userlast = user.name;
     // console.log(userlast);
     let userIdent = user.user;
+    if(sessionStorage.user == userIdent) {
+      userConnect(socket,userIdent,userlast);
+    }
     if($(`#panelM${userIdent}`)[0]) {
       $(`#panelM${userIdent}`).find('.focus-message').addClass('d-none');
       $(`#panelM${userIdent}`).find('.textWarningMsg').removeClass('d-none');
@@ -135,13 +139,46 @@ $(document).ready(function() {
     );
   }
   $('#content-message').on('click', '.btnStickers', (e) => {
-    let $emojiwrapper = $('.emojiWrapper');
+    let $emojiwrapper = $('.stickersGroudPanel');
     // console.log($emojiwrapper[0]);
     // console.log($emojiwrapper.prop('class'));
-    if(!$emojiwrapper.hasClass('d-flex')) {
-      $emojiwrapper.addClass('d-flex');
+    if(!$emojiwrapper.hasClass('d-none')) {
+      $emojiwrapper.addClass('d-none');
     } else {
-      $emojiwrapper.removeClass('d-flex');
+      $emojiwrapper.removeClass('d-none');
+      var bLazy = new Blazy({
+        container: '.header-stickers',
+        offset: 40
+      , success: function(element){
+      setTimeout(function(){
+      // We want to remove the loader gif now.
+      // First we find the parent container
+      // then we remove the "loading" class which holds the loader image
+      var parent = element.parentNode;
+      // console.log(parent);
+      parent.className = parent.className.replace(/\bloading\b/,'');
+      }, 200);
+        },error: (err) => {
+          alert(err)
+        },
+    });
+      $('.wrapper_stickers:first').addClass('selectedStickHead');
+      // var bLazy2 = new Blazy({
+      //   container: '.content-stickers',
+      //   offset: 80
+      //   , success: function(element){
+      //   setTimeout(function(){
+      //   // We want to remove the loader gif now.
+      //   // First we find the parent container
+      //   // then we remove the "loading" class which holds the loader image
+      //   var parent = element.parentNode;
+      //   // console.log(parent);
+      //   parent.className = parent.className.replace(/\bloading\b/,'');
+      //   }, 200);
+      //     },error: (err) => {
+      //       alert(err)
+      //     },
+      // });
     }
     
   });
@@ -165,7 +202,7 @@ $(document).ready(function() {
         let input = e.target.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
           var valor=emoji.split('" src')[1];
-          input.value+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
@@ -173,7 +210,7 @@ $(document).ready(function() {
         let input = e.target.parentElement.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
           var valor=emoji.split('" src')[1];
-          input.value+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
@@ -198,7 +235,7 @@ $(document).ready(function() {
         let input = e.target.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
           var valor=emoji.split('" src')[1];
-          input.value+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
@@ -206,7 +243,7 @@ $(document).ready(function() {
         let input = e.target.parentElement.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
           var valor=emoji.split('" src')[1];
-          input.value+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
@@ -215,7 +252,7 @@ $(document).ready(function() {
   if(!isMobile()) {
     addEmojiVisibleLight();
   } else {
-    $('.btnEmojis').hide();
+    $('.btnEmojis').remove();
   }
 
   let replaceuser = "";
@@ -458,14 +495,16 @@ $(document).ready(function() {
         $('#file-foto').val(null);
       }
     }
-    navAll.forEach((nav) => {
-      if(nav.classList == this.classList) {
-        nav.classList.add('selectedOption');
-      } else {
-        nav.classList.remove('selectedOption');
-      }
+    // navAll.forEach((nav) => {
+    //   if(nav.classList == this.classList) {
+    //     nav.classList.add('selectedOption');
+    //   } else {
+    //     nav.classList.remove('selectedOption');
+    //   }
       
-    });
+    // });
+    $('.selectedOption').removeClass('selectedOption');
+    this.classList.add('selectedOption');
     if(this.classList.contains('btnusers')) {
       panelAll.forEach((panel) => {
         panel.classList.add('d-none');
@@ -564,15 +603,288 @@ $(document).ready(function() {
   //   panelMessages.classList.add('d-none');
   //   panelHistory.classList.remove('d-none');
   // });
-  $('.components-message').on('keydown','.textMessage', function(e) {
-    if(e.keyCode == 13) {
+  $(document).on("click.hashUser",function(event) {
+    var target = $(event.target);   
+    // console.log($('.grab_audio').hasClass('d-none'));
+    if(!$('.hashUser').hasClass('d-none')) {
+      if (!target.closest(".hashUser").length && !target.closest(".textMessage").length) {
+        // closeMenu(function() {
+        //     $(document).off("click.grab_audio");
+        // });
+        $('.hashUser').addClass('d-none');
+      }      
+    }
+  }); 
+  $('.components-message').on('keyup', '.textMessage', function(e) {
+    // console.log('xd');
+    // $(this).val($(this).val().replace(/@/g,'@'));
+    if(e.keyCode == 38 || e.keyCode == 40 || e.keyCode == 13 || e.key == "Escape")  {
+      e.stopPropagation();
       e.preventDefault();
-      if($(this).val() == '') return;
-      let elementMessage = e.currentTarget.parentElement;
-      sendMessage(socket, elementMessage);
-      $(this).val('');
+      return false;
+    };
+
+    // console.log('Lockeado');
+    if($(this).text().includes('@')) {
+     if(DestinoUser == "Todos") {
+      let veriUserHash = $(this).text().split("@").pop().toUpperCase();
+      // console.log(veriUserHash, $(this).val().split("@"));
+      // console.log(veriUserHash, dataUserGlobal);
+      let newVecHash = dataUserGlobal.filter((v) => v.name.includes(veriUserHash) && v.name!=veriUserHash);
+      // console.log(newVecHash);
+      // console.log('asfas');
+      let vecUser = [];
+      
+      let html = "";
+      newVecHash.forEach((v,i,arr) => {
+        if(v.user != sessionStorage.user) {
+          html += `<div
+          class="user-hash nameuserHash"
+          data-key-hash=${i} data-key-id="${v.user}"
+        >
+          <img
+            class="img-hash message${v.user}"
+            src="${v.foto}"
+          />
+          <label class="name-hash">${v.name}</label>
+  
+          <input
+            type="hidden"
+            class="apodoName${v.user}"
+            value=""
+          />
+        </div>`;
+        }
+      
+      });
+      if(html == "") {
+        $('.hashUser').addClass('d-none');
+        $('.content-hash').html('');
+        $selectedItemHash = "";
+        return;
+      }
+      $('.hashUser').removeClass('d-none');
+      $('.content-hash').html(html);
+      // console.log($selectedItemHash[0]);
+      // if($selectedItemHash == "") {
+        // $('.user-hash').removeClass('selectedHash');
+        $('.selectedHash').removeClass('selectedHash');
+        $('.user-hash:first').addClass('selectedHash');
+      // } 
+      // else {
+      //   if($selectedItemHash[0]) {
+      //     $('.user-hash').removeClass('selectedHash');
+      //   $selectedItemHash.addClass('selectedHash');
+      //   }
+      // }
+     }
+        // $(`.panelM${DestinoUser}`)
+    } else {
+      $('.hashUser').addClass('d-none');
+      $('.content-hash').html('');
+      // $selectedItemHash = "";
     }
   });
+  $('body').on('click', '.user-hash', function() {
+    if(DestinoUser == "Todos") {
+      // console.log($(this)[0]);
+      let $vecTextMessage = $(`#panelM`).find('.textMessage');
+      // $(`#panelM`).find('.textMessage').html($(`#panelM`).find('.textMessage').html() + $(this).find('.name-hash').html()).focus();
+      if($vecTextMessage.html().length == 1 && $vecTextMessage.html().includes('@')) {
+        $vecTextMessage.html($vecTextMessage.html().replace($vecTextMessage.html(),`
+        &nbsp;<a contenteditable="false" class="mention-user userLink" data-user-id="${$(this).attr('data-key-id')}">@${$(this).find('.name-hash').html()}</a>
+      `.allTrim()));
+        $vecTextMessage.append('&nbsp;');
+        $('.hashUser').addClass('d-none');
+        $('.content-hash').html('');
+        // $selectedItemHash = "";
+        placeCaretAtEnd($vecTextMessage.get(0));
+        return;
+      }
+      let indexSearch = $vecTextMessage.html().lastIndexOf('@'+$vecTextMessage.html().split("@").pop());
+      $vecTextMessage.html($vecTextMessage.html().replaceLast($vecTextMessage.html().substr(indexSearch,$vecTextMessage.html().length-1), `
+          <a contenteditable="false" class="mention-user userLink" data-user-id="${$(this).attr('data-key-id')}">@${$(this).find('.name-hash').html()}</a>
+        `.allTrim())).focus();
+        $vecTextMessage.append('&nbsp;');
+        placeCaretAtEnd($vecTextMessage.get(0));
+        $('.hashUser').addClass('d-none');
+        $('.content-hash').html('');
+        // $selectedItemHash = "";
+    }
+  });
+  let $selectedItemHash = "";
+  $('.components-message').on('keydown','.textMessage', function(e) {
+    var max = 3000;
+       if (e.which != 8 && $(this).text().length > max) {
+           e.preventDefault();
+       }
+    // console.log(e.keyCode);
+    if(e.key === "Escape") {
+      e.preventDefault();
+      $('.hashUser').addClass('d-none');
+      $('.content-hash').html('');
+      return;
+    }
+    if(e.keyCode == 38) { //UP
+      e.preventDefault();
+      if($(`.selectedHash`)[0]) {
+        // let $prevHash = $('.selectedHash').prev();
+        // if($prevHash[0]) {
+        //   $('.user-hash').removeClass('.selectedHash');
+        //   $prevHash.addClass('selectedHash');
+        //   $selectedItemHash = $prevHash;
+        //   console.log($selectedItemHash[0]);
+        // }
+        let prevHash = document.querySelector('.selectedHash').dataset.keyHash;
+        let $prevElHash = $('.selectedHash').prev();
+        let newIndex = parseInt(prevHash) - 1;
+        if($prevElHash[0]) {
+          // console.log($(`[data-key-hash="${newIndex}"]`)[0]);
+          // $('.user-hash').removeClass('selectedHash');
+          $('.selectedHash').removeClass('selectedHash');
+          $prevElHash.addClass('selectedHash');
+          // $(`[data-key-hash="${newIndex}"]`).addClass('selectedHash');
+          // $selectedItemHash = $(`[data-key-hash="${newIndex}"]`);
+        }
+        
+      }
+    }
+    if(e.keyCode == 40) { //DOWN
+      e.preventDefault();
+      if($(`.selectedHash`)[0]) {
+        // let $nexHash = $('.selectedHash').next();
+        // if($nexHash[0]) {
+        //   $('.user-hash').removeClass('.selectedHash');
+        //   $nexHash.addClass('selectedHash');
+        //   $selectedItemHash = $nexHash;
+        //   console.log($selectedItemHash[0]);
+        // }
+        let prevHash = document.querySelector('.selectedHash').dataset.keyHash;
+        let $nextElHash = $('.selectedHash').next();
+        let newIndex = parseInt(prevHash) + 1;
+        if($nextElHash[0]) {
+          // console.log($(`[data-key-hash="${newIndex}"]`)[0]);
+          // $('.user-hash').removeClass('selectedHash');
+          $('.selectedHash').removeClass('selectedHash');
+          $nextElHash.addClass('selectedHash');
+          // $(`[data-key-hash="${newIndex}"]`).addClass('selectedHash');
+          // $selectedItemHash = $(`[data-key-hash="${newIndex}"]`);
+        }
+      }
+    }
+    if(e.keyCode == 13) {
+      e.preventDefault();
+      if($(this).html() == '') return;
+      // console.log($(this).val().charAt($(this).val().length-1));
+      if(!$('.hashUser').hasClass('d-none')) 
+      {
+        let addSelectedHash = $('.selectedHash').find('.name-hash').html();
+        if($(this).html().length == 1 && $(this).html().includes('@')) {
+          $(this).html($(this).html().replace($(this).html(),`
+          &nbsp;<a contenteditable="false" class="mention-user userLink" data-user-id="${$('.selectedHash').attr('data-key-id')}">@${addSelectedHash}</a>
+        `.allTrim()));
+          $(this).append('&nbsp;');
+          $('.hashUser').addClass('d-none');
+          $('.content-hash').html('');
+          // $selectedItemHash = "";
+          placeCaretAtEnd($(this).get(0));
+          return;
+        }
+        // console.log($(this).text().split("@").pop());
+        let indexSearch = $(this).html().lastIndexOf('@'+$(this).html().split("@").pop());
+        $(this).html($(this).html().replaceLast($(this).html().substr(indexSearch,$(this).html().length-1), `
+          <a contenteditable="false" class="mention-user userLink" data-user-id="${$('.selectedHash').attr('data-key-id')}">@${addSelectedHash}</a>
+        `.allTrim()));
+        // $(this).focus();
+        $(this).append('&nbsp;');
+        $('.hashUser').addClass('d-none');
+        $('.content-hash').html('');
+        // $selectedItemHash = "";
+        placeCaretAtEnd($(this).get(0));
+        return;
+      }
+      let elementMessage = e.currentTarget.parentElement;
+      sendMessage(socket, elementMessage);
+      $(this).text('');
+    }
+  });
+  function placeCaretAtEnd(el) {
+    el.focus();
+    if (typeof window.getSelection != "undefined"
+            && typeof document.createRange != "undefined") {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (typeof document.body.createTextRange != "undefined") {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(false);
+        textRange.select();
+    }
+}
+  String.prototype.replaceLast = function (what, replacement) {
+    var pcs = this.split(what);
+    var lastPc = pcs.pop();
+    return pcs.join(what) + replacement + lastPc;
+};
+var textArray = [];
+  
+function deployText(){
+  // create an array to store all text in
+  var textToAdd = 'let\'s go ahead and add some more text'; // random text to add to array, could be variable
+  var textarea = $('.textMessage');
+  var origValue = textarea.text();
+  textArray.push(origValue); //push original text to array
+
+
+  //if ctrl-z is pressed run function
+  $(document).on('keypress', function(e){
+    var zKey = 26;
+    if(e.ctrlKey && e.which === zKey){
+      removePreviousText();
+    }
+  })
+   
+  //remove last item of array and apply it to textarea
+  function removePreviousText(){
+    if(textArray.length > 1){
+      textArray.pop();
+      $('.textMessage').text(textArray);
+    }
+  }
+}
+deployText()
+  document.addEventListener("paste", function(e){
+    if(e.target.classList.contains('textMessage')) {
+      console.log("paste handler");
+      var s = e.clipboardData.getData("text/plain").replace("this", "that")
+      
+      let $pruebaVec = $(`<div>${s}</div>`).text();
+      // if($pruebaVec.length > 3000) {
+      //   $pruebaVec = $pruebaVec.substr(0, 3000);
+      // }
+      // console.log($pruebaVec.substr(0, 3000), $pruebaVec.length);
+      // document.execCommand("insertTEXT", false, $pruebaVec);
+      
+      textArray.push($pruebaVec);
+      if(DestinoUser == "Todos") {
+        $('.textMessage').html($('#panelM').find('.textMessage').html() + $pruebaVec);
+        $('#panelM').find('.textMessage').scrollTop($('#panelM').find('.textMessage').prop('scrollHeight'));
+        placeCaretAtEnd($('#panelM').find('.textMessage').get(0));
+      } else {
+        $('.textMessage').html($(`#panelM${DestinoUser}`).find('.textMessage').html() + $pruebaVec);
+        $(`#panelM${DestinoUser}`).find('.textMessage').scrollTop($(`#panelM${DestinoUser}`).find('.textMessage').prop('scrollHeight'));
+        placeCaretAtEnd($(`#panelM${DestinoUser}`).find('.textMessage').get(0));
+      }
+      
+      
+      e.preventDefault();
+    }
+  });
+  
   $('.components-message').on('focus', '.textMessage', function() {
     $(this).parent($('.focus-message')).css({
       'display': 'flex',
@@ -588,6 +900,9 @@ $(document).ready(function() {
     }
   });
   $('.components-message').on('blur', '.textMessage', function() {
+    if($(this).html() == '&nbsp;') {
+      $(this).html('');
+    }
     $(this).parent($('.focus-message')).css({
       'display': 'flex',
       'border': '1px solid rgb(184, 179, 179)',
@@ -595,21 +910,27 @@ $(document).ready(function() {
       'width': '100%'
     });
   });
+
+  $('body').on('click', '.wrapper_stickers', function() {
+    $('.selectedStickHead').removeClass('selectedStickHead');
+    $(this).addClass('selectedStickHead');
+  });
+
   componentsMessage.addEventListener('click', e => {
     // console.log(e.currentTarget);
     if(e.target.classList.contains('btnEnvio')) {
       let elementMessage = e.target.parentElement;
-      if($(elementMessage).find('.textMessage').val() == '') return;
+      if($(elementMessage).find('.textMessage').text() == '') return;
       let elementContainer = e.target.parentElement.parentElement.parentElement.parentElement;
       sendMessage(socket, elementMessage);
-      $(elementMessage).find('.textMessage').val('').focus();
+      $(elementMessage).find('.textMessage').text('').focus();
     }
     if(e.target.classList.contains('fa-paper-plane')) {
       let elementMessage = e.target.parentElement.parentElement;
-      if($(elementMessage).find('.textMessage').val() == '') return;
+      if($(elementMessage).find('.textMessage').text() == '') return;
       let elementContainer = e.target.parentElement.parentElement.parentElement.parentElement.parentElement;
       sendMessage(socket, elementMessage);
-      $(elementMessage).find('.textMessage').val('').focus();
+      $(elementMessage).find('.textMessage').text('').focus();
     }
     if(e.target.classList.contains('btn-prepanel')) {
       panelMessages.classList.add('d-none');
@@ -622,7 +943,7 @@ $(document).ready(function() {
       //   $emojiwrapper.css('display','none');
       // }
     // console.log(e.target.classList);
-      if(e.target.classList.contains('img-gif')) {
+      if(e.target.classList.contains('imgStickerPrivate')) {
         let destino_user = DestinoUser;
         // '<img class="emoji" src="/img/emoji/'
         // '.gif" />'
@@ -756,25 +1077,42 @@ $(document).ready(function() {
       }
       
   });
-  document.body.addEventListener('click', e => {
-    let $emojiwrapper = $('#emojiWrapper');
-      // console.log('asfas');
-      if ($(e.target) != $emojiwrapper && !e.target.classList.contains('img-gif') && $emojiwrapper.hasClass('d-flex') && !e.target.classList.contains('btnStickers') && !e.target.classList.contains('fa-sticky-note')) {
-        // console.log('asfas');
-          $emojiwrapper.removeClass('d-flex');
-          // resizePage();
-      } 
+  // document.body.addEventListener('click', e => {
+  //   let $emojiwrapper = $('.stickersGroudPanel');
+  //     // console.log('asfas');
+  //     if ($(e.target) != $emojiwrapper && !e.target.classList.contains('imgStickerPrivate ') && !$emojiwrapper.hasClass('d-none') && !e.target.classList.contains('btnStickers') && !e.target.classList.contains('fa-sticky-note')) {
+  //       // console.log('asfas');
+  //         $emojiwrapper.addClass('d-none');
+  //         // resizePage();
+  //     } 
       
-  });
+  // });
+  $(document).on("click.stickersGroudPanel",function(event) {
+    var target = $(event.target);   
+    // console.log($('.grab_audio').hasClass('d-none'));
+    if(!$('.stickersGroudPanel').hasClass('d-none')) {
+      if (!target.closest(".stickersGroudPanel").length && !target.closest(".btnStickers").length) {
+        // closeMenu(function() {
+        //     $(document).off("click.grab_audio");
+        // });
+        $('.stickersGroudPanel').addClass('d-none');
+      }      
+    }
+  }); 
 
   function isUrl(s) {   
     var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
     return regexp.test(s);
   }
-
+  String.prototype.allTrim = String.prototype.allTrim ||
+  function(){
+     return this.replace(/\s+/g,' ')
+                .replace(/^\s+|\s+$/,'');
+  };
   let DestinoUser = "Todos";
   function sendMessage(socket, elementMessage) {
-    let message = $(elementMessage).find('.textMessage').val();
+    let message = $(elementMessage).find('.textMessage').html();
+    // console.log(message);
     let destino_user = DestinoUser;
     // console.log(DestinoUser);
     // $('.panel-message').each(function() {
@@ -782,8 +1120,15 @@ $(document).ready(function() {
     //     destino_user = $(this).find('.container-destino').find('input').val();
     //   }
     // });
-    
-    message = message.replace(/</g, '<&').replace(/>/g, '>&').replace(/[[]/g, '{').replace(/]/g, '}');
+    // if(!message.includes('class="mention-user"')) {
+     
+    //   //.replace(/</g, '<&').replace(/>/g, '>&')
+    // } else {
+    //   // message = message.replace(/&nbsp;/g,'').replace(/\n/g,'').replace(/^\s+|\s+$/g, "").trim();
+    // }
+    message = message.replace(/[[]/g, '{').replace(/]/g, '}');
+    message = message.replace(/&nbsp;/g,'').allTrim();
+    //.split(" ").join("")
     let vecUrl = message.split(' ');
     let almacenador = "";
     vecUrl.forEach(element => {
@@ -877,8 +1222,75 @@ $(document).ready(function() {
       // }
     }  
   });
+  var textobusq = "";
+var textorempl = "";
+var textolisto = "";
+
+//Recoge el texto que se desea buscar para su posterior remplazo
+// function find(textobusq){
+//     return  textobusq;
+// }
+
+// function STRTemp(textobusq, textorempl, textremp){
+//     //Recoge el texto con el que se desea remplazar
+    
+//     /*en el replace, no se pueden poner variables directamente, 
+//      * si se desea remplazar todas las ocurrencias de golpe,
+//      *  en replace debes hacer lo siguiente:*/
+    
+//     textolisto = textremp.replace(new RegExp(find(textobusq),"g") ,textorempl);
+//     return  textolisto;
+   
+// }
+// function replace(textobusq, textorempl, textResult){
+//   //Comprueba que hay texto en las casillas
+//     if (find(textobusq).length == 0) {
+//         alert("No hay palabra para buscar");
+//     } else {
+        
+//       // var textremp = document.getElementById("tremp").value;
+        
+//             if (textResult.search(find(textobusq)) < 0) {
+//                 alert("No hay resultados");
+//             } else {
+//                 return STRTemp(textobusq, textorempl, textResult);
+//             }
+//     }
+// }
+  $('body').on('mouseenter', '.user-hash', function() {
+    // $('.user-hash').removeClass('selectedHash');
+    $('.selectedHash').removeClass('selectedHash');
+    $(this).addClass('selectedHash');
+  });
+  $('body').on('click', '.redirect-user-mention', function() {
+    if(this.dataset.userId != sessionStorage.user) {
+      if($(`#user${this.dataset.userId}`)[0]) {
+         // console.log(this.dataset.userId);
+        if(!$(`#${this.dataset.userId}`)[0]) {
+          DestinoUser = addPanelMessage(this.dataset.userId, $(this).text().replace('@', ''), true);
+        }
+        // console.log($(`#panelM${this.dataset.userId}`)[0]);
+        $(`#userhistory${this.dataset.userId}`).click();
+      }
+      if($(`#${this.dataset.userId}`)[0]) {
+        $(`#userhistory${this.dataset.userId}`).click();
+      }
+    }
+    
+    
+  });
+  let soundMentionMe = document.querySelector('.soundMentionMe');
+  function addSoundMentionMe() {
+    soundMentionMe.play();
+  }
   function findResponseMessage(socket) {
     socket.on('getMessage', (data) => {
+      data.message = data.message.replace(/class="mention-user userLink"/g, 'class="mention-user userLink redirect-user-mention"');
+      if(data.message.includes(`data-user-id="${sessionStorage.user}"`)) {
+        addSoundMentionMe();
+      }
+      // console.log(data.message.includes(`data-key-id="${sessionStorage.user}"`), data.message, `data-key-id="${sessionStorage.user}"`);
+      // console.log(replace('class="mention-user"', 'class="user-data-mention"', data.message));
       // alert(data);
       // console.log(data);
       // console.log(data.message);
@@ -912,8 +1324,14 @@ $(document).ready(function() {
         </video>`;
       }
       if(data.message.includes('[sticker:') && data.message.includes(']')) {
-        let imgRex = data.message.replace('[sticker:', '').replace(']', '');
-        data.message = `<img class="emoji" src="/img/emoji/${imgRex}.gif" />`
+        if(!data.message.includes('STK-')) {
+          let imgRex = data.message.replace('[sticker:', '').replace(']', '');
+          data.message = `<img class="emoji" src="/img/emoji/${imgRex}.gif" />`;
+        } else {
+          let imgRex = data.message.replace('[sticker:', '').replace(']', '');
+          data.message = `<img class="emoji" src="https://cotitomaster.000webhostapp.com/WhatsAppStickers/${imgRex}.webp" />`;
+        }
+        
       }
       let chatarea = document.querySelector(`#panelM${DestinoUser}`);
       if(chatarea) {
@@ -967,7 +1385,12 @@ $(document).ready(function() {
            } else if(data.message.includes('<img class="emoji" src="/img/emoji/') && data.message.includes('>')) {
             $(`.${data.user}`).find('.contenidomessagenofocus').html('<i class="far fa-sticky-note"></i> Ha enviado un sticker.');
            } else {
-            $(`.${data.user}`).find('.contenidomessagenofocus').text(data.message);
+            if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
+              $(`.${data.user}`).find('.contenidomessagenofocus').html(data.message);
+             }
+             else {
+              $(`.${data.user}`).find('.contenidomessagenofocus').text(data.message);
+             }
            }
           if(data.destino == "Todos") {
             $(`.${data.user}`).find('.imghistory').prop('src', data.foto);
@@ -1022,7 +1445,13 @@ $(document).ready(function() {
            } else if(data.message.includes('<img class="emoji" src="/img/emoji/') && data.message.includes('>')) {
             $(`.${data.destino}`).find('.contenidomessagenofocus').html('<i class="far fa-sticky-note"></i> Ha enviado un sticker.');
            } else {
-            $(`.${data.destino}`).find('.contenidomessagenofocus').text(data.message);
+             if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
+              $(`.${data.destino}`).find('.contenidomessagenofocus').html(data.message);
+             }
+             else {
+              $(`.${data.destino}`).find('.contenidomessagenofocus').text(data.message);
+             }
+            
            }
 
           if(data.destino == "Todos") {
@@ -1314,7 +1743,7 @@ $(document).ready(function() {
             <p class="font-weight-light d-none textWarningMsg"><i class="fas fa-info-circle" style="color:rgb(60,60,60)"></i> Acá no hay nadie con quien chatear</p>
             <div class="form-group form-message">
               <div class="focus-message">
-                <textarea class="form-control textMessage" id="textMessage" placeholder="Escriba algo" maxlength="3000"></textarea>
+                <div contentEditable="true" placeholder="Escriba algo" id="textMessage" class="form-control textMessage" ondrop="return false;" onkeypress="return (this.innerText.length <= 3000)"></div>
                 ${veriEmojis}
                 <button class="btn btn-primary btnAudio btnMessageIcons"><i class="fas fa-microphone"></i></button>
                 <button class="btn btn-primary btnStickers btnMessageIcons"><i class="far fa-sticky-note"></i></button>
@@ -1419,13 +1848,15 @@ $(document).ready(function() {
           }
             panelUsers.classList.add('d-none');
             panelMessages.classList.remove('d-none');
-            navAll.forEach((nav) => {
-              if(nav.classList.contains('btnmessage')) {
-                nav.classList.add('selectedOption');
-              } else {
-                nav.classList.remove('selectedOption');
-              }
-            });
+            // navAll.forEach((nav) => {
+            //   if(nav.classList.contains('btnmessage')) {
+            //     nav.classList.add('selectedOption');
+            //   } else {
+            //     nav.classList.remove('selectedOption');
+            //   }
+            // });
+            $('.selectedOption').removeClass('selectedOption');
+            navMessages.classList.add('selectedOption');
             $('.panel-message').addClass('d-none');
             // $(`#panelM${idOtherUser}`).removeClass('d-none');
             //$(`#userhistory${idOtherUser}`).click();
@@ -1463,13 +1894,15 @@ $(document).ready(function() {
           }
             panelUsers.classList.add('d-none');
             panelMessages.classList.remove('d-none');
-            navAll.forEach((nav) => {
-              if(nav.classList.contains('btnmessage')) {
-                nav.classList.add('selectedOption');
-              } else {
-                nav.classList.remove('selectedOption');
-              }
-            });
+            // navAll.forEach((nav) => {
+            //   if(nav.classList.contains('btnmessage')) {
+            //     nav.classList.add('selectedOption');
+            //   } else {
+            //     nav.classList.remove('selectedOption');
+            //   }
+            // });
+            $('.selectedOption').removeClass('selectedOption');
+            navMessages.classList.add('selectedOption');
             $('.panel-message').addClass('d-none');
             // $(`#panelM${idOtherUser}`).removeClass('d-none');
             $(`#userhistory${idOtherUser}`).click();
@@ -1818,7 +2251,7 @@ $(document).ready(function() {
         emojiContainer.appendChild(docFragment);
         }
   }
-  _initialEmoji();
+  // _initialEmoji();
 
   function verificarNotiConnect() {
     if($('#defaultCheck2').prop('checked')){
@@ -2221,12 +2654,15 @@ $(document).ready(function() {
       // <video width="340" height="50" controls="">
       //     <source src="/upload/8e4c64bc-26e2-4ce8-adf0-87072e2e5871.webm" type="video/webm">
       //   </video>
-      console.log(message);
+      // console.log(message);
         if(message.includes('<img class="emoji" src="')) {
           message = 'Ha enviado un sticker.';
         }
         if(message.includes('<video width="340" height="50" controls>')) {
           message = 'Ha enviado un audio.';
+        }
+        if(message.includes('<a contenteditable="false" class="mention-user')) {
+          message = $(message).text() + message.split('</a>').pop();
         }
         var  options  =   {
             body:   message,
@@ -2244,8 +2680,7 @@ $(document).ready(function() {
             //event.preventDefault(); // Previene al buscador de mover el foco a la pestaña del Notification
             // console.log('ADD NOTIFY');
             $(window).focus();
-            $(`#userhistory${this.tag}`).click();
-            $('#toast-container').remove();
+            
             this.close();
           }
         }
@@ -2482,5 +2917,241 @@ const init = () => {
 init();
 // Esperar a que el documento esté listo...
 // document.addEventListener("DOMContentLoaded", init);
+async function isUrlFound(url) {
+  try {
+    const response = await fetch(url, {
+      method: "HEAD",
+      cache: "no-cache",
+    });
+
+    return response.status === 200;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+//https://paginacoti.000webhostapp.com/WhatsApp%20Stickers/STK-20190510-WA0001.webp
+let vecStickers = vStickers.getVecStickers();
+let keyHeadStickers = vStickers.getHeadersStickers();
+let contentStickers = document.querySelector(".content-stickers");
+let headerStickers = document.querySelector(".header-stickers");
+let vecHeaderStickers = [];
+let vecBodyStickers = [];
+let numberStickers = 0;
+// for (let i = 1; i <= 69; i++) {
+//   vecStickers.push(`./emoji/${i}.gif`);
+// }
+
+// for (let i = 0; i < vecStickers.length; i++) {
+//   console.log(vecStickers[i]);
+//   document.write(vecStickers[i] + "<br>");
+// }
+
+// console.log(vecStickers.length);
+// const keyInitialStickers = 20190511;
+
+async function addHeadersStickers() {
+  for (let i = 0; i < keyHeadStickers.length; i++) {
+    if (keyHeadStickers[i].includes("gif")) {
+
+        let repreImg = document.createElement("img");
+        repreImg.onerror = function () {
+          this.remove();
+          // if(vecHeaderStickers.indexOf(this.src) !== -1) {
+          //   vecHeaderStickers.splice(vecHeaderStickers.indexOf(this.src), 1);
+          // }
+          // console.log(numberStickers);
+        };
+        // repreImg.onload = function() {
+        //   this.style.backgroundImage = 'none';
+        // }
+        repreImg.src = `${keyHeadStickers[i]}`;
+        repreImg.className = `data-sticker-${"gif"}`;
+        repreImg.classList.add("key-sticker");
+        // vecHeaderStickers.push(repreImg.src);
+        headerStickers.appendChild(repreImg);
+      
+    } else {
+
+        let repreImg = document.createElement("img");
+        repreImg.onerror = function () {
+          this.remove();
+          // if(vecHeaderStickers.indexOf(this.src) !== -1) {
+          //   vecHeaderStickers.splice(vecHeaderStickers.indexOf(this.src), 1);
+          // }
+          // console.log(numberStickers);
+        };
+        // repreImg.onload = function() {
+        //   this.style.backgroundImage = 'none';
+        // }
+        repreImg.src = `https://cotitomaster.000webhostapp.com/WhatsAppStickers/${keyHeadStickers[i]}`;
+        repreImg.className = `data-sticker-${
+          keyHeadStickers[i].split("-")[1]
+        }`;
+        repreImg.classList.add("key-sticker");
+        // vecHeaderStickers.push(repreImg.src);
+        headerStickers.appendChild(repreImg);
+      
+    }
+  }
+}
+async function addStickersCustom() {
+  for (let i = 0; i < vecStickers.length; i++) {
+    if (vecStickers[i].includes(".gif")) {
+      let img = document.createElement("img");
+      img.onerror = function () {
+        this.remove();
+        // let newVec = vecBodyStickers.find((v) => v.src == this.src);
+        // if(vecBodyStickers.indexOf(newVec) != -1) {
+        //   vecBodyStickers.splice(vecBodyStickers.indexOf(newVec), 1);
+        // }
+        // numberStickers--;
+        // console.log(numberStickers);
+      };
+
+      // img.onload = function () {
+      //   // Success function
+      //   this.style.backgroundImage = 'none';
+      // };
+      img.src = `${vecStickers[i]}`;
+      img.className = "imgStickerPrivate";
+      img.classList.add(`group-sticker-gif`);
+      img.title = i+1;
+      // vecBodyStickers.push({
+      //   keyX: i,
+      //   src: img.src
+      // });
+      numberStickers++;
+      // numberStickers++;
+      contentStickers.appendChild(img);
+    }
+  }
+}
+
+// console.log(bLazy);
+async function addStickers(indiceX) {
+  for (let i = 0; i < vecStickers.length; i++) {
+    if (parseInt(vecStickers[i].split("-")[1]) == indiceX) {
+      let img = document.createElement("img");
+      img.onerror = function () {
+        this.remove();
+        // let newVec = vecBodyStickers.find((v) => v.src == this.src);
+        // if(vecBodyStickers.indexOf(newVec) != -1) {
+        //   vecBodyStickers.splice(vecBodyStickers.indexOf(newVec), 1);
+        // }
+        // numberStickers--;
+        // console.log(numberStickers);
+      };
+
+      // img.onload = function () {
+      //   // Success function
+      //   this.style.backgroundImage = 'none';
+      // };
+      img.src = `https://cotitomaster.000webhostapp.com/WhatsAppStickers/${vecStickers[i]}`;
+      img.className = "imgStickerPrivate";
+      img.classList.add(`group-sticker-${vecStickers[i].split("-")[1]}`);
+      img.title = vecStickers[i].replace('.webp','');
+      // vecBodyStickers.push({
+      //   keyX: i,
+      //   src: img.src
+      // });
+      numberStickers++;
+      // numberStickers++;
+      contentStickers.appendChild(img);
+    }
+  }
+}
+function addStickersPlaceholderBody() {
+  for(let i=0; i<vecStickers.length; i++) {
+    
+    let wrapperSticker = document.createElement('div');
+    wrapperSticker.classList.add('wrapper_stickers_body');
+    // wrapperSticker.classList.add('ratio_big-img');
+    
+    let img = document.createElement("img");
+    img.onerror = function () {
+      this.remove();
+      // let newVec = vecBodyStickers.find((v) => v.src == this.src);
+      // if(vecBodyStickers.indexOf(newVec) != -1) {
+      //   vecBodyStickers.splice(vecBodyStickers.indexOf(newVec), 1);
+      // }
+      // numberStickers--;
+      // console.log(numberStickers);
+    };
+    img.classList.add('b-lazy');
+    img.classList.add('imgStickerPrivate');
+    if(vecStickers[i].includes('gif')) {
+      img.title = i+1;
+      img.classList.add(`group-sticker-gif`);
+    } else {
+      img.title = vecStickers[i].replace('.webp','');
+      img.classList.add(`group-sticker-${vecStickers[i].split("-")[1]}`);
+    }
+    wrapperSticker.classList.add('loading');
+    
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    if(vecStickers[i].includes('gif')) {
+      img.dataset.src = `${vecStickers[i]}`;
+    } else {
+      
+      img.dataset.src = `https://cotitomaster.000webhostapp.com/WhatsAppStickers/${vecStickers[i]}`;
+      wrapperSticker.classList.add('d-none');
+    }
+    
+    img.alt = 'SubSticker' + i;
+    wrapperSticker.appendChild(img); 
+    contentStickers.appendChild(wrapperSticker);
+    
+  }
+}
+// addHeadersStickers();
+// // $('.loader-stickers-head').addClass('d-none');
+// // addStickers(vecStickers[0].split("-")[1]);
+addStickersCustom();
+// addStickersPlaceholderBody();
+// addAllStickers();
+// $('.loader-stickers-body').addClass('d-none');
+// $(`.group-sticker-${keyInitialStickers}`).show();
+// addStickers();
+
+$('body').on('click', '.key-sticker', function(e) {
+  if (e.target.classList.contains("key-sticker")) {
+    $(".imgStickerPrivate").hide();
+    let key = e.target.classList[1].replace("data-sticker-", "");
+    
+    if (!$(`.group-sticker-${key}`)[0]) {
+      key.includes("gif")
+        ? addStickersCustom()
+        : addStickers(parseInt(key));
+    }
+    $(`.group-sticker-${key}`).show();
+    // console.log($(`.group-sticker-${key}`)[0]);
+    // var bLazy2 = new Blazy({
+    //   container: '.content-stickers'
+    //   , success: function(element){
+
+    //   // We want to remove the loader gif now.
+    //   // First we find the parent container
+    //   // then we remove the "loading" class which holds the loader image
+    //   var parent = element.parentNode;
+    //   // console.log(parent);
+    //   parent.className = parent.className.replace(/\bloading\b/,'');
+
+    //     },error: (err) => {
+    //       alert(err)
+    //     },
+    // });
+  }
+});
+$("body").on("click", ".btnRightStickers", function () {
+  $(".header-stickers").scrollLeft(
+    $(".header-stickers").scrollLeft() + 100
+  );
+});
+$("body").on("click", ".btnLeftStickers", function () {
+  $(".header-stickers").scrollLeft(
+    $(".header-stickers").scrollLeft() - 100
+  );
+});
 });
   

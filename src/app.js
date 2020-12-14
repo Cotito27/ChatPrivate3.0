@@ -6,6 +6,7 @@ const morgan = require('morgan');
 
 const multer = require('multer');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
 FacebookStrategy = require('passport-facebook').Strategy;
@@ -46,6 +47,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.use(morgan('dev'));
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 
 // client.on('connect', function() {
@@ -144,6 +146,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
+
 
 // static files
 app.use(express.static(path.join(__dirname, 'public')));

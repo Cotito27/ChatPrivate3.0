@@ -93,12 +93,11 @@ body {
   margin-left: -30px;
   margin-top: 9px;
   cursor: pointer;
+  z-index: 1;
 }
 .container-destino {
   text-align: left;
-
   height: 50px;
-
   border-bottom: 1px solid rgb(190, 190, 190);
   display: flex;
   align-items: center;
@@ -201,7 +200,8 @@ body {
   border: 1px solid white;
 }
 .img-edit,
-.img-viewed {
+.img-viewed,
+.img-hash {
   width: 40px;
   height: 40px;
   float: left;
@@ -218,12 +218,25 @@ body {
   text-overflow: ellipsis;
   max-width: 50%;
 }
-.name-viewed {
+.name-viewed,
+.name-hash {
   margin-top: 7px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 85%;
+}
+
+.name-hash {
+  cursor: pointer;
+}
+
+.hashUser {
+  position: absolute;
+  bottom: 100px;
+  left: 20px;
+  background: transparent;
+  width: 90%;
 }
 
 .check1 {
@@ -276,10 +289,28 @@ img {
   max-height: 500px;
   overflow: auto;
 }
+
+.selectedHash {
+  background-color: #262626;
+  color: whitesmoke;
+}
+
+.content-hash {
+  max-height: 200px;
+  overflow: auto;
+  padding: 0 !important;
+  background-color: rgb(247, 242, 242);
+}
+
 .user-edit,
 .user-viewed {
   display: block;
   margin-top: 10px;
+}
+.user-hash {
+  display: block;
+  padding: 0.5rem;
+  cursor: pointer;
 }
 .btnCambiarApodo,
 .btnCancelarApodo {
@@ -369,18 +400,19 @@ hr {
 .icon-loader {
 }
 
-.textmessage {
+.textMessage {
   flex: 1;
-  font-family: "Times New Roman";
+  font-family: inherit;
   font-size: 16px;
   padding: 10px;
-  max-height: 40px;
+  max-height: 60px;
   width: 90%;
   resize: none;
   border: none;
   outline: none;
   background-color: transparent !important;
   border-color: transparent !important;
+  overflow: auto;
 }
 .textMessage:focus {
   border: none !important;
@@ -731,6 +763,8 @@ input[type="file"]#file {
 }
 .emoji {
   border-radius: 0;
+  width: 70px;
+  height: 70px;
 }
 #emojiWrapper {
   /*grid-template-columns: repeat(4, 0fr);
@@ -750,6 +784,14 @@ input[type="file"]#file {
   right: 18px;
   z-index: 1;
 }
+.stickersGroudPanel {
+  position: absolute;
+  bottom: 90px;
+  right: 15px;
+  z-index: 1;
+  max-width: 95%;
+  margin-left: -10px;
+}
 #emojiWrapper img {
   border-radius: 0;
   width: 83px;
@@ -759,9 +801,16 @@ input[type="file"]#file {
 }
 #emojiWrappet img:hover {
 }
-.img-gif:hover {
+
+.card-stickers-res {
+  position: relative;
+  background-color: rgb(247 235 235);
+}
+
+.img-gif:hover,
+.imgStickerPrivate:hover {
   transform: scale(1.2);
-  box-shadow: 0 0 4px blue;
+  box-shadow: 0 0 2px blue;
   cursor: pointer;
 }
 .iconEdit {
@@ -783,6 +832,21 @@ input[type="file"]#file {
   --emoji-per-row: 7;
   grid-template-columns: repeat(--emoji-per-row, 1fr) !important;
   width: 100% !important;
+}
+[contentEditable="true"]:empty:before {
+  content: attr(placeholder);
+}
+
+#textMessage {
+  display: inline-block;
+  margin-top: -3px;
+  height: 45px;
+}
+.mention-user {
+  /* background-color: rgb(196, 202, 103); */
+  width: auto;
+  display: inline;
+  cursor: pointer;
 }
 /*.movilEmojis {
   padding: 0px !important;
@@ -971,7 +1035,51 @@ input[type="file"]#file {
   margin-right: 12px;
   margin-top: -2px;
 }
+.loading {
+  background: #1e1e1e url("../img/loader.gif") center center no-repeat;
+  background-size: 20px;
+}
 
+.b-lazy {
+  width: 100%;
+}
+
+.wrapper_stickers {
+  float: left;
+  height: 60px;
+  width: 50px;
+  overflow: hidden;
+  position: relative;
+}
+
+.wrapper_stickers:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.selectedStickHead {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.body_stickers {
+  background-color: rgb(255 242 242);
+}
+
+.wrapper_stickers_body {
+  height: 90px;
+  width: 90px;
+  overflow: hidden;
+  position: relative;
+}
+.ratio_big-img {
+  padding-bottom: 56.7%;
+}
+.section_stickers {
+  max-width: 970px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
 @media only screen and (max-width: 550px) {
   .grab_audio {
     width: 400px !important;

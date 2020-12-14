@@ -56,6 +56,7 @@ $(document).ready(function() {
       }, 500);
     });
   }
+  $('.loader-page-dark').removeClass('d-flex').hide();
   let auth;
   let fs;
   // let keysFirabase;
