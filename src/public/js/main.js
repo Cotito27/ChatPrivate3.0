@@ -690,7 +690,14 @@ $(document).ready(function() {
       // console.log($(this)[0]);
       let $vecTextMessage = $(`#panelM`).find('.textMessage');
       // $(`#panelM`).find('.textMessage').html($(`#panelM`).find('.textMessage').html() + $(this).find('.name-hash').html()).focus();
-      if($vecTextMessage.html().length == 1 && $vecTextMessage.html().includes('@')) {
+      let palabraFragmentada = Array.from($vecTextMessage.html());
+        let contadorHash = 0;
+        for(let i=0; i<palabraFragmentada.length; i++) {
+          if(palabraFragmentada[i] === "@") {
+            contadorHash++;
+          }
+        }
+      if(contadorHash == 1 && $vecTextMessage.html().substr(0,1) == '@') {
         $vecTextMessage.html($vecTextMessage.html().replace($vecTextMessage.html(),`
         &nbsp;<a contenteditable="false" class="mention-user userLink" data-user-id="${$(this).attr('data-key-id')}">@${$(this).find('.name-hash').html()}</a>
       `.allTrim()));
@@ -779,10 +786,18 @@ $(document).ready(function() {
       if(!$('.hashUser').hasClass('d-none')) 
       {
         let addSelectedHash = $('.selectedHash').find('.name-hash').html();
-        if($(this).html().length == 1 && $(this).html().includes('@')) {
+        let palabraFragmentada = Array.from($(this).html());
+        let contadorHash = 0;
+        for(let i=0; i<palabraFragmentada.length; i++) {
+          if(palabraFragmentada[i] === "@") {
+            contadorHash++;
+          }
+        }
+        if(contadorHash == 1 && $(this).html().substr(0,1) == '@') {
           $(this).html($(this).html().replace($(this).html(),`
           &nbsp;<a contenteditable="false" class="mention-user userLink" data-user-id="${$('.selectedHash').attr('data-key-id')}">@${addSelectedHash}</a>
         `.allTrim()));
+         
           $(this).append('&nbsp;');
           $('.hashUser').addClass('d-none');
           $('.content-hash').html('');
