@@ -144,8 +144,34 @@ $(document).ready(function() {
     // console.log($emojiwrapper.prop('class'));
     if(!$emojiwrapper.hasClass('d-none')) {
       $emojiwrapper.addClass('d-none');
+      resizePage();
     } else {
+      let chatarea = document.querySelector(`#panelM${DestinoUser}`);
+      if(chatarea) {
+        chatarea = chatarea.querySelector('.card-message');
+      } else {
+        chatarea = document.querySelector('#panelM').querySelector('.card-message');
+      }
+      
+      // $('.panel-message').each(function() {
+      //   if(!$(this).hasClass('d-none')) {
+      //     chatarea = this.querySelector('.card-message');
+      //   }
+      // });
+      let confirmador = false;
+      // console.log($(chatarea)[0]);
+      if (chatarea.offsetHeight + chatarea.scrollTop ==
+            chatarea.scrollHeight + 2 ||
+          chatarea.offsetHeight + chatarea.scrollTop+20 >= chatarea.scrollHeight) {
+          confirmador = true;
+      } else {
+          confirmador = false;
+      }
       $emojiwrapper.removeClass('d-none');
+      resizePage();
+      if(confirmador) {
+        scrollDown($(chatarea));
+      }
       var bLazy = new Blazy({
         container: '.header-stickers',
         offset: 40
@@ -1111,6 +1137,7 @@ deployText()
         //     $(document).off("click.grab_audio");
         // });
         $('.stickersGroudPanel').addClass('d-none');
+        resizePage();
       }      
     }
   }); 
@@ -2544,8 +2571,14 @@ var textolisto = "";
   });
   function resizePage() {   
     if ($(window).width() <= 550) {
-      $(".card-message").css("height", $(window).height() - 202 + "px");
-      $(".card-message").css("max-height", $(window).height() - 202 + "px");
+      if(!$('.stickersGroudPanel').hasClass('d-none')) {
+        $(".card-message").css("height", $(window).height() - 525 + "px");
+        $(".card-message").css("max-height", $(window).height() - 525 + "px");
+      } else {
+        $(".card-message").css("height", $(window).height() - 202 + "px");
+        $(".card-message").css("max-height", $(window).height() - 202 + "px");
+      }
+      
       $(".card-users").css("height", $(window).height() - 127 + "px");
       $(".card-users").css("max-height", $(window).height() - 127 + "px");
       $(".card-config").css("height", $(window).height() - 129 + "px");
@@ -2553,8 +2586,14 @@ var textolisto = "";
       $(".card-history").css("height", $(window).height() - 62 + "px");
       $(".card-history").css("max-height", $(window).height() - 62 + "px");
     } else {
-      $(".card-message").css("height", $(window).height() - 238 + "px");
-      $(".card-message").css("max-height", $(window).height() - 238 + "px");
+      if(!$('.stickersGroudPanel').hasClass('d-none')) {
+        $(".card-message").css("height", $(window).height() - 561 + "px");
+        $(".card-message").css("max-height", $(window).height() - 561 + "px");
+      } else {
+        $(".card-message").css("height", $(window).height() - 238 + "px");
+        $(".card-message").css("max-height", $(window).height() - 238 + "px");
+      }
+      
       $(".card-users").css("height", $(window).height() - 163 + "px");
       $(".card-users").css("max-height", $(window).height() - 163 + "px");
       $(".card-config").css("height", $(window).height() - 165 + "px");
