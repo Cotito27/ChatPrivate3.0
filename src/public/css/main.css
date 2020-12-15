@@ -1045,7 +1045,7 @@ input[type="file"]#file {
 
 .wrapper_stickers {
   float: left;
-  height: 60px;
+  height: 50px;
   width: 50px;
   overflow: hidden;
   position: relative;
@@ -1081,7 +1081,7 @@ input[type="file"]#file {
 }
 @media only screen and (max-width: 550px) {
   .grab_audio {
-    width: 400px !important;
+    width: 55% !important;
   }
   .container {
     padding: 0 !important;
