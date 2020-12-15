@@ -33,7 +33,8 @@ body {
   background-color: rgb(27 22 22) !important;
 }
 
-.body_stickers {
+.body_stickers,
+.stickersGroudPanel {
   background-color: rgb(43 39 39) !important;
 }
 
