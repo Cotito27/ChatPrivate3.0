@@ -908,15 +908,16 @@ deployText()
       //   $pruebaVec = $pruebaVec.substr(0, 3000);
       // }
       // console.log($pruebaVec.substr(0, 3000), $pruebaVec.length);
-      // document.execCommand("insertTEXT", false, $pruebaVec);
-      
+      // document.execCommand("insertText", true, $pruebaVec);
+      // document.execCommand("inserHTML", false, $pruebaVec);
+      // document.execCommand("insertImage", false, $pruebaVec);
       textArray.push($pruebaVec);
       if(DestinoUser == "Todos") {
-        $('.textMessage').html($('#panelM').find('.textMessage').html() + $pruebaVec);
+        $(`#panelM`).find('.textMessage').html($('#panelM').find('.textMessage').html() + $pruebaVec);
         $('#panelM').find('.textMessage').scrollTop($('#panelM').find('.textMessage').prop('scrollHeight'));
         placeCaretAtEnd($('#panelM').find('.textMessage').get(0));
       } else {
-        $('.textMessage').html($(`#panelM${DestinoUser}`).find('.textMessage').html() + $pruebaVec);
+        $(`#panelM${DestinoUser}`).find('.textMessage').html($(`#panelM${DestinoUser}`).find('.textMessage').html() + $pruebaVec);
         $(`#panelM${DestinoUser}`).find('.textMessage').scrollTop($(`#panelM${DestinoUser}`).find('.textMessage').prop('scrollHeight'));
         placeCaretAtEnd($(`#panelM${DestinoUser}`).find('.textMessage').get(0));
       }
@@ -2717,6 +2718,9 @@ var textolisto = "";
         }
         if(message.includes('<a contenteditable="false" class="mention-user')) {
           message = $(message).text() + message.split('</a>').pop();
+        }
+        if(message.includes('class="userLink"')) {
+          message = $(`<div>${message}</div>`).text();
         }
         var  options  =   {
             body:   message,

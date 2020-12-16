@@ -127,7 +127,7 @@ module.exports = [
             // console.log(audioStorage);
           }
           console.log(sessionsRoom);
-        },2000);
+        },6000);
         
         // console.log(rooms, socket.sessionId);
         // socket.leave(socket.user);
