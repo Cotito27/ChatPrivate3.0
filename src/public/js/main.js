@@ -8,6 +8,7 @@ $(document).ready(function() {
     'reconnection delay': 500,
     'max reconnection attempts': 10
   });
+  // console.log(socket);
   // console.log(socket.connect());
   const navMessages = document.querySelector('.btnmessage');
   const navUsers = document.querySelector('.btnusers');
@@ -56,6 +57,22 @@ $(document).ready(function() {
     return "Bye now!";
   };
   if(!isMobile()) {
+    let multiFile = document.querySelector('.multimedia-upload-msg');
+    multiFile.dataset.toggle = 'tooltip';
+    multiFile.dataset.placement = 'left';
+    multiFile.dataset.title = 'Fotos';
+    let fileUpload = document.querySelector('.file-upload-msg');
+    fileUpload.dataset.toggle = 'tooltip';
+    fileUpload.dataset.placement = 'left';
+    fileUpload.dataset.title = 'Documento';
+    let videoFile = document.querySelector('.video-upload-msg');
+    videoFile.dataset.toggle = 'tooltip';
+    videoFile.dataset.placement = 'left';
+    videoFile.dataset.title = 'Videos';
+    let audioFile = document.querySelector('.audio-upload-msg');
+    audioFile.dataset.toggle = 'tooltip';
+    audioFile.dataset.placement = 'left';
+    audioFile.dataset.title = 'Audio';
     $('[data-toggle="tooltip"]:not(.btnmessage)').tooltip({
       delay: { "show": 250, "hide": 100 }
     });
@@ -138,6 +155,7 @@ $(document).ready(function() {
         (navigator.userAgent.match(/BlackBerry/i))
     );
   }
+
   $('#content-message').on('click', '.btnStickers', (e) => {
     let $emojiwrapper = $('.stickersGroudPanel');
     // console.log($emojiwrapper[0]);
@@ -275,6 +293,449 @@ $(document).ready(function() {
       }
     });
   }
+
+  $('body').on('change', '.btnFile', function() {
+
+  });
+
+  function getOffsetLeft( elem )
+  {
+         var offsetLeft = 0;
+         do {
+           if ( !isNaN( elem.offsetLeft ) )
+           {
+               offsetLeft += elem.offsetLeft;
+           }
+         } while( elem = elem.offsetParent );
+         return offsetLeft;
+  }
+
+  function getOffsetTop( elem )
+  {
+         var offsetTop = 0;
+         do {
+           if ( !isNaN( elem.offsetTop ) )
+           {
+               offsetTop += elem.offsetTop;
+           }
+         } while( elem = elem.offsetParent );
+         return offsetTop;
+  }
+  function addClipFiles(elem) {
+    // console.log(getOffsetLeft(elem), getOffsetTop(elem));
+    let newElem = document.querySelector('.files-content');
+    newElem.style.position = 'absolute';
+    newElem.style.top = parseFloat(getOffsetTop(elem) - $(newElem).height() - 145) + 'px';
+    newElem.style.left = parseFloat(getOffsetLeft(elem)) - 5.3 + 'px';
+  }
+  function resizeClipFiles(elem) {
+    let newElem = document.querySelector('.files-content');
+    newElem.style.position = 'absolute';
+    newElem.style.top = parseFloat(getOffsetTop(elem) - $(newElem).height() - 23) + 'px';
+    newElem.style.left = parseFloat(getOffsetLeft(elem)) - 5.3 + 'px';
+  }
+  
+  addClipFiles(document.querySelector(`#panelM`).querySelector('.btnClip'));
+  $('body').on('click', '.btnClip', function() {
+    $('.files-content').toggleClass('d-none');
+    if(DestinoUser == "Todos") {
+      resizeClipFiles(document.querySelector(`#panelM`).querySelector('.btnClip'));
+      // resizePage();
+    } else {
+      resizeClipFiles(document.querySelector(`#panelM${DestinoUser}`).querySelector('.btnClip'));
+      // resizePage();
+    }
+      // $('.files-content').fadeToggle(function() {
+        
+      // });
+    
+    
+  });
+
+  // $('body').on('click', '.file-upload-msg', function() {
+
+  // });
+
+  $(document).on("click.files-content",function(event) {
+    var target = $(event.target);   
+    // console.log($('.grab_audio').hasClass('d-none'));
+    if(!$('.files-content').hasClass('d-none')) {
+      if (!target.closest(".file-upload-msg").length && !target.closest(".multimedia-upload-msg").length && !target.closest(".btnClip").length) {
+        // closeMenu(function() {
+        //     $(document).off("click.grab_audio");
+        // });
+        $('.files-content').addClass('d-none');
+      }      
+    }
+  }); 
+  let fileName = "";
+  let fileSrc = "";
+  let fileSize = 0;
+  $('#multimedia-upload-msg').change(function(event) {
+      let nameFile = event.currentTarget.files[0].name;
+      const $form = document.querySelector('#files-upload-content');
+      const formData = new FormData($form);
+      // if (/\.(jpeg|jpg|png|gif)$/i.test(event.currentTarget.value)) {
+      //   renderImage(formData, document.querySelector('#imgUserConfig'));
+      let imgPreviewUrl = URL.createObjectURL(formData.get('archivo2'));
+      
+      let data = event.target.files[0];
+      let reader = new FileReader();
+      let fileR = this;
+      if(DestinoUser == "Todos") {
+        $(`#panelM`).append(`<div class="panel-files-content d-none">
+        <div class="card-header text-white headerFilesPanel">
+          <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+          <div class="d-inline">
+            Vista Previa
+          </div>
+        </div>
+        <div class="card-body text-white bodyFilesPanel">
+          <div class="loader-page-files d-flex"></div>
+        </div>
+        <div class="btnSendFile text-white text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+        </div>
+        <div class="card-footer footerFilesPanel">
+          <div class="reserve-file">
+            <img src="${imgPreviewUrl}" alt="" class="iconImgFiles">
+          </div>
+        </div>
+      </div>`);
+      } else {
+        $(`#panelM${DestinoUser}`).append(`<div class="panel-files-content d-none">
+        <div class="card-header text-white headerFilesPanel">
+          <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+          <div class="d-inline">
+            Vista Previa
+          </div>
+        </div>
+        <div class="card-body text-white bodyFilesPanel">
+          <div class="loader-page-files d-flex"></div>
+        </div>
+        <div class="btnSendFile text-white text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+        </div>
+        <div class="card-footer footerFilesPanel">
+          <div class="reserve-file">
+            <img src="${imgPreviewUrl}" alt="" class="iconImgFiles">
+          </div>
+        </div>
+      </div>`);
+      }
+      var div = $(".panel-files-content");
+
+          var height = div.removeClass('d-none').height();
+   
+          div.css({
+              overflow: "hidden",
+              marginTop: height,
+              height: 0
+          }).animate({
+              marginTop: 0,
+              height: height
+          }, 180, function () {
+              $('.panel-files-content').css({
+                  display: "",
+                  overflow: "",
+                  height: "",
+                  marginTop: ""
+              });
+          });
+      let confirProsegFile = true;
+      reader.onloadstart = function(evt) {
+        fileSize = evt.total;
+        if(fileSize > 800000) 
+        {
+          $('.panel-files-content').remove();
+          confirProsegFile = false;
+          reader = null;
+          $('#file-upload-msg').val(null);
+          return alert('El archivo no puede pesar más de 800 kbs');
+          
+        };
+      }
+      reader.onload = function(evt){
+   
+      };
+      reader.onloadend = function(evt) {
+        if(!confirProsegFile) return;
+        fileName = nameFile;
+        fileSrc = evt.target.result;
+        fileSize = evt.total;
+        
+        // $('.panel-files-content').remove();
+        $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${imgPreviewUrl}">
+        <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        $('.textCommentImgFile').focus();
+        // $('.panel-files-content').slideToggle();
+        // $('.panel-files-content').slideUp(2000, function() {
+          
+        // });
+      }
+      
+     reader.readAsDataURL(data);
+     
+      // $('.panel-files-content').removeClass('d-none');
+    // } else {
+    //   alert("El archivo debe ser una imagen");
+    // }
+    $('.files-content').addClass('d-none');
+  });
+  $('#file-upload-msg').change(function(event) {
+      let nameFile = event.currentTarget.files[0].name;
+      // const $form = document.querySelector('#files-upload-content');
+      // const formData = new FormData($form);
+      // if (/\.(jpeg|jpg|png|gif)$/i.test(event.currentTarget.value)) {
+        // renderImage(formData, document.querySelector('#imgUserConfig'));
+        
+        let data = event.target.files[0];
+        let reader = new FileReader();
+        if(DestinoUser == "Todos") {
+          $(`#panelM`).append(`<div class="panel-files-content d-none">
+          <div class="card-header text-white headerFilesPanel">
+            <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+            <div class="d-inline">
+              Vista Previa
+            </div>
+          </div>
+          <div class="card-body text-white bodyFilesPanel">
+            <div class="loader-page-files d-flex"></div>
+          </div>
+          <div class="btnSendFile text-white text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+          </div>
+          <div class="card-footer footerFilesPanel">
+            <div class="reserve-file">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAA8CAYAAADL94L/AAAByElEQVR4Ae3axdJTQRAFYFyegA3u8ALseCDcicsGhxt3x+G32BXc3X3NBnfXYTqp3sZlhuqpOlXZRL46He9ReJyJxGSTEreaPfEHZiX+1uSJvelVNu+Jvjd7Yk9zI8aSUe0eDpjCIYfNSuw5v/zF5In/6mU27478tXriLJvXjdSwPq1lCDTCmxjiCNav8GZYBVMwWKagX8kWjk9vCcMhYWhEFEw1+oV0wZjdPKY6Vn9EwmBDTYPwBoXCYPLGDQTJjkHQNQRJj0FQtmgs+C8wOHIIkh2DoDu5vD5Xfkz9hsTBWDyxhjDYUDqvLRYSY1JilSQGyyxXOt4QKJPX70NDQmI27gyxHcn9bH/5RFMNAUgoDI4afOAMHBiCdiDNj5woGAhgsCEYudSI1lBCRwoPL957slAoDDYEoPXb/ZVs3FE/y9072fDxsx4BMPVfGOpl1VY/y5++4EWM1Fm9LcCKpy8RpnchDGEIQxjCEIYwhCEMYQhDGMIQhjCEIQxhCEMYwhCGMIQhDGEIQxhYNlXiP+XHXLRDM5thQVpyzIfS2YtLceVEkRmzalsgMArPhp258bA6b/LEb8LqPM930VNdvY/fhMmCxw+Of+4BTcPInBo2AAAAAElFTkSuQmCC" alt="" class="iconImgFiles">
+            </div>
+          </div>
+        </div>`);
+        } else {
+          $(`#panelM${DestinoUser}`).append(`<div class="panel-files-content d-none">
+          <div class="card-header text-white headerFilesPanel">
+            <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+            <div class="d-inline">
+              Vista Previa
+            </div>
+          </div>
+          <div class="card-body text-white bodyFilesPanel">
+            <div class="loader-page-files d-flex"></div>
+          </div>
+          <div class="btnSendFile text-white text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+          </div>
+          <div class="card-footer footerFilesPanel">
+            <div class="reserve-file">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAA8CAYAAADL94L/AAAByElEQVR4Ae3axdJTQRAFYFyegA3u8ALseCDcicsGhxt3x+G32BXc3X3NBnfXYTqp3sZlhuqpOlXZRL46He9ReJyJxGSTEreaPfEHZiX+1uSJvelVNu+Jvjd7Yk9zI8aSUe0eDpjCIYfNSuw5v/zF5In/6mU27478tXriLJvXjdSwPq1lCDTCmxjiCNav8GZYBVMwWKagX8kWjk9vCcMhYWhEFEw1+oV0wZjdPKY6Vn9EwmBDTYPwBoXCYPLGDQTJjkHQNQRJj0FQtmgs+C8wOHIIkh2DoDu5vD5Xfkz9hsTBWDyxhjDYUDqvLRYSY1JilSQGyyxXOt4QKJPX70NDQmI27gyxHcn9bH/5RFMNAUgoDI4afOAMHBiCdiDNj5woGAhgsCEYudSI1lBCRwoPL957slAoDDYEoPXb/ZVs3FE/y9072fDxsx4BMPVfGOpl1VY/y5++4EWM1Fm9LcCKpy8RpnchDGEIQxjCEIYwhCEMYQhDGMIQhjCEIQxhCEMYwhCGMIQhDGEIQxhYNlXiP+XHXLRDM5thQVpyzIfS2YtLceVEkRmzalsgMArPhp258bA6b/LEb8LqPM930VNdvY/fhMmCxw+Of+4BTcPInBo2AAAAAElFTkSuQmCC" alt="" class="iconImgFiles">
+            </div>
+          </div>
+        </div>`);
+        }
+        var div = $(".panel-files-content");
+
+        var height = div.removeClass('d-none').height();
+ 
+        div.css({
+            overflow: "hidden",
+            marginTop: height,
+            height: 0
+        }).animate({
+            marginTop: 0,
+            height: height
+        }, 180, function () {
+            $('.panel-files-content').css({
+                display: "",
+                overflow: "",
+                height: "",
+                marginTop: ""
+            });
+        });
+        let confirProsegFile = true;
+        reader.onloadstart = function(evt) {
+          fileSize = evt.total;
+          if(fileSize > 800000) 
+          {
+            $('.panel-files-content').remove();
+            confirProsegFile = false;
+            reader = null;
+            $('#file-upload-msg').val(null);
+            return alert('El archivo no puede pesar más de 800 kbs');
+            
+          };
+          // console.log(evt.total);
+        }
+        reader.onload = function(evt){
+          // fileSize = evt.total;
+          // if(fileSize > 700000) 
+          // {
+          //   $('.panel-files-content').remove();
+          //   return alert('El archivo no puede pesar más de 700 kbs');
+          // };
+          // // console.log(evt.total);
+          
+        };
+        reader.onloadend = function(evt) {
+          if(!confirProsegFile) return;
+          fileName = nameFile;
+          fileSrc = evt.target.result;
+          fileSize = evt.total;
+          
+          // $('.panel-files-content').remove();
+          $('.bodyFilesPanel').html(` <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAA8CAYAAADL94L/AAAByElEQVR4Ae3axdJTQRAFYFyegA3u8ALseCDcicsGhxt3x+G32BXc3X3NBnfXYTqp3sZlhuqpOlXZRL46He9ReJyJxGSTEreaPfEHZiX+1uSJvelVNu+Jvjd7Yk9zI8aSUe0eDpjCIYfNSuw5v/zF5In/6mU27478tXriLJvXjdSwPq1lCDTCmxjiCNav8GZYBVMwWKagX8kWjk9vCcMhYWhEFEw1+oV0wZjdPKY6Vn9EwmBDTYPwBoXCYPLGDQTJjkHQNQRJj0FQtmgs+C8wOHIIkh2DoDu5vD5Xfkz9hsTBWDyxhjDYUDqvLRYSY1JilSQGyyxXOt4QKJPX70NDQmI27gyxHcn9bH/5RFMNAUgoDI4afOAMHBiCdiDNj5woGAhgsCEYudSI1lBCRwoPL957slAoDDYEoPXb/ZVs3FE/y9072fDxsx4BMPVfGOpl1VY/y5++4EWM1Fm9LcCKpy8RpnchDGEIQxjCEIYwhCEMYQhDGMIQhjCEIQxhCEMYwhCGMIQhDGEIQxhYNlXiP+XHXLRDM5thQVpyzIfS2YtLceVEkRmzalsgMArPhp258bA6b/LEb8LqPM930VNdvY/fhMmCxw+Of+4BTcPInBo2AAAAAElFTkSuQmCC" alt="" class="iconImgFiles mb-2">
+          <div class="title-file-upload d-block">${nameFile}</div>`);
+          // $('.panel-files-content').slideToggle();
+          // $('.panel-files-content').slideUp(2000, function() {
+         
+          // });
+        }
+        
+       reader.readAsDataURL(data);
+       
+        // $('.panel-files-content').removeClass('d-none');
+      // } else {
+      //   alert("El archivo debe ser una imagen");
+      // }
+      $('.files-content').addClass('d-none');
+  });
+  const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+  
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+  
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+  
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+  
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+  }
+  $('body').on('click', '.closeTabFiles', function() {
+    if(DestinoUser == "Todos") {
+      // $('.panel-files-content').slideToggle(() => {
+      //   $(`#panelM`).find('.panel-files-content').remove();
+      // });
+      var div = $(".panel-files-content");
+
+      var height = div.css({
+          display: "block"
+      }).height();
+
+      div.css({
+          overflow: "hidden",
+          marginTop: 0,
+          height: height
+      }).animate({
+          marginTop: height,
+          height: 0
+      }, 180, function () {
+        $(`#panelM`).find('.panel-files-content').remove();
+      });
+    } else {
+      // $('.panel-files-content').slideToggle(() => {
+      //   $(`#panelM${DestinoUser}`).find('.panel-files-content').remove();
+      // });
+      var div = $(".panel-files-content");
+
+      var height = div.css({
+          display: "block"
+      }).height();
+
+      div.css({
+          overflow: "hidden",
+          marginTop: 0,
+          height: height
+      }).animate({
+          marginTop: height,
+          height: 0
+      }, 180, function () {
+        $(`#panelM${DestinoUser}`).find('.panel-files-content').remove();
+      });
+    }
+    $('#file-upload-msg').val(null);
+    $('#multimedia-upload-msg').val(null);
+  });
+  $('#files-upload-content').submit(function(e) {
+    return e.preventDefault();
+  });
+  function _base64ToArrayBuffer(base64) {
+    var binary_string = window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+async function base64ToBufferAsync(base64) {
+  var dataUrl = "data:application/octet-binary;base64," + base64;
+
+  await fetch(dataUrl)
+    .then(res => res.arrayBuffer())
+    .then(buffer => {
+      console.log("base64 to buffer: " + new Uint8Array(buffer));
+    })
+}
+  $('body').on('click', '.btnSendFile', async function(e) {
+      // const $form = document.querySelector('#files-upload-content');
+      // const formData = new FormData($form);
+      // let file = formData.get('archivo');
+      // console.log(fileSrc, fileName);
+      // let file = fileSrc;
+      // let stream = ss.createStream();
+
+      // arrBuffer.forEach((v) => {
+
+      // });
+      if($('.textCommentImgFile')[0]) {
+        socket.emit('sendFileMsg', {
+          user: sessionStorage.user,
+          name: sessionStorage.name,
+          foto: sessionStorage.foto || fotoDefault,
+          sessionId: sessionId,
+          destino: DestinoUser,
+          message: '',
+          file: fileSrc,
+          fileName: fileName,
+          comment: $('.textCommentImgFile').val()
+        });
+        
+      } else {
+        socket.emit('sendFileMsg', {
+          user: sessionStorage.user,
+          name: sessionStorage.name,
+          foto: sessionStorage.foto || fotoDefault,
+          sessionId: sessionId,
+          destino: DestinoUser,
+          message: '',
+          file: fileSrc,
+          fileName: fileName
+        });
+        
+      }
+      
+       
+      // let newFile = URL.createObjectURL(file);
+      // console.log(newFile);
+  });
+
+  // socket.on('getFileMsg', async function(data) {
+  //     let extName = data.fileName.split('.').pop();
+  //     let file = await fetch(data.file);
+  //     let blobFile = await file.blob();
+  //     // let blobFile = b64toBlob(data.file, extName);
+  //     // let newFile = URL.createObjectURL(data.file);
+  //     let newUrl = URL.createObjectURL(blobFile);
+   
+  // });
+
   if(!isMobile()) {
     addEmojiVisibleLight();
   } else {
@@ -706,8 +1167,11 @@ $(document).ready(function() {
      }
         // $(`.panelM${DestinoUser}`)
     } else {
-      $('.hashUser').addClass('d-none');
-      $('.content-hash').html('');
+      if(!$('.hashUser').hasClass('d-none')) {
+        $('.hashUser').addClass('d-none');
+        $('.content-hash').html('');
+      }
+      // placeCaretAtEnd($(this).get(0));
       // $selectedItemHash = "";
     }
   });
@@ -747,6 +1211,7 @@ $(document).ready(function() {
   });
   let $selectedItemHash = "";
   $('.components-message').on('keydown','.textMessage', function(e) {
+    
     var max = 3000;
        if (e.which != 8 && $(this).text().length > max) {
            e.preventDefault();
@@ -902,8 +1367,20 @@ deployText()
     if(e.target.classList.contains('textMessage')) {
       console.log("paste handler");
       var s = e.clipboardData.getData("text/plain").replace("this", "that")
+      console.log(s);
+      // let $pruebaVec = $(`<div>${s}</div>`).text();
+      let $pruebaVec;
+      let newDiv = document.createElement('div');
+      // newDiv.outerHTML = s;
+      var codigo = new DOMParser();
+      // var oDOM = codigo.parseFromString(s, "text/plain");
+      // $pruebaVec = newDiv.outerHTML.replace(/\n/g, ' ');
+      // $pruebaVec=s.replace(new RegExp(s,"g") ,`"'${s}'"`);
+      $pruebaVec = s.replace(/</g, '"<"');
+      // $pruebaVec = s;
       
-      let $pruebaVec = $(`<div>${s}</div>`).text();
+      // console.log($pruebaVec.split('\n'));
+      // console.log($pruebaVec, newDiv.innerHTML);
       // if($pruebaVec.length > 3000) {
       //   $pruebaVec = $pruebaVec.substr(0, 3000);
       // }
@@ -1326,8 +1803,88 @@ var textolisto = "";
   function addSoundMentionMe() {
     soundMentionMe.play();
   }
+  $('body').on('click', '.imgFileUpload', function() {
+    $('.imgViewUpload').prop('src', $(this).prop('src'));
+    $('.imgViewUpload').attr('data-title', $(this).attr('data-title'));
+    let infoUser = dataUserGlobal.find((v) => v.user == $(this).parent().parent().parent().prop('id').replace('mensaje', ''));
+    $('.info-img-view').find('img').prop('src', infoUser.foto);
+    $('.name-info-img').text(infoUser.name);
+    let horaMsg = $(this).parent().parent().parent().find('.hora').text();
+    $('.hora-info-img').text(horaMsg);
+    $('.panel-view-img-file').removeClass('d-none');
+    $('.imgViewUpload').removeClass('d-none');
+  });
+
+  $('.closeViewImg').on('click', function() {
+    $('.panel-view-img-file').addClass('d-none');
+    $('.imgViewUpload').addClass('d-none');
+  });
+
+  $('.zoom').click(function() {
+    $(this).toggleClass('transition');
+  });
+
+
+  $('.downloadViewImg').on('click', function() {
+    let a = document.createElement('a');
+    a.download = $('.imgViewUpload').attr('data-title');
+    a.href = $('.imgViewUpload').prop('src');
+    a.click();
+  });
   function findResponseMessage(socket) {
-    socket.on('getMessage', (data) => {
+    socket.on('getMessage', async (data) => {
+      let veriUrlFile = false;
+      if(data.message == '') {
+        veriUrlFile = true;
+        let extName = data.fileName.split('.').pop();
+        let file = await fetch(data.file);
+        let blobFile = await file.blob();
+        // let blobFile = b64toBlob(data.file, extName);
+        // let newFile = URL.createObjectURL(data.file);
+        let newUrl = URL.createObjectURL(blobFile);
+        // console.log(newUrl);
+        if(data.comment == undefined) {
+          data.message = `<a href="${newUrl}" download="${data.fileName}" class="userLink download-file">
+            <div class="align-file-msg content-download-file-msg">
+             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAA8CAYAAADL94L/AAAByElEQVR4Ae3axdJTQRAFYFyegA3u8ALseCDcicsGhxt3x+G32BXc3X3NBnfXYTqp3sZlhuqpOlXZRL46He9ReJyJxGSTEreaPfEHZiX+1uSJvelVNu+Jvjd7Yk9zI8aSUe0eDpjCIYfNSuw5v/zF5In/6mU27478tXriLJvXjdSwPq1lCDTCmxjiCNav8GZYBVMwWKagX8kWjk9vCcMhYWhEFEw1+oV0wZjdPKY6Vn9EwmBDTYPwBoXCYPLGDQTJjkHQNQRJj0FQtmgs+C8wOHIIkh2DoDu5vD5Xfkz9hsTBWDyxhjDYUDqvLRYSY1JilSQGyyxXOt4QKJPX70NDQmI27gyxHcn9bH/5RFMNAUgoDI4afOAMHBiCdiDNj5woGAhgsCEYudSI1lBCRwoPL957slAoDDYEoPXb/ZVs3FE/y9072fDxsx4BMPVfGOpl1VY/y5++4EWM1Fm9LcCKpy8RpnchDGEIQxjCEIYwhCEMYQhDGMIQhjCEIQxhCEMYwhCGMIQhDGEIQxhYNlXiP+XHXLRDM5thQVpyzIfS2YtLceVEkRmzalsgMArPhp258bA6b/LEb8LqPM930VNdvY/fhMmCxw+Of+4BTcPInBo2AAAAAElFTkSuQmCC" class="imgFileMsg mr-2 d-inline"><nav class="name-file-msg-download d-inline">${data.fileName}</nav>
+              <span class="icon-download-file">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34"><path fill="currentColor" d="M17 2c8.3 0 15 6.7 15 15s-6.7 15-15 15S2 25.3 2 17 8.7 2 17 2m0-1C8.2 1 1 8.2 1 17s7.2 16 16 16 16-7.2 16-16S25.8 1 17 1z"></path><path fill="currentColor" d="M22.4 17.5h-3.2v-6.8c0-.4-.3-.7-.7-.7h-3.2c-.4 0-.7.3-.7.7v6.8h-3.2c-.6 0-.8.4-.4.8l5 5.3c.5.7 1 .5 1.5 0l5-5.3c.7-.5.5-.8-.1-.8z"></path></svg>
+              </span>
+            </div>
+            </a>`;
+        } else {
+          if(data.comment == "") {
+            data.message = `<img data-title="${data.fileName}" src="${newUrl}" class="imgFileUpload">`;
+          } else {
+            data.message = `<img data-title="${data.fileName}" src="${newUrl}" class="imgFileUpload">
+          <div class="comment-img-file">${data.comment}</div>`;
+          }
+          
+        }
+        // URL.revokeObjectURL(newUrl);
+        if(sessionStorage.user == data.user) {
+          var div = $(".panel-files-content");
+
+          var height = div.css({
+              display: "block"
+          }).height();
+
+          div.css({
+              overflow: "hidden",
+              marginTop: 0,
+              height: height
+          }).animate({
+              marginTop: height,
+              height: 0
+          }, 180, function () {
+            $('.panel-files-content').remove();
+            $('#file-upload-msg').val(null);
+            $('#multimedia-upload-msg').val(null);
+          });
+          // $('.panel-files-content').remove();
+        }
+      }
+      // console.log(data.message);
       data.message = data.message.replace(/class="mention-user userLink"/g, 'class="mention-user userLink redirect-user-mention"');
       if(data.message.includes(`data-user-id="${sessionStorage.user}"`)) {
         addSoundMentionMe();
@@ -1392,11 +1949,12 @@ var textolisto = "";
       // console.log($(chatarea)[0]);
       if (chatarea.offsetHeight + chatarea.scrollTop ==
             chatarea.scrollHeight + 2 ||
-          chatarea.offsetHeight + chatarea.scrollTop+20 >= chatarea.scrollHeight) {
+          chatarea.offsetHeight + chatarea.scrollTop+20 >= chatarea.scrollHeight || chatarea.offsetHeight + chatarea.scrollTop == chatarea.scrollHeight) {
           confirmador = true;
       } else {
           confirmador = false;
       }
+      // console.log(chatarea.offsetHeight + chatarea.scrollTop, chatarea.scrollHeight, confirmador);
       var dateTime = moment().format("hh:mm a").toUpperCase();
       let decisiveUserMessage = 'mymessage';
       
@@ -1431,6 +1989,9 @@ var textolisto = "";
             if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
               $(`.${data.user}`).find('.contenidomessagenofocus').html(data.message);
              }
+            else if(veriUrlFile) {
+              $(`.${data.user}`).find('.contenidomessagenofocus').html(`<i class="far fa-file"></i> Ha enviado un archivo adjuntado.`);
+            }
              else {
               $(`.${data.user}`).find('.contenidomessagenofocus').text(data.message);
              }
@@ -1447,7 +2008,7 @@ var textolisto = "";
           $(`#${data.user}`).append(`
           <div id="mensaje${data.user}" class="identMessage ${decisiveUserMessage} message${data.user}">   
             <div class="othercontenidomessage">
-              <p class="res-message spacingSection">${data.message}</p> 
+              <div class="res-message spacingSection">${data.message}</div> 
             </div><div class="horamessage">
               <small class="hora">${dateTime}</small>
             </div>
@@ -1463,7 +2024,7 @@ var textolisto = "";
             <div class="mycontenidomessage">
               
             <strong class="nom-user-message">${data.name}</strong>
-            <p class="res-message">${data.message}</p>
+            <div class="res-message">${data.message}</div>
             
             </div><div class="horamessage">
                 <small class="hora">${dateTime}</small>
@@ -1491,6 +2052,9 @@ var textolisto = "";
              if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
               $(`.${data.destino}`).find('.contenidomessagenofocus').html(data.message);
              }
+             else if(veriUrlFile) {
+              $(`.${data.destino}`).find('.contenidomessagenofocus').html(`<i class="far fa-file"></i> Ha enviado un archivo adjuntado.`);
+            }
              else {
               $(`.${data.destino}`).find('.contenidomessagenofocus').text(data.message);
              }
@@ -1511,7 +2075,7 @@ var textolisto = "";
           $(`#${data.destino}`).append(`
           <div id="mensaje${data.user}" class="identMessage ${decisiveUserMessage} message${data.user}">   
             <div class="othercontenidomessage">
-              <p class="res-message spacingSection">${data.message}</p> 
+              <div class="res-message spacingSection">${data.message}</div> 
             </div><div class="horamessage">
               <small class="hora">${dateTime}</small>
             </div>
@@ -1527,7 +2091,7 @@ var textolisto = "";
           <div class="mycontenidomessage">
             
           <strong class="nom-user-message">${data.name}</strong>
-          <p class="res-message">${data.message}</p>
+          <div class="res-message">${data.message}</div>
           
           </div><div class="horamessage">
               <small class="hora">${dateTime}</small>
@@ -1632,7 +2196,12 @@ var textolisto = "";
       });
       // $(`.message${data.user}`).css('color', $('.selector-color').val());
       if(confirmador || sessionStorage.user == data.user) {
-          scrollDown($(chatarea));
+
+          if(veriUrlFile || data.message.includes('<img')) {
+            setTimeout(() => scrollDown($(chatarea)), 300);
+          } else {
+            scrollDown($(chatarea));
+          }
       }
       // Notificar mensaje
       if(!controlfocusmessage && sessionStorage.user != data.user) {
@@ -1787,6 +2356,9 @@ var textolisto = "";
             <div class="form-group form-message">
               <div class="focus-message">
                 <div contentEditable="true" placeholder="Escriba algo" id="textMessage" class="form-control textMessage" ondrop="return false;" onkeypress="return (this.innerText.length <= 3000)"></div>
+                <button class="btn btn-primary btnClip btnMessageIcons">
+                  <i class="fas fa-paperclip"></i>
+                </button>
                 ${veriEmojis}
                 <button class="btn btn-primary btnAudio btnMessageIcons"><i class="fas fa-microphone"></i></button>
                 <button class="btn btn-primary btnStickers btnMessageIcons"><i class="far fa-sticky-note"></i></button>
@@ -2003,11 +2575,10 @@ var textolisto = "";
   // btnSalirCuenta.addEventListener('click', () => {
   //   location.href = '/logout';
   // });
-  function renderImage(formData) {
-    let $image = document.querySelector('#imgUserConfig');
+  function renderImage(formData, $file) {
     const file = formData.get('archivo');
     const image = URL.createObjectURL(file);
-    $image.setAttribute('src', image);
+    $file.setAttribute('src', image);
   }
   async function changeFoto(e, imgFoto) {
     let reader = new FileReader();
@@ -2035,12 +2606,11 @@ var textolisto = "";
     const $form = document.querySelector('#uploader');
     const formData = new FormData($form);
     if (/\.(jpeg|jpg|png|gif)$/i.test(event.currentTarget.value)) {
-      renderImage(formData);
+      renderImage(formData, document.querySelector('#imgUserConfig'));
     } else {
       alert("El archivo debe ser una imagen");
     }
-    
-  })
+  });
   /*document.getElementById("file-foto").onchange = function (e) {
     let imgFoto = document.querySelector("#imgUserConfig");
     //changeFoto(e, imgFoto);
@@ -2570,7 +3140,8 @@ var textolisto = "";
       verifyNotiUser(true);
       $(this).attr('disabled', 'disabled');
   });
-  function resizePage() {   
+  function resizePage() {
+    
     if ($(window).width() <= 550) {
       if(!$('.stickersGroudPanel').hasClass('d-none')) {
         $(".card-message").css("height", $(window).height() - 525 + "px");
@@ -2601,6 +3172,11 @@ var textolisto = "";
       $(".card-config").css("max-height", $(window).height() - 165 + "px");
       $(".card-history").css("height", $(window).height() - 98 + "px");
       $(".card-history").css("max-height", $(window).height() - 98 + "px");
+    }
+    if(DestinoUser == "Todos") {
+      resizeClipFiles(document.querySelector(`#panelM`).querySelector('.btnClip'));
+    } else {
+      resizeClipFiles(document.querySelector(`#panelM${DestinoUser}`).querySelector('.btnClip'));
     }
   }
   $(window).resize(function () {
@@ -2720,6 +3296,9 @@ var textolisto = "";
           message = $(message).text() + message.split('</a>').pop();
         }
         if(message.includes('class="userLink"')) {
+          message = $(`<div>${message}</div>`).text();
+        }
+        if(message.includes('<a href="')) {
           message = $(`<div>${message}</div>`).text();
         }
         var  options  =   {

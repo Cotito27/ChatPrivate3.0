@@ -387,12 +387,14 @@ span.buttonText {
   width: 32px;
   margin-top: 10px;
 }
-.content-google {
+.content-google,
+.content-outlook {
   display: inline-flex;
   align-items: center;
   align-content: center;
 }
-.btn-google {
+.btn-google,
+.btn-outlook {
   width: 100%;
   height: 50px;
   border-radius: 25px;
@@ -414,10 +416,12 @@ span.buttonText {
   cursor: pointer;
   transition: 0.5s;
 }
-.btn-google:hover {
+.btn-google:hover,
+.btn-outlook:hover {
   background-position: right;
 }
-.title-btn-google {
+.title-btn-google,
+.title-btn-outlook {
   margin-top: 10px;
   margin-left: 10px;
 }

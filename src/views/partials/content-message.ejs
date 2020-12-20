@@ -4,6 +4,7 @@
   const fotoUser = "<%= fotoUser %>";
   const idUser = "<%= idUser %>";
 </script>
+
 <% let selector = ""; %>
 <div class="row all-panel" id="content-message" <%="selector" %>
   >
@@ -95,7 +96,8 @@
         </div>
       </div>
     </div>
-    <div class="card panel-message" id="panelM">
+    <div class="card panel-message" id="panelM">    
+    
       <div class="loader-page d-flex"></div>
       <img class="loader-imagen" src="/img/material-preloader.gif" />
 
@@ -152,6 +154,11 @@
               maxlength="3000"
             ></textarea> -->
             <div contentEditable="true" placeholder="Escriba algo" id="textMessage" class="form-control textMessage" ondrop="return false;" onkeypress="return (this.innerText.length <= 3000)"></div><!-- <p><br></p> -->
+            <!-- <input type="file" class="fileMsg" id="fileMsg"> -->
+            <!-- <label for="fileMsg"><i class="far fa-file" aria-hidden="true"></i></label> -->
+            <button class="btn btn-primary btnClip btnMessageIcons">
+              <i class="fas fa-paperclip"></i>
+            </button>
             <button class="btn btn-primary btnEmojis emoji_01 btnMessageIcons">
               <i class="fa fa-smile-o" aria-hidden="true"></i>
             </button>
@@ -323,6 +330,47 @@
     </div>
   </div>
 </div>
+
+<!-- FILES UPLOAD -->
+<div class="files-content d-none">
+  <form id="files-upload-content">
+    <label class="file-upload-msg" for="file-upload-msg"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 53 53" width="53" height="53"><defs><circle id="document-SVGID_1_" cx="26.5" cy="26.5" r="25.5"></circle></defs><clipPath id="document-SVGID_2_"><use xlink:href="#document-SVGID_1_" overflow="visible"></use></clipPath><g clip-path="url(#document-SVGID_2_)"><path fill="#5157AE" d="M26.5-1.1C11.9-1.1-1.1 5.6-1.1 27.6h55.2c-.1-19-13-28.7-27.6-28.7z"></path><path fill="#5F66CD" d="M53 26.5H-1.1c0 14.6 13 27.6 27.6 27.6s27.6-13 27.6-27.6H53z"></path></g><g fill="#F5F5F5"><path id="svg-document" d="M29.09 17.09c-.38-.38-.89-.59-1.42-.59H20.5c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H32.5c1.1 0 2-.9 2-2V23.33c0-.53-.21-1.04-.59-1.41l-4.82-4.83zM27.5 22.5V18l5.5 5.5h-4.5c-.55 0-1-.45-1-1z"></path></g></svg></label>
+    <input type="file" class="d-none" name="archivo" id="file-upload-msg" accept="*">
+    <label class="multimedia-upload-msg" for="multimedia-upload-msg"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 53 53" width="53" height="53"><defs><circle id="image-SVGID_1_" cx="26.5" cy="26.5" r="25.5"></circle></defs><clipPath id="image-SVGID_2_"><use xlink:href="#image-SVGID_1_" overflow="visible"></use></clipPath><g clip-path="url(#image-SVGID_2_)"><path fill="#AC44CF" d="M26.5-1.1C11.9-1.1-1.1 5.6-1.1 27.6h55.2c-.1-19-13-28.7-27.6-28.7z"></path><path fill="#BF59CF" d="M53 26.5H-1.1c0 14.6 13 27.6 27.6 27.6s27.6-13 27.6-27.6H53z"></path><path fill="#AC44CF" d="M17 24.5h18v9H17z"></path></g><g fill="#F5F5F5"><path id="svg-image" d="M18.318 18.25h16.364c.863 0 1.727.827 1.811 1.696l.007.137v12.834c0 .871-.82 1.741-1.682 1.826l-.136.007H18.318a1.83 1.83 0 0 1-1.812-1.684l-.006-.149V20.083c0-.87.82-1.741 1.682-1.826l.136-.007h16.364zm5.081 8.22l-3.781 5.044c-.269.355-.052.736.39.736h12.955c.442-.011.701-.402.421-.758l-2.682-3.449a.54.54 0 0 0-.841-.011l-2.262 2.727-3.339-4.3a.54.54 0 0 0-.861.011zm8.351-5.22a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501z"></path></g></svg></label>
+    <input type="file" class="d-none" name="archivo2" id="multimedia-upload-msg" accept="image/*">
+    <label class="video-upload-msg" for="video-upload-msg">
+      <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 53 53" width="53" height="53"><defs><circle id="rooms-SVGID_1_" cx="26.5" cy="26.5" r="25.5"></circle></defs><clipPath id="rooms-SVGID_2_"><use xlink:href="#rooms-SVGID_1_" overflow="visible"></use></clipPath><g clip-path="url(#rooms-SVGID_2_)"><path fill="#396CD3" d="M26.5-1.1C11.9-1.1-1.1 5.6-1.1 27.6h55.2c-.1-19-13-28.7-27.6-28.7z"></path><path fill="#4079EC" d="M53 26.5H-1.1c0 14.6 13 27.6 27.6 27.6s27.6-13 27.6-27.6H53z"></path><path fill="#396CD3" d="M17 24.5h15v9H17z"></path></g><g fill="#F5F5F5"><path id="svg-rooms" fill-rule="evenodd" clip-rule="evenodd" d="M28.5 18a3.5 3.5 0 0 1 3.5 3.5v10a3.5 3.5 0 0 1-3.5 3.5h-10a3.5 3.5 0 0 1-3.5-3.5v-10a3.5 3.5 0 0 1 3.5-3.5h10zm-7.925 6.782a.804.804 0 0 0-1.045-.073l-.708.698-.297.33-.134.177a4.075 4.075 0 0 0 .433 5.265 4.07 4.07 0 0 0 2.886 1.198c.976 0 1.952-.349 2.73-1.05l.784-.777.077-.091.063-.102.045-.105a.797.797 0 0 0-.189-.824.806.806 0 0 0-1.045-.073l-.704.694-.123.116-.147.119-.15.105a2.5 2.5 0 0 1-3.099-.337 2.492 2.492 0 0 1-.12-3.392l.748-.756.076-.091.063-.102.046-.105a.794.794 0 0 0-.19-.824zm5.281-.637a.803.803 0 0 0-1.044-.073l-3.67 3.662-.078.091-.063.102-.045.105a.793.793 0 0 0 .754 1.056.805.805 0 0 0 .481-.16l3.671-3.662.076-.09.064-.102.045-.105a.795.795 0 0 0-.191-.824zm2.323-2.323a4.078 4.078 0 0 0-5.615-.149l-.785.777-.073.084-.062.098a.806.806 0 0 0 .14.941.803.803 0 0 0 1.043.072l.705-.693.127-.119.137-.111a2.494 2.494 0 0 1 3.257.227c.921.923.972 2.413.117 3.392l-.746.755-.072.084-.062.098a.8.8 0 0 0 .139.941.8.8 0 0 0 1.043.072l.709-.697.148-.156.145-.17a4.084 4.084 0 0 0-.295-5.446zm9.815-.188l.006.129v9.474c0 1.31-1.714 1.998-2.744 1.12l-.878-.847a2.828 2.828 0 0 1-.871-1.849l-.007-.19v-5.943c0-.765.316-1.498.879-2.039l.877-.846c.996-.848 2.631-.234 2.738.991z"></path></g></svg>
+    </label>
+    <input type="file" class="d-none" name="archivo3" id="video-upload-msg" accept="video/*">
+    <label class="audio-upload-msg" for="audio-upload-msg"><i class="fas fa-headphones-alt"></i></label>
+    <input type="file" class="d-none" name="archivo4" id="audio-upload-msg" accept="audio/*">
+  </form>
+</div>
+<!-- ,video/*,audio/* -->
+
+
+<!-- PANEL FILES --> 
+  <!-- <div class="panel-files-content">
+    <div class="card-header text-white" style="background-color: #323739; font-size: 19px;     font-weight: 500;">
+      <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+      <div class="d-inline">
+        Vista Previa
+      </div>
+    </div>
+    <div class="card-body text-white" style="background-color: transparent; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAA8CAYAAADL94L/AAAByElEQVR4Ae3axdJTQRAFYFyegA3u8ALseCDcicsGhxt3x+G32BXc3X3NBnfXYTqp3sZlhuqpOlXZRL46He9ReJyJxGSTEreaPfEHZiX+1uSJvelVNu+Jvjd7Yk9zI8aSUe0eDpjCIYfNSuw5v/zF5In/6mU27478tXriLJvXjdSwPq1lCDTCmxjiCNav8GZYBVMwWKagX8kWjk9vCcMhYWhEFEw1+oV0wZjdPKY6Vn9EwmBDTYPwBoXCYPLGDQTJjkHQNQRJj0FQtmgs+C8wOHIIkh2DoDu5vD5Xfkz9hsTBWDyxhjDYUDqvLRYSY1JilSQGyyxXOt4QKJPX70NDQmI27gyxHcn9bH/5RFMNAUgoDI4afOAMHBiCdiDNj5woGAhgsCEYudSI1lBCRwoPL957slAoDDYEoPXb/ZVs3FE/y9072fDxsx4BMPVfGOpl1VY/y5++4EWM1Fm9LcCKpy8RpnchDGEIQxjCEIYwhCEMYQhDGMIQhjCEIQxhCEMYwhCGMIQhDGEIQxhYNlXiP+XHXLRDM5thQVpyzIfS2YtLceVEkRmzalsgMArPhp258bA6b/LEb8LqPM930VNdvY/fhMmCxw+Of+4BTcPInBo2AAAAAElFTkSuQmCC" alt="" class="iconImgFiles mb-2" style="border-radius: 0px;width: 26px;height: 30px;">
+      <div class="title-file-upload d-block" style="font-weight: 300;font-family: inherit;color: rgb(200,200,200); font-size: 18px;">Test.php</div>
+    </div>
+    <div class="btnSendFile text-white text-center" style="position: absolute; right: 40px; bottom: 75px; background-color: #00af9c; border-radius: 35px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+    </div>
+    <div class="card-footer" style="background-color: #191F23; width: 100%; height: 125px; display: flex; align-items: center; justify-content: center; flex-direction: row;">
+      <div class="reserve-file" style="width: 70px; height: 74px; border: 3px solid #75787A; display: flex; align-items: center; justify-content: center;">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAA8CAYAAADL94L/AAAByElEQVR4Ae3axdJTQRAFYFyegA3u8ALseCDcicsGhxt3x+G32BXc3X3NBnfXYTqp3sZlhuqpOlXZRL46He9ReJyJxGSTEreaPfEHZiX+1uSJvelVNu+Jvjd7Yk9zI8aSUe0eDpjCIYfNSuw5v/zF5In/6mU27478tXriLJvXjdSwPq1lCDTCmxjiCNav8GZYBVMwWKagX8kWjk9vCcMhYWhEFEw1+oV0wZjdPKY6Vn9EwmBDTYPwBoXCYPLGDQTJjkHQNQRJj0FQtmgs+C8wOHIIkh2DoDu5vD5Xfkz9hsTBWDyxhjDYUDqvLRYSY1JilSQGyyxXOt4QKJPX70NDQmI27gyxHcn9bH/5RFMNAUgoDI4afOAMHBiCdiDNj5woGAhgsCEYudSI1lBCRwoPL957slAoDDYEoPXb/ZVs3FE/y9072fDxsx4BMPVfGOpl1VY/y5++4EWM1Fm9LcCKpy8RpnchDGEIQxjCEIYwhCEMYQhDGMIQhjCEIQxhCEMYwhCGMIQhDGEIQxhYNlXiP+XHXLRDM5thQVpyzIfS2YtLceVEkRmzalsgMArPhp258bA6b/LEb8LqPM930VNdvY/fhMmCxw+Of+4BTcPInBo2AAAAAElFTkSuQmCC" alt="" class="iconImgFiles" style="border-radius: 0px;width: 26px;height: 30px;">
+      </div>
+    </div>
+  </div> -->
+
 <!-- 261 -->
 <audio class="soundChat" src="/audio/chat.mp3"></audio>
 <audio class="soundExitPage" src="/audio/desconnect-user3.mp3"></audio>

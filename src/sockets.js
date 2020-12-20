@@ -1,9 +1,12 @@
 const User = require('./models/User.model');
 const fs = require('fs-extra');
 const path = require('path');
+const ss = require('socket.io-stream');
 let audioStorage = [];
 const { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_DATABASE_URL, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID } = process.env;
 let { sessionsRoom } = require('./variables');
+
+let arrayBufferFile;
 
 let users = {};
 let sessions = {};
@@ -182,6 +185,24 @@ module.exports = [
         // console.log(data.identOtherUser, data.identUser);
         if(socket.sessionId == data.sessionId) {
           io.sockets.to(data.identOtherUser).to(data.identUser).emit("cambiarApodo", data);
+        }
+      });
+
+      socket.on('readFile', async function(data) {
+      });
+
+      socket.on('sendFileMsg', async function(data) {
+        // console.log(data.sessionId, socket.sessionId, data.destino, data.user);
+        if(data.sessionId == socket.sessionId) {
+          // let ss = await fs.readFile(data.file);
+          // console.log(ss);
+          let newData = data;
+          if(data.destino == "Todos") {
+            await io.sockets.emit('getMessage', newData);
+          } else {
+            await io.to(data.destino).to(data.user).sockets.emit('getMessage', newData);
+          }
+          
         }
       });
 

@@ -9,7 +9,8 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-FacebookStrategy = require('passport-facebook').Strategy;
+FacebookStrategy = require('passport-facebook').Strategy,
+OutlookStrategy = require('passport-outlook').Strategy;
 
 // KEYS FIREBASE
 const { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_DATABASE_URL, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID } = process.env;
@@ -135,6 +136,40 @@ function(accessToken, refreshToken, profile, done) {
     foto: profile.photos[0].value
   });
 }
+));
+
+passport.use(new OutlookStrategy({
+    clientID: process.env.OUTLOOK_CLIENT_ID,
+    clientSecret: process.env.OUTLOOK_CLIENT_SECRET,
+    callbackURL: `${LOCATION_URL_ORIGIN}/outlook/callback`,
+  },
+  function(accessToken, refreshToken, profile, done) {
+    // console.log(profile);
+    return done(null, {
+      id: profile.id.split('@')[1],
+      user: profile.emails[0].value,
+      name: profile.displayName,
+      foto: 'https://yt3.ggpht.com/yti/ANoDKi56hUd0nUHBuxBHFhSaAPRGkufNNSNGi9TDYQ=s108-c-k-c0x00ffffff-no-rj'
+  } );
+  //'/img/avatar-login3.png'
+  
+    // return done(null, profile);
+    // var user = {
+    //   outlookId: profile.id,
+    //   name: profile.DisplayName,
+    //   email: profile.EmailAddress,
+    //   accessToken: accessToken
+    // };
+    // if (refreshToken)
+    //   user.refreshToken = refreshToken;
+    // if (profile.MailboxGuid)
+    //   user.mailboxGuid = profile.MailboxGuid;
+    // if (profile.Alias)
+    //   user.alias = profile.Alias;
+    // User.findOrCreate(user, function (err, user) {
+    //   return done(err, user);
+    // });
+  }
 ));
 
 // SERIALIZAR USER

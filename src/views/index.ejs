@@ -1,36 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/img/ventana-de-chat.png" />
     <!-- <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">  -->
     <title><%= title %></title>
     <%- include ('partials/head')%>
-    
-</head>
+  </head>
 
-<body>
-  <!--<audio id="audio" class="audio" src="/audio/samsung-sound.mp3"></audio>-->
-    
-    <div class="container p-3">
-      <% if(isValidate) { %>
-        <%- include ('partials/navigation')%>
-        <%- include ('partials/content-message')%>
-        <%- include ('partials/content-history')%>
-        <%- include ('partials/content-users')%>
-        <%- include ('partials/content-config')%>
-      <% } else { %>    
-        <% if(redirect == 'newSession') { %>
-          <%- include ('sessions/newSession')%>
-        <% }else if(redirect == 'login-form') { %>       
-        <%- include ('authentication/login-form')%>
-        <% } else { %>
-          <%- include ('authentication/register-form')%>  
-        <% } %>
-      <% } %>
+  <body>
+    <!--<audio id="audio" class="audio" src="/audio/samsung-sound.mp3"></audio>-->
+
+    <% if(isValidate) { %>
+    <img
+      class="imgViewUpload zoom d-none"
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUcEpvNZ1lpyUlF9Fo0AS3aT8JnEorkr91LA&usqp=CAU"
+      alt=""
+    />
+    <div class="panel-view-img-file d-none">
+      <div class="info-img-view">
+        <img
+          src="https://www.internetmatters.org/wp-content/uploads/2018/02/Whatsapp-logo-pc-600x314.png"
+        />
+        <div class="align-info-img" style="">
+          <span class="name-info-img">Jesus</span>
+
+          <span class="hora-info-img">10:03 PM</span>
+        </div>
+      </div>
+      <span class="closeViewImg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+        >
+          <path
+            fill="currentColor"
+            d="M19.8 5.8l-1.6-1.6-6.2 6.2-6.2-6.2-1.6 1.6 6.2 6.2-6.2 6.2 1.6 1.6 6.2-6.2 6.2 6.2 1.6-1.6-6.2-6.2 6.2-6.2z"
+          ></path>
+        </svg>
+      </span>
+      <span class="downloadViewImg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+        >
+          <path
+            fill="currentColor"
+            d="M18.9 10.3h-4V4.4H9v5.9H5l6.9 6.9 7-6.9zM5.1 19.2v2H19v-2H5.1z"
+          ></path>
+        </svg>
+      </span>
     </div>
-  
+    <% } %>
+    <div class="container p-3">
+      <% if(isValidate) { %> <%- include ('partials/navigation')%> <%- include
+      ('partials/content-message')%> <%- include ('partials/content-history')%>
+      <%- include ('partials/content-users')%> <%- include
+      ('partials/content-config')%> <% } else { %> <% if(redirect ==
+      'newSession') { %> <%- include ('sessions/newSession')%> <% }else
+      if(redirect == 'login-form') { %> <%- include
+      ('authentication/login-form')%> <% } else { %> <%- include
+      ('authentication/register-form')%> <% } %> <% } %>
+    </div>
+
     <%- include ('partials/footer')%>
-</body>
+  </body>
 </html>

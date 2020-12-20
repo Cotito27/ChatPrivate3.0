@@ -94,3 +94,51 @@
   animation: rotarload 1s ease-out infinite;
   transform: rotate(0deg);
 }
+.loader-page-files {
+  position: absolute;
+  z-index: 2;
+  background: transparent;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  display: none;
+}
+.loader-page-files::before {
+  content: "";
+  position: absolute;
+  border: 2px solid rgb(193, 149, 235);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border-left: 2px solid rgba(102, 0, 204, 0);
+  border-top: 2px solid rgba(102, 0, 204, 0);
+  animation: rotarload 1s linear infinite;
+  transform: rotate(0deg);
+}
+@keyframes rotarload {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loader-page-files::after {
+  content: "";
+  position: absolute;
+  border: 2px solid rgba(159, 118, 201, 0.5);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border-left: 2px solid rgba(102, 0, 204, 0);
+  border-top: 2px solid rgba(102, 0, 204, 0);
+  animation: rotarload 1s ease-out infinite;
+  transform: rotate(0deg);
+}
