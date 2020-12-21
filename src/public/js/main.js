@@ -371,58 +371,65 @@ $(document).ready(function() {
   let fileName = "";
   let fileSrc = "";
   let fileSize = 0;
-  $('#multimedia-upload-msg').change(function(event) {
+  let typeFile = "";
+
+  $('#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').change(function(event) {
+      if($(this).prop('id') == 'multimedia-upload-msg') {
+        typeFile = 'image';
+      } else if($(this).prop('id') == 'video-upload-msg') {
+        typeFile = 'video';
+      } else if($(this).prop('id') == 'audio-upload-msg') {
+        typeFile = 'audio';
+      }
       let nameFile = event.currentTarget.files[0].name;
       const $form = document.querySelector('#files-upload-content');
       const formData = new FormData($form);
       // if (/\.(jpeg|jpg|png|gif)$/i.test(event.currentTarget.value)) {
       //   renderImage(formData, document.querySelector('#imgUserConfig'));
-      let imgPreviewUrl = URL.createObjectURL(formData.get('archivo2'));
+      let imgPreviewUrl;
+      if(typeFile == 'image') {
+        imgPreviewUrl = URL.createObjectURL(formData.get('archivo2'));
+      } else if(typeFile == 'video') {
+        imgPreviewUrl = URL.createObjectURL(formData.get('archivo3'));
+      } else if(typeFile == 'audio') {
+        imgPreviewUrl = URL.createObjectURL(formData.get('archivo4'));
+      }
       
       let data = event.target.files[0];
       let reader = new FileReader();
       let fileR = this;
-      if(DestinoUser == "Todos") {
-        $(`#panelM`).append(`<div class="panel-files-content d-none">
-        <div class="card-header text-white headerFilesPanel">
-          <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
-          <div class="d-inline">
-            Vista Previa
-          </div>
-        </div>
-        <div class="card-body text-white bodyFilesPanel">
-          <div class="loader-page-files d-flex"></div>
-        </div>
-        <div class="btnSendFile text-white text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
-        </div>
-        <div class="card-footer footerFilesPanel">
-          <div class="reserve-file">
-            <img src="${imgPreviewUrl}" alt="" class="iconImgFiles">
-          </div>
-        </div>
-      </div>`);
-      } else {
-        $(`#panelM${DestinoUser}`).append(`<div class="panel-files-content d-none">
-        <div class="card-header text-white headerFilesPanel">
-          <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
-          <div class="d-inline">
-            Vista Previa
-          </div>
-        </div>
-        <div class="card-body text-white bodyFilesPanel">
-          <div class="loader-page-files d-flex"></div>
-        </div>
-        <div class="btnSendFile text-white text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
-        </div>
-        <div class="card-footer footerFilesPanel">
-          <div class="reserve-file">
-            <img src="${imgPreviewUrl}" alt="" class="iconImgFiles">
-          </div>
-        </div>
-      </div>`);
+      let uriDestino = "";
+      let decisiveTag = "";
+      if(DestinoUser != "Todos") {
+        uriDestino = DestinoUser;
       }
+      if(typeFile == 'image') {
+        decisiveTag = `<img src="${imgPreviewUrl}" alt="" class="iconImgFiles">`;
+      } else if(typeFile == 'video') {
+        decisiveTag = `<video src="${imgPreviewUrl}" alt="" class="iconImgFiles"></video>`
+      } else if(typeFile == 'audio') {
+        decisiveTag = `<img src="/img/audio-upload.png" alt="" class="iconImgFiles">`
+      }
+        $(`#panelM${uriDestino}`).append(`<div class="panel-files-content d-none">
+        <div class="card-header text-white headerFilesPanel">
+          <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+          <div class="d-inline">
+            Vista Previa
+          </div>
+        </div>
+        <div class="card-body text-white bodyFilesPanel">
+          <div class="loader-page-files d-flex"></div>
+        </div>
+        <div class="btnSendFile text-white text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+        </div>
+        <div class="card-footer footerFilesPanel">
+          <div class="reserve-file">
+            ${decisiveTag}
+          </div>
+        </div>
+      </div>`);
+      
       var div = $(".panel-files-content");
 
           var height = div.removeClass('d-none').height();
@@ -450,7 +457,7 @@ $(document).ready(function() {
           $('.panel-files-content').remove();
           confirProsegFile = false;
           reader = null;
-          $('#file-upload-msg').val(null);
+          $('#file-upload-msg,#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').val(null);
           return alert('El archivo no puede pesar más de 800 kbs');
           
         };
@@ -465,8 +472,17 @@ $(document).ready(function() {
         fileSize = evt.total;
         
         // $('.panel-files-content').remove();
-        $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${imgPreviewUrl}">
-        <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        if(typeFile == 'image') {
+          $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${imgPreviewUrl}">
+          <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        } else if(typeFile == 'video') {
+          $('.bodyFilesPanel').html(`<video class="imgPreviewUpload" src="${imgPreviewUrl}" controls></video>
+          <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        } else if(typeFile == 'audio') {
+          $('.bodyFilesPanel').html(`<audio class="imgPreviewUpload" src="${imgPreviewUrl}" controls></audio>
+          <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        }
+        
         $('.textCommentImgFile').focus();
         // $('.panel-files-content').slideToggle();
         // $('.panel-files-content').slideUp(2000, function() {
@@ -559,7 +575,7 @@ $(document).ready(function() {
             $('.panel-files-content').remove();
             confirProsegFile = false;
             reader = null;
-            $('#file-upload-msg').val(null);
+            $('#file-upload-msg,#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').val(null);
             return alert('El archivo no puede pesar más de 800 kbs');
             
           };
@@ -659,8 +675,7 @@ $(document).ready(function() {
         $(`#panelM${DestinoUser}`).find('.panel-files-content').remove();
       });
     }
-    $('#file-upload-msg').val(null);
-    $('#multimedia-upload-msg').val(null);
+    $('#file-upload-msg,#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').val(null);
   });
   $('#files-upload-content').submit(function(e) {
     return e.preventDefault();
@@ -683,6 +698,39 @@ async function base64ToBufferAsync(base64) {
       console.log("base64 to buffer: " + new Uint8Array(buffer));
     })
 }
+  $('body').on('keydown', '.textCommentImgFile', function(e) {
+   
+    if(e.keyCode == 13) {
+      e.preventDefault();
+      if($('.textCommentImgFile')[0]) {
+        socket.emit('sendFileMsg', {
+          user: sessionStorage.user,
+          name: sessionStorage.name,
+          foto: sessionStorage.foto || fotoDefault,
+          sessionId: sessionId,
+          destino: DestinoUser,
+          message: '',
+          file: fileSrc,
+          fileName: fileName,
+          comment: $('.textCommentImgFile').val(),
+          typeFile: typeFile
+        });
+        
+      } else {
+        socket.emit('sendFileMsg', {
+          user: sessionStorage.user,
+          name: sessionStorage.name,
+          foto: sessionStorage.foto || fotoDefault,
+          sessionId: sessionId,
+          destino: DestinoUser,
+          message: '',
+          file: fileSrc,
+          fileName: fileName
+        });
+        
+      }
+    }
+  });
   $('body').on('click', '.btnSendFile', async function(e) {
       // const $form = document.querySelector('#files-upload-content');
       // const formData = new FormData($form);
@@ -704,7 +752,8 @@ async function base64ToBufferAsync(base64) {
           message: '',
           file: fileSrc,
           fileName: fileName,
-          comment: $('.textCommentImgFile').val()
+          comment: $('.textCommentImgFile').val(),
+          typeFile: typeFile
         });
         
       } else {
@@ -1831,6 +1880,9 @@ var textolisto = "";
     a.href = $('.imgViewUpload').prop('src');
     a.click();
   });
+
+  let activeReprodAud = false;
+
   function findResponseMessage(socket) {
     socket.on('getMessage', async (data) => {
       let veriUrlFile = false;
@@ -1853,14 +1905,32 @@ var textolisto = "";
             </div>
             </a>`;
         } else {
-          if(data.comment == "") {
-            data.message = `<img data-title="${data.fileName}" src="${newUrl}" class="imgFileUpload">`;
-          } else {
-            data.message = `<img data-title="${data.fileName}" src="${newUrl}" class="imgFileUpload">
-          <div class="comment-img-file">${data.comment}</div>`;
+          if(data.typeFile == 'image') {
+            if(data.comment == "") {
+              data.message = `<img data-title="${data.fileName}" src="${newUrl}" class="imgFileUpload">`;
+            } else {
+              data.message = `<img data-title="${data.fileName}" src="${newUrl}" class="imgFileUpload">
+            <div class="comment-img-file">${data.comment}</div>`;
+            }
+          } else if(data.typeFile == 'video') {
+            if(data.comment == "") {
+              data.message = `<video data-title="${data.fileName}" src="${newUrl}" class="videoFileUpload" controls download="${data.fileName}"></video>`;
+            } else {
+              data.message = `<video data-title="${data.fileName}" src="${newUrl}" class="videoFileUpload" controls download="${data.fileName}"></video>
+            <div class="comment-img-file">${data.comment}</div>`;
+            }
+          } else if(data.typeFile == 'audio') {
+            if(data.comment == "") {
+              data.message = `<audio data-title="${data.fileName}" src="${newUrl}" class="audioFileUpload" controls  controlsList="nodownload" download="${data.fileName}"></audio>`;
+            } else {
+              data.message = `<audio data-title="${data.fileName}" src="${newUrl}" class="audioFileUpload" controls  controlsList="nodownload" download="${data.fileName}"></audio>
+            <div class="comment-img-file">${data.comment}</div>`;
+            }
           }
           
+          //controlsList="nodownload"
         }
+        
         // URL.revokeObjectURL(newUrl);
         if(sessionStorage.user == data.user) {
           var div = $(".panel-files-content");
@@ -1878,8 +1948,7 @@ var textolisto = "";
               height: 0
           }, 180, function () {
             $('.panel-files-content').remove();
-            $('#file-upload-msg').val(null);
-            $('#multimedia-upload-msg').val(null);
+            $('#file-upload-msg,#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').val(null);
           });
           // $('.panel-files-content').remove();
         }
@@ -2195,13 +2264,28 @@ var textolisto = "";
         });
       });
       // $(`.message${data.user}`).css('color', $('.selector-color').val());
-      if(confirmador || sessionStorage.user == data.user) {
+      if(!activeReprodAud) {
+        if(confirmador || sessionStorage.user == data.user) {
 
           if(veriUrlFile || data.message.includes('<img')) {
             setTimeout(() => scrollDown($(chatarea)), 300);
           } else {
             scrollDown($(chatarea));
           }
+        }
+      }
+      
+      if(sessionStorage.user == data.user) {
+          $('video,audio:not(.soundChat,.soundMentionMe)').on('play', function() {
+            // alert('Play');
+            activeReprodAud = true;
+          });
+          $('video,audio:not(.soundChat,.soundMentionMe)').bind('ended', function() {
+            activeReprodAud = false;
+          });
+          $('video,audio:not(.soundChat,.soundMentionMe)').on('pause', function() {
+            activeReprodAud = false;
+          });
       }
       // Notificar mensaje
       if(!controlfocusmessage && sessionStorage.user != data.user) {
