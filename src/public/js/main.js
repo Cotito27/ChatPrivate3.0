@@ -3485,38 +3485,43 @@ var textolisto = "";
       verifyNotiUser(true);
       $(this).attr('disabled', 'disabled');
   });
+
+  // let vh = document.querySelector('html');
+  // alert(getComputedStyle(vh).getPropertyValue('--vh'));
+  
+
+  
   function resizePage() {
-    
     if ($(window).width() <= 550) {
       if(!$('.stickersGroudPanel').hasClass('d-none')) {
-        $(".card-message").css("height", $(window).height() - 525 + "px");
-        $(".card-message").css("max-height", $(window).height() - 525 + "px");
+        $(".card-message").css("height", window.innerHeight - 525 + "px");
+        $(".card-message").css("max-height", window.innerHeight - 525 + "px");
       } else {
-        $(".card-message").css("height", $(window).height() - 202 + "px");
-        $(".card-message").css("max-height", $(window).height() - 202 + "px");
+        $(".card-message").css("height", window.innerHeight - 202 + "px");
+        $(".card-message").css("max-height", window.innerHeight - 202 + "px");
       }
       
-      $(".card-users").css("height", $(window).height() - 127 + "px");
-      $(".card-users").css("max-height", $(window).height() - 127 + "px");
-      $(".card-config").css("height", $(window).height() - 129 + "px");
-      $(".card-config").css("max-height", $(window).height() - 129 + "px");
-      $(".card-history").css("height", $(window).height() - 62 + "px");
-      $(".card-history").css("max-height", $(window).height() - 62 + "px");
+      $(".card-users").css("height", window.innerHeight - 127 + "px");
+      $(".card-users").css("max-height", window.innerHeight - 127 + "px");
+      $(".card-config").css("height", window.innerHeight - 129 + "px");
+      $(".card-config").css("max-height", window.innerHeight - 129 + "px");
+      $(".card-history").css("height", window.innerHeight - 62 + "px");
+      $(".card-history").css("max-height", window.innerHeight - 62 + "px");
     } else {
       if(!$('.stickersGroudPanel').hasClass('d-none')) {
-        $(".card-message").css("height", $(window).height() - 561 + "px");
-        $(".card-message").css("max-height", $(window).height() - 561 + "px");
+        $(".card-message").css("height", window.innerHeight - 561 + "px");
+        $(".card-message").css("max-height", window.innerHeight - 561 + "px");
       } else {
-        $(".card-message").css("height", $(window).height() - 238 + "px");
-        $(".card-message").css("max-height", $(window).height() - 238 + "px");
+        $(".card-message").css("height", window.innerHeight - 238 + "px");
+        $(".card-message").css("max-height", window.innerHeight - 238 + "px");
       }
       
-      $(".card-users").css("height", $(window).height() - 163 + "px");
-      $(".card-users").css("max-height", $(window).height() - 163 + "px");
-      $(".card-config").css("height", $(window).height() - 165 + "px");
-      $(".card-config").css("max-height", $(window).height() - 165 + "px");
-      $(".card-history").css("height", $(window).height() - 98 + "px");
-      $(".card-history").css("max-height", $(window).height() - 98 + "px");
+      $(".card-users").css("height", window.innerHeight - 163 + "px");
+      $(".card-users").css("max-height", window.innerHeight - 163 + "px");
+      $(".card-config").css("height", window.innerHeight - 165 + "px");
+      $(".card-config").css("max-height", window.innerHeight - 165 + "px");
+      $(".card-history").css("height", window.innerHeight - 98 + "px");
+      $(".card-history").css("max-height", window.innerHeight - 98 + "px");
     }
     if(DestinoUser == "Todos") {
       resizeClipFiles(document.querySelector(`#panelM`).querySelector('.btnClip'));
@@ -3524,10 +3529,21 @@ var textolisto = "";
       resizeClipFiles(document.querySelector(`#panelM${DestinoUser}`).querySelector('.btnClip'));
     }
   }
+
+  // console.log(window, screen);
   $(window).resize(function () {
+    // alert(window.innerHeight);
+    // alert(window.outerHeight);
+    // alert($(window).height());
+    // alert($(window).height());
+    // alert(screen.height);
+    // alert($(window).scrollTop());
     resizePage();
   });
+
+
   $(window).scroll(function() {
+    // alert($(window).scrollTop());
     resizePage();
   });
   resizePage();
