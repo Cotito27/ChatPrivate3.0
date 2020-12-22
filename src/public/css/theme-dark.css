@@ -108,10 +108,12 @@ hr {
   border-top: 1px solid rgb(120, 120, 120) !important;
 }
 #guardarCambios {
-  background-color: teal;
+  background-color: rgb(46, 44, 187) !important;
+  border: none !important;
+  outline: none !important;
 }
 #guardarCambios:hover {
-  background-color: rgb(50, 90, 90);
+  background-color: rgb(17, 24, 116) !important;
 }
 #eliminarFoto {
   background-color: brown;

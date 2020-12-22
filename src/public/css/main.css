@@ -70,6 +70,12 @@
 .card-history {
   padding: 0;
 }
+
+/* html {
+  max-height: 100vh;
+  overflow: hidden;
+} */
+
 body {
   /*background: transparent;*/
   background: #ecfffd;
@@ -342,6 +348,7 @@ img.zoom {
 }
 
 .comment-img-file {
+  text-decoration: solid;
   color: black;
 }
 
@@ -407,7 +414,8 @@ img.zoom {
 #content-config img,
 .contenidousers img,
 .content-edit img,
-.content-viewed img {
+.content-viewed img,
+.content-hash img {
   border-radius: 150px;
   /*background-repeat: no-repeat;
     background-position: 50%;
@@ -609,8 +617,9 @@ hr {
 }
 
 #imgUserConfig {
-  width: 65px;
-  height: 65px;
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
 }
 .subcontenidousers {
   display: flex;
@@ -635,6 +644,11 @@ hr {
 .nom-user-message {
   font-weight: 590;
   color: #000;
+}
+
+.nameUserConfig {
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .otherNameUser {
@@ -786,6 +800,12 @@ textarea {
   flex-direction: column;
   max-width: 65px;
 }
+
+.videoFileUpload {
+  padding: 5px;
+  max-width: 400px;
+}
+
 .file-upload-msg,
 .multimedia-upload-msg,
 .video-upload-msg {
@@ -827,9 +847,19 @@ textarea {
 }
 .imgPreviewUpload {
   max-width: 90%;
-  max-height: 50%;
+  max-height: 65%;
+  min-height: 100px;
   border-radius: 0px;
   margin-bottom: 65px;
+}
+
+.content-upload-movil {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 95%;
+  bottom: 25px;
 }
 
 .bodyFilesPanel {
@@ -858,7 +888,8 @@ textarea {
   height: 30px;
 }
 
-.btnSendFile {
+.btnSendFile,
+.loader-file-msg {
   position: absolute;
   right: 40px;
   bottom: 75px;
@@ -1468,6 +1499,12 @@ audio::-webkit-media-controls-volume-slider {
 }
 
 .download-audio {
+}
+
+@media only screen and (max-width: 767px) {
+  .videoFileUpload {
+    max-width: 100% !important;
+  }
 }
 
 @media only screen and (max-width: 550px) {

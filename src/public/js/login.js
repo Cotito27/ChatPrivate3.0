@@ -45,7 +45,7 @@ $(document).ready(function() {
   const btnCrearSala = document.querySelector('.btnCrearSala');
   const btnUnirse = document.querySelector('.btnUnirse');
   const codUrl = document.querySelector('#codUrl');
-  
+ 
   const registrarse = document.getElementById('registrarse');
   const formRegister = document.getElementById('form-register');
   const btnEntrarSala = document.querySelector('.btnEntrarSala');

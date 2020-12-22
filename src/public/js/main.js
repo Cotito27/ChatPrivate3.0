@@ -131,8 +131,17 @@ $(document).ready(function() {
   socket.on('disconnect', function () { 
     console.log('reconnecting...');
     // userConnect(socket, sessionStorage.user, sessionStorage.name);
-    window.onbeforeunload = () => null;
-    location.reload();
+    if(confirm('Ups!, hubo un problema, ¿desea reconectarse?')) {
+      $('.closeTabFiles').click();
+      userConnect(socket, sessionStorage.user, sessionStorage.name);
+      socket.emit('addSession', location.href.split('/').pop() || location.href.split(/\\/g).pop());
+    } else {
+      // window.onbeforeunload = () => null;
+      // location.reload();
+      window.onbeforeunload = () => null;
+      location.href = '/';
+    }
+    
   });
 
   function actualizarEstado(e) {
@@ -294,9 +303,9 @@ $(document).ready(function() {
     });
   }
 
-  $('body').on('change', '.btnFile', function() {
+  // $('body').on('change', '.btnFile', function() {
 
-  });
+  // });
 
   function getOffsetLeft( elem )
   {
@@ -372,18 +381,36 @@ $(document).ready(function() {
   let fileSrc = "";
   let fileSize = 0;
   let typeFile = "";
-
+  let formGlobalData = "";
   $('#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').change(function(event) {
+    if(loadingState) {
+     alert('El archivo seleccionado anteriormente sigue cargando');
+     return;
+    }
+    let form = $('#files-upload-content')[0];
+    // console.log(form);
+    const $form = document.querySelector('#files-upload-content');
+      const formData = new FormData($form);
+    formGlobalData = new FormData();
       if($(this).prop('id') == 'multimedia-upload-msg') {
-        typeFile = 'image';
+        typeFile = 'image'; 
+        formGlobalData.set('archivo', formData.get('archivo2'));
       } else if($(this).prop('id') == 'video-upload-msg') {
         typeFile = 'video';
+        formGlobalData.set('archivo', formData.get('archivo3'));
       } else if($(this).prop('id') == 'audio-upload-msg') {
+        if(!noMobileAct) {
+          if(!/\.(gsm|dct|vox|smaf|aiff|au|flac|alac|ogg|mpc|raw|tta|mp3|aac|mp4|wma|wav|ram|dss|dvf|ivs|m4p|lklak|MIDI)$/i.test($(this).val())) {
+            alert('El archivo seleccionado debe de tener formato de audio');
+            return;
+          }
+        }
         typeFile = 'audio';
+        formGlobalData.set('archivo', formData.get('archivo4'));
       }
+      
       let nameFile = event.currentTarget.files[0].name;
-      const $form = document.querySelector('#files-upload-content');
-      const formData = new FormData($form);
+      
       // if (/\.(jpeg|jpg|png|gif)$/i.test(event.currentTarget.value)) {
       //   renderImage(formData, document.querySelector('#imgUserConfig'));
       let imgPreviewUrl;
@@ -410,6 +437,7 @@ $(document).ready(function() {
       } else if(typeFile == 'audio') {
         decisiveTag = `<img src="/img/audio-upload.png" alt="" class="iconImgFiles">`
       }
+       if(noMobileAct) {
         $(`#panelM${uriDestino}`).append(`<div class="panel-files-content d-none">
         <div class="card-header text-white headerFilesPanel">
           <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
@@ -429,6 +457,19 @@ $(document).ready(function() {
           </div>
         </div>
       </div>`);
+       } else {
+        $(`#panelM${uriDestino}`).append(`<div class="panel-files-content d-none">
+        <div class="card-header text-white headerFilesPanel">
+          <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+          <div class="d-inline">
+            Vista Previa
+          </div>
+        </div>
+        <div class="card-body text-white bodyFilesPanel">
+          <div class="loader-page-files d-flex"></div>
+        </div>
+      </div>`);
+       }
       
       var div = $(".panel-files-content");
 
@@ -452,18 +493,19 @@ $(document).ready(function() {
       let confirProsegFile = true;
       reader.onloadstart = function(evt) {
         fileSize = evt.total;
-        if(fileSize > 800000) 
+        if(fileSize > 10000000) 
         {
           $('.panel-files-content').remove();
           confirProsegFile = false;
           reader = null;
           $('#file-upload-msg,#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').val(null);
-          return alert('El archivo no puede pesar más de 800 kbs');
+          return alert('El archivo no puede pesar más de 10 mgbs');
           
         };
       }
+
       reader.onload = function(evt){
-   
+        
       };
       reader.onloadend = function(evt) {
         if(!confirProsegFile) return;
@@ -472,16 +514,63 @@ $(document).ready(function() {
         fileSize = evt.total;
         
         // $('.panel-files-content').remove();
-        if(typeFile == 'image') {
-          $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${imgPreviewUrl}">
-          <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
-        } else if(typeFile == 'video') {
-          $('.bodyFilesPanel').html(`<video class="imgPreviewUpload" src="${imgPreviewUrl}" controls></video>
-          <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
-        } else if(typeFile == 'audio') {
-          $('.bodyFilesPanel').html(`<audio class="imgPreviewUpload" src="${imgPreviewUrl}" controls></audio>
-          <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        
+        
+        if(noMobileAct) {
+          if(typeFile == 'image') {
+            $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${imgPreviewUrl}">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+          } else if(typeFile == 'video') {
+            $('.bodyFilesPanel').html(`<video class="imgPreviewUpload" src="${imgPreviewUrl}" controls></video>
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+          } else if(typeFile == 'audio') {
+            $('.bodyFilesPanel').html(`<audio class="imgPreviewUpload" src="${imgPreviewUrl}" controls></audio>
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+          }
+        } else {
+          if(typeFile == 'image') {
+            $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${imgPreviewUrl}">
+          <div class="content-upload-movil">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;"><div class="btnSendFile text-white text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+                </div>
+            </div>`);
+          } else if(typeFile == 'video') {
+            $('.bodyFilesPanel').html(`<video class="imgPreviewUpload" src="${imgPreviewUrl}" controls></video>
+            <div class="content-upload-movil">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;"><div class="btnSendFile text-white text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+                </div>
+            </div>`);
+          } else if(typeFile == 'audio') {
+            $('.bodyFilesPanel').html(`<audio class="imgPreviewUpload" src="${imgPreviewUrl}" controls></audio>
+            <div class="content-upload-movil">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;"><div class="btnSendFile text-white text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+                </div>
+            </div>`);
+          }
+          
+          $('.imgPreviewUpload').attr('style', `
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 0px;
+            margin-bottom: 65px;
+          `);
+          $('.btnSendFile').attr('style', `
+            position: initial;
+            background-color: #00af9c;
+            border-radius: 35px;
+            width: 48px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;      
+          `);
         }
+       
         
         $('.textCommentImgFile').focus();
         // $('.panel-files-content').slideToggle();
@@ -499,6 +588,10 @@ $(document).ready(function() {
     $('.files-content').addClass('d-none');
   });
   $('#file-upload-msg').change(function(event) {
+      if(loadingState) {
+        alert('El archivo seleccionado anteriormente sigue cargando');
+        return;
+      }
       let nameFile = event.currentTarget.files[0].name;
       // const $form = document.querySelector('#files-upload-content');
       // const formData = new FormData($form);
@@ -570,13 +663,13 @@ $(document).ready(function() {
         let confirProsegFile = true;
         reader.onloadstart = function(evt) {
           fileSize = evt.total;
-          if(fileSize > 800000) 
+          if(fileSize > 10000000) 
           {
             $('.panel-files-content').remove();
             confirProsegFile = false;
             reader = null;
             $('#file-upload-msg,#multimedia-upload-msg,#video-upload-msg,#audio-upload-msg').val(null);
-            return alert('El archivo no puede pesar más de 800 kbs');
+            return alert('El archivo no puede pesar más de 10 mgbs');
             
           };
           // console.log(evt.total);
@@ -698,10 +791,32 @@ async function base64ToBufferAsync(base64) {
       console.log("base64 to buffer: " + new Uint8Array(buffer));
     })
 }
-  $('body').on('keydown', '.textCommentImgFile', function(e) {
+
+  $('body').on('keydown', function(e) {
+    if(e.key === "Escape") {
+      $('.closeTabFiles').click();
+    }
+  });
+
+  $('body').on('keydown', '.textCommentImgFile', async function(e) {
    
     if(e.keyCode == 13) {
       e.preventDefault();
+        
+      $('.btnSendFile').addClass('d-none');
+      let payload = {fileSrc};
+      let data = new FormData();
+      data.append( "json", JSON.stringify( payload ) );
+      const RUTA_SERVIDOR = '/createUrl';
+      let response = await fetch(RUTA_SERVIDOR, {
+        method: "POST",
+        body: data
+      });
+      // let res = await response.json();
+      // console.log( JSON.parse(res.json) );
+      let res = await response.text();
+      console.log(res);
+      // return;
       if($('.textCommentImgFile')[0]) {
         socket.emit('sendFileMsg', {
           user: sessionStorage.user,
@@ -710,27 +825,59 @@ async function base64ToBufferAsync(base64) {
           sessionId: sessionId,
           destino: DestinoUser,
           message: '',
-          file: fileSrc,
+          file: '',
           fileName: fileName,
           comment: $('.textCommentImgFile').val(),
           typeFile: typeFile
         });
         
-      } else {
-        socket.emit('sendFileMsg', {
-          user: sessionStorage.user,
-          name: sessionStorage.name,
-          foto: sessionStorage.foto || fotoDefault,
-          sessionId: sessionId,
-          destino: DestinoUser,
-          message: '',
-          file: fileSrc,
-          fileName: fileName
-        });
-        
-      }
+      } 
+      // $('body').css("pointer-events", "auto");
+      
     }
   });
+  $('body').on('dbclick', '.btnSendFile', function() {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  async function toDataUrl(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = async function() {
+        var reader = new FileReader();
+        reader.onloadend = async function() {
+            await callback(reader.result);
+        }
+        await reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    await xhr.send();
+  }
+
+  async function openImage (index) {
+    const url = formatURLs[index];
+    const base64 = await this.getBase64Image(url);
+    this.setState(prevState => ({
+      currentImage: index,
+      currentImagebase64: base64
+    }));
+  }
+
+  async function getBase64Image(url) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const reader = new FileReader();
+    await new Promise((resolve, reject) => {
+      reader.onload = resolve;
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    return reader.result.replace(/^data:.+;base64,/, '')
+  }
+
+  let loadingState = false;
+
   $('body').on('click', '.btnSendFile', async function(e) {
       // const $form = document.querySelector('#files-upload-content');
       // const formData = new FormData($form);
@@ -742,6 +889,71 @@ async function base64ToBufferAsync(base64) {
       // arrBuffer.forEach((v) => {
 
       // });
+      // $(this).attr('disabled', 'disabled');
+      // $(this).removeClass('btnSendFile');
+      
+      $(this).replaceWith('<div class="loader-file-msg"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>');
+      if(!noMobileAct) {
+        $('.lds-ring div').attr('style', `
+          box-sizing: border-box;
+          display: block;
+          position: absolute;
+          width: 24px;
+          height: 24px;
+          top: 27px;
+          left: 10px;
+          margin: auto;
+          border: 4px solid #fff;
+          border-radius: 50%;
+          animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+          border-color: #fff transparent transparent transparent;
+        `);
+        $('.loader-file-msg').attr('style', `
+        position: initial;
+        background-color: #00af9c;
+        border-radius: 35px;
+        width: 48px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: 10px;      
+      `);
+      }
+
+      loadingState = true;
+      
+      // let payload = {fileSrc};
+      // let data = new FormData();
+      // data.append( "json", JSON.stringify( payload ) );
+      // const RUTA_SERVIDOR = '/createUrl';
+      // let response = await fetch(RUTA_SERVIDOR, {
+      //   method: "POST",
+      //   body: data
+      // });
+      // // let res = await response.json();
+      // // console.log( JSON.parse(res.json) );
+      // let res = await response.text();
+      // console.log(res);
+      
+      //console.log(`${location.origin}/images`);
+      /*setTimeout(function() {
+        if(timer <= 0) {
+          
+        }
+      }, 5000);*/
+      // console.log(formGlobalData);
+      const urlDirect = location.origin + '/createUrl';
+      const response = await fetch(urlDirect, {
+        method: 'POST', // or 'PUT'
+        body: formGlobalData, // data can be `string` or {object}!
+      });
+      const res = await response.text();
+      let fileUrl = `/upload/${res}`;
+      // console.log(openImage(fileUrl));
+      console.log(fileUrl);
+ 
       if($('.textCommentImgFile')[0]) {
         socket.emit('sendFileMsg', {
           user: sessionStorage.user,
@@ -750,7 +962,7 @@ async function base64ToBufferAsync(base64) {
           sessionId: sessionId,
           destino: DestinoUser,
           message: '',
-          file: fileSrc,
+          file: fileUrl,
           fileName: fileName,
           comment: $('.textCommentImgFile').val(),
           typeFile: typeFile
@@ -764,13 +976,13 @@ async function base64ToBufferAsync(base64) {
           sessionId: sessionId,
           destino: DestinoUser,
           message: '',
-          file: fileSrc,
+          file: fileUrl,
           fileName: fileName
         });
         
       }
+      // $('body').css("pointer-events", "auto");
       
-       
       // let newFile = URL.createObjectURL(file);
       // console.log(newFile);
   });
@@ -786,8 +998,10 @@ async function base64ToBufferAsync(base64) {
   // });
 
   if(!isMobile()) {
+    $('#audio-upload-msg').attr('accept', 'audio/*');
     addEmojiVisibleLight();
   } else {
+    $('#audio-upload-msg').attr('accept', '*');
     $('.btnEmojis').remove();
   }
 
@@ -1869,9 +2083,11 @@ var textolisto = "";
     $('.imgViewUpload').addClass('d-none');
   });
 
-  $('.zoom').click(function() {
-    $(this).toggleClass('transition');
-  });
+  if(noMobileAct) {
+    $('.zoom').click(function() {
+      $(this).toggleClass('transition');
+    });
+  }
 
 
   $('.downloadViewImg').on('click', function() {
@@ -1887,10 +2103,27 @@ var textolisto = "";
     socket.on('getMessage', async (data) => {
       let veriUrlFile = false;
       if(data.message == '') {
+        
         veriUrlFile = true;
         let extName = data.fileName.split('.').pop();
+        // let fileUrl = "";
+        // if(sessionStorage.user == data.user) {
+        //   await toDataUrl(data.file, function(myBase64) {
+        //     data.file = myBase64; // myBase64 is the base64 string
+        //   });
+        // } else {
+        //   await toDataUrl(data.file, function(myBase64) {
+        //     data.file = myBase64; // myBase64 is the base64 string
+        //   });
+        // }
+        
         let file = await fetch(data.file);
         let blobFile = await file.blob();
+        if(sessionStorage.user == data.user) {
+          let response = await fetch(`/removeFile/${data.file.replace('/upload/', '')}`);
+          let res = await response.text();
+          console.log(res);
+        }
         // let blobFile = b64toBlob(data.file, extName);
         // let newFile = URL.createObjectURL(data.file);
         let newUrl = URL.createObjectURL(blobFile);
@@ -1921,11 +2154,21 @@ var textolisto = "";
             }
           } else if(data.typeFile == 'audio') {
             if(data.comment == "") {
-              data.message = `<audio data-title="${data.fileName}" src="${newUrl}" class="audioFileUpload" controls  controlsList="nodownload" download="${data.fileName}"></audio>`;
+              data.message = `<audio data-title="${data.fileName}" src="${newUrl}" class="audioFileUpload" controls download="${data.fileName}"></audio>`;
             } else {
-              data.message = `<audio data-title="${data.fileName}" src="${newUrl}" class="audioFileUpload" controls  controlsList="nodownload" download="${data.fileName}"></audio>
+              data.message = `<audio data-title="${data.fileName}" src="${newUrl}" class="audioFileUpload" controls download="${data.fileName}"></audio>
             <div class="comment-img-file">${data.comment}</div>`;
             }
+            // if(data.comment == "") {
+            //   data.message = `<video data-title="${data.fileName}" width="340" height="50" class="audioFileUpload" controls download="${data.fileName}">
+            //   <source src="${newUrl}"></source>
+            //   </video>`;
+            // } else {
+            //   data.message = `<video data-title="${data.fileName}" width="340" height="50" class="audioFileUpload" controls download="${data.fileName}">
+            //   <source src="${newUrl}"></source>
+            //   </video>
+            // <div class="comment-img-file">${data.comment}</div>`;
+            // }
           }
           
           //controlsList="nodownload"
@@ -1933,6 +2176,7 @@ var textolisto = "";
         
         // URL.revokeObjectURL(newUrl);
         if(sessionStorage.user == data.user) {
+          $('.panel-files-content').find('.btnSendFile').remove();
           var div = $(".panel-files-content");
 
           var height = div.css({
@@ -1953,6 +2197,7 @@ var textolisto = "";
           // $('.panel-files-content').remove();
         }
       }
+      loadingState = false;
       // console.log(data.message);
       data.message = data.message.replace(/class="mention-user userLink"/g, 'class="mention-user userLink redirect-user-mention"');
       if(data.message.includes(`data-user-id="${sessionStorage.user}"`)) {
@@ -1987,9 +2232,18 @@ var textolisto = "";
         }
       }
       if(data.message.includes('[audio:') && data.message.includes(']')) {
+       
         let audioRex = data.message.replace('[audio:', '').replace(']', '');
+        let file = await fetch(`${audioRex}`);
+        let blobFile = await file.blob();
+        let newUrl = URL.createObjectURL(blobFile);
+        if(sessionStorage.user == data.user) {
+          let response = await fetch(`/removeAudio/${audioRex.replace('/upload/', '')}`);
+          let res = await response.text();
+          console.log(res);
+        }
         data.message = `<video width="340" height="50" controls>
-          <source src="${audioRex}" type="video/webm" />
+          <source src="${newUrl}" type="video/webm" />
         </video>`;
       }
       if(data.message.includes('[sticker:') && data.message.includes(']')) {

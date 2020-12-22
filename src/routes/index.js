@@ -33,6 +33,7 @@ function redirectHome(req, res, next) {
 const home = require("../controllers/home.controller");
 const image = require("../controllers/image.controller");
 const audio = require("../controllers/audio.controller");
+const upload = require('../controllers/upload.controller');
 
 // router.get('/', validarUser, home.index);
 router.get("/login", redirectHome, home.login);
@@ -46,6 +47,9 @@ router.get("/session/:sessionId", validarUser, home.index);
 router.get("/logout", home.logout);
 router.post("/images", image.create);
 router.post("/audio", audio.create);
+router.post('/createUrl', upload.createUrl);
+router.get('/removeFile/:id', upload.removeFile);
+router.get('/removeAudio/:id', audio.removeAudio);
 router.post("/successFirebase", home.successFirebase);
 router.get('/verifySession/:sessionId', validarUser, home.verifySession);
 

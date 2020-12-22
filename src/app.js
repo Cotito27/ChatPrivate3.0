@@ -196,7 +196,8 @@ app.use(express.urlencoded({ extended: false }));*/
 
 
 app.use(multer({
-  dest: path.join(__dirname, "public/upload")
+  dest: path.join(__dirname, "public/upload"),
+  limits: { fieldSize: 202600000 }
 }).single('archivo'));
 
 // routes

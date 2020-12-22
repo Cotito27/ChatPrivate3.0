@@ -1,4 +1,5 @@
 module.exports = {
   sessionsRoom: [],
-  usersSession: []
+  usersSession: [],
+  filesPayload: {}
 }

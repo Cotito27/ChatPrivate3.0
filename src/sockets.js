@@ -4,7 +4,7 @@ const path = require('path');
 const ss = require('socket.io-stream');
 let audioStorage = [];
 const { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_DATABASE_URL, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID } = process.env;
-let { sessionsRoom } = require('./variables');
+let { sessionsRoom, filesPayload } = require('./variables');
 
 let arrayBufferFile;
 
@@ -87,14 +87,14 @@ module.exports = [
           //   destino: data.destino
           // });
         }
-        if(data.message.includes('[audio:') && data.message.includes(']')) {
-          let audioRex = data.message.replace('[audio:', '').replace(']', '');
-          audioStorage.push({
-            session: data.sessionId,
-            audio: audioRex
-          });
-          // await fs.unlink(path.resolve(`src/public/${audioRex}`));
-        }
+        // if(data.message.includes('[audio:') && data.message.includes(']')) {
+        //   let audioRex = data.message.replace('[audio:', '').replace(']', '');
+        //   audioStorage.push({
+        //     session: data.sessionId,
+        //     audio: audioRex
+        //   });
+        //   // await fs.unlink(path.resolve(`src/public/${audioRex}`));
+        // }
       });
       socket.on('disconnect', function() {
         if(!socket.user) return;
@@ -119,18 +119,18 @@ module.exports = [
               sessionsRoom.splice(sessionsRoom.indexOf(otherSession), 1);
             }
             
-            audioStorage.forEach(async (au, index, arr) => {
-              if(au.session == otherSession) {
-                await fs.unlink(path.resolve(`src/public/${au.audio}`)).then().catch((err) => console.log(err));
-                if(arr.indexOf(au) != -1) {
-                  arr.splice(arr.indexOf(au), 1);
-                }
-              }
-            });
+            // audioStorage.forEach(async (au, index, arr) => {
+            //   if(au.session == otherSession) {
+            //     await fs.unlink(path.resolve(`src/public/${au.audio}`)).then().catch((err) => console.log(err));
+            //     if(arr.indexOf(au) != -1) {
+            //       arr.splice(arr.indexOf(au), 1);
+            //     }
+            //   }
+            // });
             // console.log(audioStorage);
           }
           console.log(sessionsRoom);
-        },6000);
+        },7000);
         
         // console.log(rooms, socket.sessionId);
         // socket.leave(socket.user);
@@ -153,6 +153,8 @@ module.exports = [
       });
 
       socket.on('addSession', (url) => {
+        let veriRepeat = sessionsRoom.find((v) => v == url);
+        if(veriRepeat) return;
         sessionsRoom.push(url);
         socket.emit('newSession', url);
       });
@@ -193,17 +195,25 @@ module.exports = [
 
       socket.on('sendFileMsg', async function(data) {
         // console.log(data.sessionId, socket.sessionId, data.destino, data.user);
+        // console.log(socket.request.session);
+        // console.log(filesPayload, socket.request.session.user.user)
+        // let fileUser = filesPayload[socket.request.session.user.user];
+        // console.log(fileUser);
+        // if(!fileUser) return;
+      
+        // data.file = fileUser;
         if(data.sessionId == socket.sessionId) {
           // let ss = await fs.readFile(data.file);
           // console.log(ss);
-          let newData = data;
           if(data.destino == "Todos") {
-            await io.sockets.emit('getMessage', newData);
+            await io.sockets.to(data.sessionId).emit('getMessage', data);
           } else {
-            await io.to(data.destino).to(data.user).sockets.emit('getMessage', newData);
+            await socket.to(data.destino).to(data.user).emit('getMessage', data);
           }
           
         }
+        // delete filesPayload[socket.request.session.user.user];
+        // console.log(filesPayload, 'NumFiles');
       });
 
       function updateUsers(data) {
