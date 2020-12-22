@@ -2306,7 +2306,7 @@ var textolisto = "";
         if($(`.${data.user}`)[0]) {
           if(data.message.includes('<video') && data.message.includes('<source')) {
             $(`.${data.user}`).find('.contenidomessagenofocus').html('<i class="fas fa-microphone-alt"></i> Ha enviado un audio.');
-           } else if(data.message.includes('<img class="emoji" src="/img/emoji/') && data.message.includes('>')) {
+           } else if(data.message.includes('<img class="emoji"') && data.message.includes('>')) {
             $(`.${data.user}`).find('.contenidomessagenofocus').html('<i class="far fa-sticky-note"></i> Ha enviado un sticker.');
            } else {
             if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
@@ -2369,7 +2369,7 @@ var textolisto = "";
           
           if(data.message.includes('<video') && data.message.includes('<source')) {
             $(`.${data.destino}`).find('.contenidomessagenofocus').html('<i class="fas fa-microphone-alt"></i> Ha enviado un audio.');
-           } else if(data.message.includes('<img class="emoji" src="/img/emoji/') && data.message.includes('>')) {
+           } else if(data.message.includes('<img class="emoji"') && data.message.includes('>')) {
             $(`.${data.destino}`).find('.contenidomessagenofocus').html('<i class="far fa-sticky-note"></i> Ha enviado un sticker.');
            } else {
              if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
@@ -2427,7 +2427,14 @@ var textolisto = "";
         
       }
       if(sessionStorage.user != data.user) {
-        
+        let msgConvertNoti = data.message;
+        if(data.message.includes('<img class="emoji"')) {
+          msgConvertNoti = `<i class="far fa-sticky-note"></i> Ha enviado un sticker.`;
+        } else if(data.message.includes('<video width="340"')) {
+          msgConvertNoti = `<i class="fas fa-microphone-alt"></i> Ha enviado un audio.`;
+        } else if(data.message.includes('<video') || data.message.includes('<img') || data.message.includes('<audio')) {
+          msgConvertNoti = `<i class="far fa-file"></i> Ha enviado un archivo adjuntado.`;
+        }
         // console.log($(`#userhistory${data.user}`)[0], `#userhistory${data.user}`);
         if(data.destino == 'Todos') {
           if($(`#panelM`).hasClass('d-none') || $('#content-message').hasClass('d-none')) {
@@ -2441,7 +2448,7 @@ var textolisto = "";
             $('.numberNoti').show();
             $(`#userhistory-1`).find('.myNumberNoti').show();
             $(`#userhistory-1`).addClass('newMessage');
-            Command: toastr["info"](`<div class="mensajeOtherNoti toast${data.user}"><strong class="nomNoti">${data.name}</strong> <br> <label class="messageNoti">${data.message}</label> <br> 
+            Command: toastr["info"](`<div class="mensajeOtherNoti toast${data.user}"><strong class="nomNoti">${data.name}</strong> <br> <label class="messageNoti">${msgConvertNoti}</label> <br> 
             <small class="lighter">Presione aquí para ver los mensajes</small> </div>`);
             //$('.messageNoti').text(data.message);
             $('.toast-info:last').css('margin-left', '5px');
@@ -2466,7 +2473,7 @@ var textolisto = "";
             $('.numberNoti').show();
             $(`#userhistory${data.user}`).find('.myNumberNoti').show();
             $(`#userhistory${data.user}`).addClass('newMessage');
-            Command: toastr["info"](`<div class="mensajeOtherNoti toast${data.user}"><strong class="nomNoti">${data.name}</strong> <br> <label class="messageNoti">${data.message}</label> <br> 
+            Command: toastr["info"](`<div class="mensajeOtherNoti toast${data.user}"><strong class="nomNoti">${data.name}</strong> <br> <label class="messageNoti">${msgConvertNoti}</label> <br> 
             <small class="lighter">Presione aquí para ver los mensajes</small> </div>`);
             //$('.messageNoti').text(data.message);
             $('.toast-info:last').css('margin-left', '5px');
@@ -3624,21 +3631,27 @@ var textolisto = "";
       //     <source src="/upload/8e4c64bc-26e2-4ce8-adf0-87072e2e5871.webm" type="video/webm">
       //   </video>
       // console.log(message);
-        if(message.includes('<img class="emoji" src="')) {
+     
+        if(message.includes('<img class="emoji"')) {
           message = 'Ha enviado un sticker.';
+        } else if(message.includes('<img')) {
+          message = 'Ha enviado un archivo adjuntado';
         }
         if(message.includes('<video width="340" height="50" controls>')) {
           message = 'Ha enviado un audio.';
+        } else if(message.includes('<video') || message.includes('<audio')) {
+          message = 'Ha enviado un archivo adjuntado';
         }
         if(message.includes('<a contenteditable="false" class="mention-user')) {
           message = $(message).text() + message.split('</a>').pop();
         }
         if(message.includes('class="userLink"')) {
           message = $(`<div>${message}</div>`).text();
-        }
+        } 
         if(message.includes('<a href="')) {
           message = $(`<div>${message}</div>`).text();
         }
+        
         var  options  =   {
             body:   message,
             lang: 'ES',
