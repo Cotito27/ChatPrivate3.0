@@ -2175,16 +2175,18 @@ var textolisto = "";
         
         // URL.revokeObjectURL(newUrl);
         if(sessionStorage.user == data.user) {
+          let veriAddEmoji = ``;
+          if(noMobileAct) {
+            veriAddEmoji = `<button class="btn btn-primary btnEmojis emoji_01 btnMessageIcons">
+            <i class="fa fa-smile-o" aria-hidden="true"></i>
+          </button>`;
+          }
           $('.panel-files-content').find('.btnSendFile').remove();
           $('.fileUploadingInput').replaceWith(`<div contentEditable="true" placeholder="Escriba algo" id="textMessage" class="form-control textMessage" ondrop="return false;" onkeypress="return (this.innerText.length <= 3000)"></div><!-- <p><br></p> -->
-          <!-- <input type="file" class="fileMsg" id="fileMsg"> -->
-          <!-- <label for="fileMsg"><i class="far fa-file" aria-hidden="true"></i></label> -->
           <button class="btn btn-primary btnClip btnMessageIcons">
             <i class="fas fa-paperclip"></i>
           </button>
-          <button class="btn btn-primary btnEmojis emoji_01 btnMessageIcons">
-            <i class="fa fa-smile-o" aria-hidden="true"></i>
-          </button>
+          ${veriAddEmoji}
           <button class="btn btn-primary btnAudio btnMessageIcons">
             <i class="fas fa-microphone"></i>
           </button>
@@ -2200,7 +2202,6 @@ var textolisto = "";
               aria-hidden="true"
               style=""
             ></i>
-
             <div style="">
               <i class="circle Blink redAudioGrab"></i
               ><span id="duracionGrab" class="duracionGrab">00:00:00</span>
