@@ -592,6 +592,10 @@ $(document).ready(function() {
         alert('El archivo seleccionado anteriormente sigue cargando');
         return;
       }
+      const $form = document.querySelector('#files-upload-content');
+      const formData = new FormData($form);
+      formGlobalData = new FormData();
+      formGlobalData.set('archivo', formData.get('archivo'));
       let nameFile = event.currentTarget.files[0].name;
       // const $form = document.querySelector('#files-upload-content');
       // const formData = new FormData($form);
@@ -803,35 +807,7 @@ async function base64ToBufferAsync(base64) {
     if(e.keyCode == 13) {
       e.preventDefault();
         
-      $('.btnSendFile').addClass('d-none');
-      let payload = {fileSrc};
-      let data = new FormData();
-      data.append( "json", JSON.stringify( payload ) );
-      const RUTA_SERVIDOR = '/createUrl';
-      let response = await fetch(RUTA_SERVIDOR, {
-        method: "POST",
-        body: data
-      });
-      // let res = await response.json();
-      // console.log( JSON.parse(res.json) );
-      let res = await response.text();
-      console.log(res);
-      // return;
-      if($('.textCommentImgFile')[0]) {
-        socket.emit('sendFileMsg', {
-          user: sessionStorage.user,
-          name: sessionStorage.name,
-          foto: sessionStorage.foto || fotoDefault,
-          sessionId: sessionId,
-          destino: DestinoUser,
-          message: '',
-          file: '',
-          fileName: fileName,
-          comment: $('.textCommentImgFile').val(),
-          typeFile: typeFile
-        });
-        
-      } 
+      $('.btnSendFile').click();
       // $('body').css("pointer-events", "auto");
       
     }
@@ -877,7 +853,13 @@ async function base64ToBufferAsync(base64) {
   }
 
   let loadingState = false;
-
+  function disableClicks(elem) {
+    elem.style.pointerEvents = "none";
+  }
+  
+  function enableClicks() {
+    elem.style.pointerEvents = "auto";
+  }
   $('body').on('click', '.btnSendFile', async function(e) {
       // const $form = document.querySelector('#files-upload-content');
       // const formData = new FormData($form);
@@ -891,10 +873,26 @@ async function base64ToBufferAsync(base64) {
       // });
       // $(this).attr('disabled', 'disabled');
       // $(this).removeClass('btnSendFile');
-      
-      $(this).replaceWith('<div class="loader-file-msg"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>');
+      let closeDisabled = document.querySelector('.closeTabFiles');
+      let panelFilesContent = document.querySelector('.panel-files-content');
+      panelFilesContent.style.cursor = 'progress';
+      // disableClicks(closeDisabled);
+      $(this).replaceWith('<div class="loader-file-msg" style="cursor:auto;"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>');
+      let directDestino = "";
+      if(DestinoUser != "Todos") {
+        directDestino = DestinoUser;
+      }
+      $(`#panelM${directDestino}`).find('.focus-message').html(`<div class="fileUploadingInput">
+      <nav class="text-upload-input">Subiendo Archivo...</nav>
+      <div class="loader-file-msg" style="
+      bottom: 16px;
+      right: 40px;
+      background: transparent; cursor:auto;
+  "><div class="lds-ring2"><div></div><div></div><div></div><div></div></div>
+  </div>`);
       if(!noMobileAct) {
-        $('.lds-ring div').attr('style', `
+        if($('#file-upload-msg').val() == null || $('#file-upload-msg').val() == "")  {
+          $('.lds-ring div').attr('style', `
           box-sizing: border-box;
           display: block;
           position: absolute;
@@ -920,6 +918,7 @@ async function base64ToBufferAsync(base64) {
         cursor: pointer;
         margin-left: 10px;      
       `);
+        }
       }
 
       loadingState = true;
@@ -2177,6 +2176,42 @@ var textolisto = "";
         // URL.revokeObjectURL(newUrl);
         if(sessionStorage.user == data.user) {
           $('.panel-files-content').find('.btnSendFile').remove();
+          $('.fileUploadingInput').replaceWith(`<div contentEditable="true" placeholder="Escriba algo" id="textMessage" class="form-control textMessage" ondrop="return false;" onkeypress="return (this.innerText.length <= 3000)"></div><!-- <p><br></p> -->
+          <!-- <input type="file" class="fileMsg" id="fileMsg"> -->
+          <!-- <label for="fileMsg"><i class="far fa-file" aria-hidden="true"></i></label> -->
+          <button class="btn btn-primary btnClip btnMessageIcons">
+            <i class="fas fa-paperclip"></i>
+          </button>
+          <button class="btn btn-primary btnEmojis emoji_01 btnMessageIcons">
+            <i class="fa fa-smile-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-primary btnAudio btnMessageIcons">
+            <i class="fas fa-microphone"></i>
+          </button>
+          <button class="btn btn-primary btnStickers btnMessageIcons">
+            <i class="far fa-sticky-note"></i>
+          </button>
+          <button class="btn btn-primary btnEnvio btnMessageIcons">
+            <i class="far fa-paper-plane"></i>
+          </button>
+          <div class="grab_audio d-none" style="">
+            <i
+              class="far fa-check-circle confirmAudio"
+              aria-hidden="true"
+              style=""
+            ></i>
+
+            <div style="">
+              <i class="circle Blink redAudioGrab"></i
+              ><span id="duracionGrab" class="duracionGrab">00:00:00</span>
+            </div>
+            <i
+              class="far fa-times-circle cancelAudio"
+              aria-hidden="true"
+              style=""
+            ></i>
+          </div>
+          <br />`);
           var div = $(".panel-files-content");
 
           var height = div.css({
@@ -3164,7 +3199,7 @@ var textolisto = "";
     //   obtenerSearchUser(data);
     // });
   }
-
+  
   $('.btnEnviarGrabacion').click(function() {
     if(!$('.identAudio')[0] || $('.identAudio').is(':hidden')) {
       (async() => {
@@ -3523,11 +3558,14 @@ var textolisto = "";
       $(".card-history").css("height", window.innerHeight - 98 + "px");
       $(".card-history").css("max-height", window.innerHeight - 98 + "px");
     }
-    if(DestinoUser == "Todos") {
-      resizeClipFiles(document.querySelector(`#panelM`).querySelector('.btnClip'));
-    } else {
-      resizeClipFiles(document.querySelector(`#panelM${DestinoUser}`).querySelector('.btnClip'));
+    if(!$('.files-content').hasClass('d-none')) {
+      if(DestinoUser == "Todos") {
+        resizeClipFiles(document.querySelector(`#panelM`).querySelector('.btnClip'));
+      } else {
+        resizeClipFiles(document.querySelector(`#panelM${DestinoUser}`).querySelector('.btnClip'));
+      }
     }
+    
   }
 
   // console.log(window, screen);
@@ -3599,7 +3637,8 @@ var textolisto = "";
           });
           soundExitPage.play();
           $(soundExitPage).bind('ended', function(){
-            location.href = '/';
+            sessionStorage.sessionReconnect = location.href.split('/').pop() || location.href.split(/\\/g).pop();
+            location.href = '/join/disconnected';
           });          
       }
     });
@@ -3902,7 +3941,10 @@ const init = () => {
         // closeMenu(function() {
         //     $(document).off("click.grab_audio");
         // });
-        detenerGrabacion(event);
+        if($('.btnAudio')[0]) {
+          detenerGrabacion(event);
+        }
+        
     }      
     }
   }); 

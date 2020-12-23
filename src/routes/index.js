@@ -42,6 +42,7 @@ router.post("/verificarLogin", home.verify);
 router.get("/consultarData", validarUser, home.consultarData);
 router.get("/", validarUser, home.newSession);
 // router.get('/session', home.urlAdapter);
+router.get('/join/disconnected', home.reconnection);
 router.get("/redirectUrl", home.redirectUrl);
 router.get("/session/:sessionId", validarUser, home.index);
 router.get("/logout", home.logout);

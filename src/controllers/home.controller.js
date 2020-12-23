@@ -149,4 +149,10 @@ ctrl.verifySession = (req, res) => {
   res.send('Success');
 }
 
+ctrl.reconnection = (req, res) => {
+  res.render('reconnection', {
+    title: 'Chat Private',
+  });
+}
+
 module.exports = ctrl;

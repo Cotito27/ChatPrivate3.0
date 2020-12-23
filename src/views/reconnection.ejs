@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if(!sessionStorage.sessionReconnect) {
+      location.href = '/';
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css" integrity="sha384-B4morbeopVCSpzeC1c4nyV0d0cqvlSAfyXVfrPJa25im5p+yEN/YmhlgQP/OyMZD" crossorigin="anonymous">
+  <style>
+    body {
+      /* display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 98vw;
+      height: 98vh; */
+
+      overflow: hidden;
+    }
+    .content-disconnect-inactivity {
+      width: 450px;
+      height: 450px;
+     text-align: center;
+     position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      
+    }
+    .title-disconnect {
+      font-weight: 650;
+      text-align: center;
+      font-size: 26px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .help-disconnect {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .btn-reconnect,.btn-home {
+      margin-bottom: 15px;
+      width: 350px;
+    }
+   
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="content-disconnect-inactivity">
+    <center><img src="https://support.polar.com/e_manuals/M600/wear-os/polar-m600-user-manual-espanol/Content/Images/cloud_off.png" alt=""></center>
+    <div class="title-disconnect">
+      <nav>Vaya, usted está desconectado</nav>
+    </div>
+    <div class="help-disconnect">
+      <nav>Se le ha desconectado por inactividad</nav>
+    </div>
+    <center><button class="btn btn-dark btn-block btn-reconnect">Reconectarme</button></center>
+    <center><button class="btn btn-danger btn-block btn-home">Volver al inicio</button></center>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+  <script src="/js/disconnect.js"></script>
+</body>
+</html>

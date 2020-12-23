@@ -104,6 +104,20 @@ body {
   overflow: hidden;
 }
 
+.fileUploadingInput {
+  height: 45px;
+  text-align: left;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.text-upload-input {
+  margin-left: 15px;
+}
+
 .panel-view-img-file {
   position: absolute;
   z-index: 50;

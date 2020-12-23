@@ -8,6 +8,8 @@ let { sessionsRoom, filesPayload } = require('./variables');
 
 let arrayBufferFile;
 
+let codMsg = 0;
+
 let users = {};
 let sessions = {};
 let objGlobal = [];
@@ -25,6 +27,8 @@ module.exports = [
       //   FIREBASE_MESSAGING_SENDER_ID, 
       //   FIREBASE_APP_ID
       // });
+      socket.emit('codMsg', codMsg);
+
       console.log('Conectado '+ socket.id);
       socket.on('userConnect', (data) => {
         // let objUsersExist = Object.keys(users);
@@ -54,13 +58,16 @@ module.exports = [
         socket.emit('stopLoader');
       });
       socket.on('sendMessage', async (data) => {
+        codMsg++;
+        
         if(data.destino == 'Todos') {
           io.sockets.to(data.sessionId).emit('getMessage', {
             user: socket.user,
             name: socket.name,
             message: data.message,
             destino: data.destino,
-            foto: data.foto
+            foto: data.foto,
+            id: codMsg
           });
         } else {
           console.log('Mensaje Privado');
@@ -75,7 +82,8 @@ module.exports = [
               name: socket.name,
               message: data.message,
               destino: data.destino,
-              foto: data.foto
+              foto: data.foto,
+              id: codMsg
             });
           }
           
@@ -150,6 +158,14 @@ module.exports = [
         let newUser = new User(data);
         await newUser.save();
         socket.emit('userSuccess', 'Fue registrado exitosamente');
+      });
+
+      socket.on('verifySession', (url) => {
+        let veriRepeat = sessionsRoom.find((v) => v == url);
+        if(!veriRepeat) {
+          sessionsRoom.push(url);
+        }        
+        socket.emit('getSession', url);
       });
 
       socket.on('addSession', (url) => {
