@@ -171,6 +171,10 @@ body {
   margin-top: 7px;
   margin-left: 7px;
   font-size: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 95px);
 }
 
 .tooltipMsg {
@@ -290,6 +294,45 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 85%;
+}
+
+.toast-movil {
+  position: absolute;
+  top: 50px;
+  width: calc(100% - 30px);
+  z-index: 2;
+  background: white;
+  border: 1px solid rgb(190, 190, 190);
+}
+
+.noti-msg-user {
+  padding: 5px 10px 5px 10px;
+  max-width: calc(100% - 31px);
+  float: left;
+}
+
+.title-noti-msg {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #1e1f1f;
+  width: calc(100vw - 136px);
+  max-width: calc(100vw - 136px);
+}
+
+.focus-msg-noti {
+  position: absolute;
+  right: 38px;
+  top: 5px;
+  color: #039be5;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.icon-close-noti {
+  float: right;
+  padding: 5px 10px 5px 10px;
+  cursor: pointer;
 }
 
 .align-file-msg {
@@ -669,10 +712,14 @@ hr {
 .nomuser {
   margin-top: 2.5px;
   font-size: 0.9rem;
+  max-width: calc(100% - 83px);
 }
 .myNameUser {
   font-weight: 600;
   color: #000;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .nom-user-message {
@@ -688,6 +735,9 @@ hr {
 .otherNameUser {
   font-weight: 600;
   color: rgb(30, 30, 30);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .todouserhistory {
   overflow: auto;
@@ -1185,7 +1235,8 @@ input[type="file"]#file {
 .fileMsg {
   display: none;
 }
-.emoji {
+.emoji,
+.sticker {
   border-radius: 0;
   width: 70px;
   height: 70px;
@@ -1248,7 +1299,8 @@ input[type="file"]#file {
 .iconEdit:hover {
   transform: scale(1.2);
 }
-.emoji:hover {
+.emoji:hover,
+.sticker:hover {
   transform: scale(1.3);
 }
 .emoji-picker__emojis {
@@ -1541,7 +1593,21 @@ audio::-webkit-media-controls-volume-slider {
   }
 }
 
-@media only screen and (max-width: 550px) {
+.textMessage .emoji,
+.res-message .emoji,
+.messageschatnoti .emoji {
+  height: 1.4em;
+  width: 1.4em;
+  margin: 0 0.05rem 0 0.1rem;
+  vertical-align: -0.3em;
+}
+
+.textMessage .emoji:hover,
+.messageschatnoti .emoji {
+  transform: none;
+}
+
+@media only screen and (max-width: 767px) {
   .grab_audio {
     width: 55% !important;
   }

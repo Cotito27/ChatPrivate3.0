@@ -8,6 +8,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/img/ventana-de-chat.png" />
   <title><%= title %></title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css" integrity="sha384-B4morbeopVCSpzeC1c4nyV0d0cqvlSAfyXVfrPJa25im5p+yEN/YmhlgQP/OyMZD" crossorigin="anonymous">
   <style>
@@ -17,20 +18,27 @@
       align-items: center;
       width: 98vw;
       height: 98vh; */
-
       overflow: hidden;
+      width: 100vw;
+      height: 100vh;
     }
     .content-disconnect-inactivity {
-      width: 450px;
-      height: 450px;
-     text-align: center;
-     position: absolute;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
       margin: auto;
-      
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .content-disconnect-inactivity img {
+      margin-top: -50px;
     }
     .title-disconnect {
       font-weight: 650;
@@ -46,6 +54,11 @@
     .btn-reconnect,.btn-home {
       margin-bottom: 15px;
       width: 350px;
+    }
+    @media only screen and (max-width: 357px) {
+      .btn-reconnect,.btn-home {
+        width: 90%;
+      }
     }
    
   </style>

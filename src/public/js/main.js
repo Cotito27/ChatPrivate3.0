@@ -254,16 +254,16 @@ $(document).ready(function() {
       if(e.target.classList.contains('btnEmojis')) {
         let input = e.target.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
-          var valor=emoji.split('" src')[1];
-          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          // var valor=emoji.split('" src')[1];
+          input.innerHTML+=emoji;
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
       if(e.target.classList.contains('fa-smile-o')) {
         let input = e.target.parentElement.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
-          var valor=emoji.split('" src')[1];
-          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          // var valor=emoji.split('" src')[1];
+          input.innerHTML+=emoji;
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
@@ -287,16 +287,16 @@ $(document).ready(function() {
       if(e.target.classList.contains('btnEmojis')) {
         let input = e.target.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
-          var valor=emoji.split('" src')[1];
-          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          // var valor=emoji.split('" src')[1];
+          input.innerHTML+=emoji;
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
       if(e.target.classList.contains('fa-smile-o')) {
         let input = e.target.parentElement.parentElement.parentElement.querySelector('.textMessage')
         picker.on('emoji',function(emoji){
-          var valor=emoji.split('" src')[1];
-          input.textContent+=emoji.replace('<img class="emoji" draggable="false" alt="','').replace(valor,'').replace('" src','');
+          // var valor=emoji.split('" src')[1];
+          input.innerHTML+=emoji;
         });
         picker.pickerVisible?picker.hidePicker():picker.showPicker(e.target);
       }
@@ -1046,7 +1046,7 @@ async function base64ToBufferAsync(base64) {
                 />
               </div>
               <div class="nomuser">
-                <span class="myNameUser" id="user${dat.user}">${dat.name}</span>
+                <div class="myNameUser" id="user${dat.user}">${dat.name}</div>
               </div>
             </div>
           </div>
@@ -1063,7 +1063,7 @@ async function base64ToBufferAsync(base64) {
                 />
               </div>
               <div class="nomuser">
-                <span class="otherNameUser" id="user${dat.user}">${dat.name}</span>
+                <div class="otherNameUser" id="user${dat.user}">${dat.name}</div>
               </div>
             </div>
             <button
@@ -1105,7 +1105,7 @@ async function base64ToBufferAsync(base64) {
                 />
               </div>
               <div class="nomuser">
-                <span class="myNameUser" id="user${dat.user}">${dat.name}</span>
+                <div class="myNameUser" id="user${dat.user}">${dat.name}</div>
               </div>
             </div>
           </div>
@@ -1122,7 +1122,7 @@ async function base64ToBufferAsync(base64) {
                 />
               </div>
               <div class="nomuser">
-                <span class="otherNameUser" id="user${dat.user}">${dat.name}</span>
+                <div class="otherNameUser" id="user${dat.user}">${dat.name}</div>
               </div>
             </div>
             <button
@@ -1624,12 +1624,47 @@ function deployText(){
     }
   }
 }
-deployText()
-  document.addEventListener("paste", function(e){
+deployText();
+function insertHTML(img) {
+  var id = "rand" + Math.random();
+  var doc = document.querySelector(".textMessage");
+  doc = doc.document ? doc.document : doc.contentWindow.document;
+  img = "<img src='" + img + "' id=" + id + ">";
+
+  if(document.all) {
+    var range = doc.selection.createRange();
+    range.pasteHTML(img);
+    range.collapse(false);
+    range.select();
+  } else {
+    doc.execCommand("insertHTML", false, img);
+  }
+  return doc.getElementById(id);
+};
+
+  document.addEventListener("paste", async function(e){
     if(e.target.classList.contains('textMessage')) {
       console.log("paste handler");
-      var s = e.clipboardData.getData("text/plain").replace("this", "that")
-      console.log(s);
+      var s = e.clipboardData.getData("text/html").replace("this", "that");
+      if(s.allTrim().includes(`<html> <body> <!--StartFragment--><img src="`) && s.allTrim().includes(`<!--EndFragment--> </body> </html>`)) {
+        var re = /http([^"'\s]+)/g,
+        text = s,
+        encontrados = text.match(re);
+
+        console.log(encontrados[0]);
+        let file = await fetch(encontrados[0] , {
+          method: 'GET',
+          mode: 'no-cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+        });
+        let blobFile = await file.blob();
+        let newUrl = URL.createObjectURL(blobFile);
+        console.log('Imagen', newUrl);
+        return;
+      }
+      // insertHTML(s);
+      // console.log(s);
       // let $pruebaVec = $(`<div>${s}</div>`).text();
       let $pruebaVec;
       let newDiv = document.createElement('div');
@@ -1803,7 +1838,6 @@ deployText()
       } else {
         $('.numberNoti').hide();
       }
-
       $(this).find('.myNumberNoti').hide();
       $(this).removeClass('newMessage');
       if(resTotal <= 0) {
@@ -1826,7 +1860,15 @@ deployText()
         scrollDown($(`#panelM${responseId}`).find('.card-message'));
         $(`#panelM${responseId}`).find('.textMessage').focus();
         DestinoUser = responseId;
+        
       }  
+      if($(`.toast${DestinoUser}`)[0]) {
+        $(`.toast${DestinoUser}`).parent().parent().remove();
+      }
+      if($(`[data-key-msg=${DestinoUser}]`)[0]) {
+        $(`[data-key-msg=${DestinoUser}]`).parent().parent().remove();
+      }
+      
       if($(`#${DestinoUser}`).find('.identMessage:last')[0]) {
         let userDirect = $(`#${DestinoUser}`).find('.identMessage:last').prop('id').replace('mensaje','');
         // let nameDirect = $(`#${DestinoUser}`).find('.nom-user-message:last').text();
@@ -1892,7 +1934,11 @@ deployText()
                 .replace(/^\s+|\s+$/,'');
   };
   let DestinoUser = "Todos";
+  function strip(html) { var tmp = document.createElement("DIV"); tmp.innerHTML = html; var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig; return tmp.innerText.replace(urlRegex, function(url) { return '\n' + url }) }
+
+
   function sendMessage(socket, elementMessage) {
+    
     let message = $(elementMessage).find('.textMessage').html();
     // console.log(message);
     let destino_user = DestinoUser;
@@ -1911,23 +1957,25 @@ deployText()
     message = message.replace(/[[]/g, '{').replace(/]/g, '}');
     message = message.replace(/&nbsp;/g,'').allTrim();
     //.split(" ").join("")
+    
     let vecUrl = message.split(' ');
     let almacenador = "";
-    vecUrl.forEach(element => {
-      //console.log(isUrl(element), element);
-      //console.log(element.substr(element.length-4, element.length-1));
-    if(element.substr(element.length-4, element.length-1) == '.com' || element.substr(element.length-7, element.length-1) == '.com.pe') {
-        almacenador+=` <a target="_blank" class="userLink" href="https://${element}">${element}</a>`
-      } else {
-        if(isUrl(element)) {
-          almacenador+=` <a target="_blank" class="userLink" href="${element}">${element}</a>`
+      vecUrl.forEach(element => {
+        //console.log(isUrl(element), element);
+        //console.log(element.substr(element.length-4, element.length-1));
+        if(element.substr(element.length-4, element.length-1) == '.com' || element.substr(element.length-7, element.length-1) == '.com.pe') {
+          almacenador+=` <a target="_blank" class="userLink" href="https://${element}">${element}</a>`
         } else {
-          almacenador+=" "+element;
+          if(isUrl(element)) {
+            almacenador+=` <a target="_blank" class="userLink" href="${element}">${element}</a>`
+          } else {
+            almacenador+=" "+element;
+          }
         }
-      }
       
-    });
-    if(vecUrl.length) {
+        
+      });
+    if(vecUrl.length && !message.includes('<img class="emoji"')) {
       message = almacenador.trim();
     }
     socket.emit('sendMessage', {
@@ -1942,6 +1990,7 @@ deployText()
     //   ${message}
     // `);
   }
+  let toastrsOpen = 0;
   function optionsToast() {
     toastr.options = {
       "closeButton": true,
@@ -2097,6 +2146,25 @@ var textolisto = "";
   });
 
   let activeReprodAud = false;
+
+  let previousDate = "";
+
+  $('body').on('click', '.focus-msg-noti', function() {
+    if(this.dataset.keyMsg == "Todos") {
+      $(`#userhistory-1`).click();
+      $(this).parent().parent().remove();
+      // $(`.toast${"Todos"}`).remove();
+    } else {
+      $(`#userhistory${this.dataset.keyMsg}`).click();
+      $(this).parent().parent().remove();
+      // $(`.toast${this.dataset.keyMsg}`).remove();
+    }
+  });
+
+  $('body').on('click', '.icon-close-noti', function() {
+    let valId = $(this).parent().find('.focus-msg-noti').attr('data-key-msg');
+    $(`[data-key-msg="${valId}"]`).parent().parent().remove();
+  });
 
   function findResponseMessage(socket) {
     socket.on('getMessage', async (data) => {
@@ -2285,13 +2353,14 @@ var textolisto = "";
       if(data.message.includes('[sticker:') && data.message.includes(']')) {
         if(!data.message.includes('STK-')) {
           let imgRex = data.message.replace('[sticker:', '').replace(']', '');
-          data.message = `<img class="emoji" src="/img/emoji/${imgRex}.gif" />`;
+          data.message = `<img class="sticker" src="/img/emoji/${imgRex}.gif" />`;
         } else {
           let imgRex = data.message.replace('[sticker:', '').replace(']', '');
-          data.message = `<img class="emoji" src="https://cotitomaster.000webhostapp.com/WhatsAppStickers/${imgRex}.webp" />`;
+          data.message = `<img class="sticker" src="https://cotitomaster.000webhostapp.com/WhatsAppStickers/${imgRex}.webp" />`;
         }
         
       }
+      
       let chatarea = document.querySelector(`#panelM${DestinoUser}`);
       if(chatarea) {
         chatarea = chatarea.querySelector('.card-message');
@@ -2342,7 +2411,7 @@ var textolisto = "";
         if($(`.${data.user}`)[0]) {
           if(data.message.includes('<video') && data.message.includes('<source')) {
             $(`.${data.user}`).find('.contenidomessagenofocus').html('<i class="fas fa-microphone-alt"></i> Ha enviado un audio.');
-           } else if(data.message.includes('<img class="emoji"') && data.message.includes('>')) {
+           } else if(data.message.includes('<img class="sticker"') && data.message.includes('>')) {
             $(`.${data.user}`).find('.contenidomessagenofocus').html('<i class="far fa-sticky-note"></i> Ha enviado un sticker.');
            } else {
             if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
@@ -2351,7 +2420,9 @@ var textolisto = "";
             else if(veriUrlFile) {
               $(`.${data.user}`).find('.contenidomessagenofocus').html(`<i class="far fa-file"></i> Ha enviado un archivo adjuntado.`);
             }
-             else {
+             else if(data.message.includes('"false" alt="')) {
+              $(`.${data.user}`).find('.contenidomessagenofocus').html(data.message);
+             } else {
               $(`.${data.user}`).find('.contenidomessagenofocus').text(data.message);
              }
            }
@@ -2405,7 +2476,7 @@ var textolisto = "";
           
           if(data.message.includes('<video') && data.message.includes('<source')) {
             $(`.${data.destino}`).find('.contenidomessagenofocus').html('<i class="fas fa-microphone-alt"></i> Ha enviado un audio.');
-           } else if(data.message.includes('<img class="emoji"') && data.message.includes('>')) {
+           } else if(data.message.includes('<img class="sticker"') && data.message.includes('>')) {
             $(`.${data.destino}`).find('.contenidomessagenofocus').html('<i class="far fa-sticky-note"></i> Ha enviado un sticker.');
            } else {
              if(data.message.includes('class="mention-user') || data.message.includes('class="userLink"')) {
@@ -2414,6 +2485,9 @@ var textolisto = "";
              else if(veriUrlFile) {
               $(`.${data.destino}`).find('.contenidomessagenofocus').html(`<i class="far fa-file"></i> Ha enviado un archivo adjuntado.`);
             }
+            else if(data.message.includes('"false" alt="')) {
+              $(`.${data.destino}`).find('.contenidomessagenofocus').html(data.message);
+             }
              else {
               $(`.${data.destino}`).find('.contenidomessagenofocus').text(data.message);
              }
@@ -2464,7 +2538,7 @@ var textolisto = "";
       }
       if(sessionStorage.user != data.user) {
         let msgConvertNoti = data.message;
-        if(data.message.includes('<img class="emoji"')) {
+        if(data.message.includes('<img class="sticker"')) {
           msgConvertNoti = `<i class="far fa-sticky-note"></i> Ha enviado un sticker.`;
         } else if(data.message.includes('<video width="340"')) {
           msgConvertNoti = `<i class="fas fa-microphone-alt"></i> Ha enviado un audio.`;
@@ -2478,21 +2552,36 @@ var textolisto = "";
             let notiTotal = 0;
             $(`#userhistory-1`).find('.myNumberNoti').text(numberPrevious);
             $('.myNumberNoti').each(function() {
-              notiTotal += parseInt($(this).text());
+                notiTotal += parseInt($(this).text());
             });
             $('.numberNoti').text(notiTotal);
             $('.numberNoti').show();
             $(`#userhistory-1`).find('.myNumberNoti').show();
             $(`#userhistory-1`).addClass('newMessage');
-            Command: toastr["info"](`<div class="mensajeOtherNoti toast${data.user}"><strong class="nomNoti">${data.name}</strong> <br> <label class="messageNoti">${msgConvertNoti}</label> <br> 
-            <small class="lighter">Presione aquí para ver los mensajes</small> </div>`);
-            //$('.messageNoti').text(data.message);
-            $('.toast-info:last').css('margin-left', '5px');
-            $('.toast-info:last').css('background-image', `url("${data.foto || fotoToastDefault}")`);
-            if($(window).width() > 480) {
-              $('.toast-info:last').css('background-position', '10px 19px'); 
+            if($(window).width() <= 767) {
+                $('.components-message').append(`<div class="toast-movil">
+                <nav class="noti-msg-user">
+                <nav class="title-noti-msg">${data.name} ha enviado un mensaje</nav>
+                <nav class="focus-msg-noti" data-key-msg="${"Todos"}">Ver mensaje</nav></nav>
+                <nav class="icon-close-noti"><i class="fas fa-times" aria-hidden="true"></i></nav>
+              </div>`);
+              setTimeout(function() {
+                $('.toast-movil:first').remove();
+              }, 4000);
             } else {
-              $('.toast-info:last').css('background-position', '10px 13px'); 
+              if($('.toast').length > 4) {
+                $('.toast:first').remove();
+              }
+              Command: toastr["info"](`<div class="mensajeOtherNoti toast${"Todos"}"><strong class="nomNoti">Todos</strong> <br> <label class="messageNoti">${msgConvertNoti}</label> <br> 
+              <small class="lighter">Presione aquí para ver los mensajes</small> </div>`);
+              //$('.messageNoti').text(data.message);
+              $('.toast-info:last').css('margin-left', '5px');
+              $('.toast-info:last').css('background-image', `url("${data.foto || fotoToastDefault}")`);
+              if($(window).width() > 480) {
+                $('.toast-info:last').css('background-position', '10px 19px'); 
+              } else {
+                $('.toast-info:last').css('background-position', '10px 13px'); 
+              }
             }
           }
         } else {
@@ -2509,16 +2598,32 @@ var textolisto = "";
             $('.numberNoti').show();
             $(`#userhistory${data.user}`).find('.myNumberNoti').show();
             $(`#userhistory${data.user}`).addClass('newMessage');
-            Command: toastr["info"](`<div class="mensajeOtherNoti toast${data.user}"><strong class="nomNoti">${data.name}</strong> <br> <label class="messageNoti">${msgConvertNoti}</label> <br> 
-            <small class="lighter">Presione aquí para ver los mensajes</small> </div>`);
-            //$('.messageNoti').text(data.message);
-            $('.toast-info:last').css('margin-left', '5px');
-            $('.toast-info:last').css('background-image', `url("${data.foto || fotoToastDefault}")`);
-            if($(window).width() > 480) {
-              $('.toast-info:last').css('background-position', '10px 19px'); 
+            if($(window).width() <= 767) {
+              $('.components-message').append(`<div class="toast-movil">
+                <nav class="noti-msg-user">
+                <nav class="title-noti-msg">${data.name} te ha enviado un mensaje</nav>
+                <nav class="focus-msg-noti" data-key-msg="${data.user}">Ver mensaje</nav></nav>
+                <nav class="icon-close-noti"><i class="fas fa-times" aria-hidden="true"></i></nav>
+              </div>`);
+              setTimeout(function() {
+                $('.toast-movil:first').remove();
+              }, 4000);
             } else {
-              $('.toast-info:last').css('background-position', '10px 13px'); 
+              if($('.toast').length > 4) {
+                $('.toast:first').remove();
+              }
+              Command: toastr["info"](`<div class="mensajeOtherNoti toast${data.user}"><strong class="nomNoti">${data.name}</strong> <br> <label class="messageNoti">${msgConvertNoti}</label> <br> 
+              <small class="lighter">Presione aquí para ver los mensajes</small> </div>`);
+              //$('.messageNoti').text(data.message);
+              $('.toast-info:last').css('margin-left', '5px');
+              $('.toast-info:last').css('background-image', `url("${data.foto || fotoToastDefault}")`);
+              if($(window).width() > 480) {
+                $('.toast-info:last').css('background-position', '10px 19px'); 
+              } else {
+                $('.toast-info:last').css('background-position', '10px 13px'); 
+              }
             }
+            
           } else {
             
           }
@@ -3128,7 +3233,7 @@ var textolisto = "";
                 />
               </div>
               <div class="nomuser">
-                <span class="myNameUser" id="user${dat.user}">${dat.name}</span>
+                <div class="myNameUser" id="user${dat.user}">${dat.name}</div>
               </div>
             </div>
           </div>
@@ -3145,7 +3250,7 @@ var textolisto = "";
                 />
               </div>
               <div class="nomuser">
-                <span class="otherNameUser" id="user${dat.user}">${dat.name}</span>
+                <div class="otherNameUser" id="user${dat.user}">${dat.name}</div>
               </div>
             </div>
             <button
@@ -3528,7 +3633,7 @@ var textolisto = "";
 
   
   function resizePage() {
-    if ($(window).width() <= 550) {
+    if ($(window).width() <= 767) {
       if(!$('.stickersGroudPanel').hasClass('d-none')) {
         $(".card-message").css("height", window.innerHeight - 525 + "px");
         $(".card-message").css("max-height", window.innerHeight - 525 + "px");
@@ -3688,7 +3793,7 @@ var textolisto = "";
       //   </video>
       // console.log(message);
      
-        if(message.includes('<img class="emoji"')) {
+        if(message.includes('<img class="sticker"')) {
           message = 'Ha enviado un sticker.';
         } else if(message.includes('<img')) {
           message = 'Ha enviado un archivo adjuntado';

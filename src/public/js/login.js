@@ -24,6 +24,8 @@ function remcl(){
 	}
 }
 
+
+
 const fotoDefault = '/img/avatar-login3.png';
 
 // const urlPrevious = document.querySelector('#urlPrevious');
@@ -36,6 +38,12 @@ inputs.forEach(input => {
 });
 
 $(document).ready(function() {
+  $('input').each(function() {
+    if($(this).val() != '') {
+      let parent = this.parentNode.parentNode;
+	    parent.classList.add("focus");
+    }
+  });
   const socket = io();
   const nombres = document.getElementById('nombres');
   const apellidos = document.getElementById('apellidos');
