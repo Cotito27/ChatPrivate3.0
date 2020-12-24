@@ -115,6 +115,16 @@ hr {
 #guardarCambios:hover {
   background-color: rgb(17, 24, 116) !important;
 }
+
+.toast-movil {
+  background: rgb(41, 40, 40) !important;
+  border: 1px solid rgb(158, 155, 155);
+}
+
+.title-noti-msg {
+  color: whitesmoke !important;
+}
+
 #eliminarFoto {
   background-color: brown;
   border: none;
