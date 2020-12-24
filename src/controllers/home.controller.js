@@ -6,7 +6,7 @@ const ctrl = {};
 
 ctrl.index = async (req, res) => {
   // console.log(req.params);
-
+  
   // console.log(req.sessionID);
   let { sessionId } = req.params;
   const nameUser = req.user.name;

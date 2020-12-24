@@ -48,7 +48,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.use(morgan('dev'));
-app.use(cors());
+app.use(cors({origin: '*'}));
 app.use(express.urlencoded({extended: true}));
 
 // client.on('connect', function() {

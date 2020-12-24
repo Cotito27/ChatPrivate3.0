@@ -104,7 +104,19 @@ module.exports = [
         //   // await fs.unlink(path.resolve(`src/public/${audioRex}`));
         // }
       });
+      socket.on('changeStatusFile', (data) => {
+        socket.request.session.fileStored = data;
+      })
+      socket.on('deleteFile', (data) => {
+        console.log(data);
+      });
       socket.on('disconnect', function() {
+        if(socket.request.session.fileStored) {
+          if(socket.request.session.fileStored.exist) {
+            fs.unlink(path.resolve(`src/public/${socket.request.session.fileStored.url}`));
+          }
+        }
+        
         if(!socket.user) return;
         // if(!socket.sessionId) return;
         // socket.request.session.destroy();

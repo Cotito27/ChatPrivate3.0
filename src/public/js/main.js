@@ -53,8 +53,8 @@ $(document).ready(function() {
       foto: sessionStorage.foto
     });
   }
-  window.onbeforeunload = function() {
-    return "Bye now!";
+  window.onbeforeunload = async function() {
+    return 'bye now!';
   };
   if(!isMobile()) {
     let multiFile = document.querySelector('.multimedia-upload-msg');
@@ -128,9 +128,11 @@ $(document).ready(function() {
     
   userConnect(socket, sessionStorage.user, sessionStorage.name);
 
-  socket.on('disconnect', function () { 
+  socket.on('disconnect', async function () { 
+
     console.log('reconnecting...');
     // userConnect(socket, sessionStorage.user, sessionStorage.name);
+
     if(confirm('Ups!, hubo un problema, ¿desea reconectarse?')) {
       $('.closeTabFiles').click();
       userConnect(socket, sessionStorage.user, sessionStorage.name);
@@ -730,8 +732,19 @@ $(document).ready(function() {
     const blob = new Blob(byteArrays, {type: contentType});
     return blob;
   }
-  $('body').on('click', '.closeTabFiles', function() {
+  $('body').on('click', '.closeTabFiles', async function() {
     if(DestinoUser == "Todos") {
+      if(imgGlobalExtern != "") {
+        let response = await fetch(`/removeFile/${imgGlobalExtern.replace('/upload/', '')}`);
+        let res = await response.text();
+        console.log(res);
+        socket.emit('changeStatusFile', {
+          url: imgGlobalExtern,
+          exist: false
+        });
+        imgGlobalExtern = "";
+        
+      }
       // $('.panel-files-content').slideToggle(() => {
       //   $(`#panelM`).find('.panel-files-content').remove();
       // });
@@ -857,7 +870,7 @@ async function base64ToBufferAsync(base64) {
     elem.style.pointerEvents = "none";
   }
   
-  function enableClicks() {
+  function enableClicks(elem) {
     elem.style.pointerEvents = "auto";
   }
   $('body').on('click', '.btnSendFile', async function(e) {
@@ -873,6 +886,23 @@ async function base64ToBufferAsync(base64) {
       // });
       // $(this).attr('disabled', 'disabled');
       // $(this).removeClass('btnSendFile');
+      if(imgExternVeri && imgGlobalExtern != "") {
+        socket.emit('sendFileMsg', {
+          user: sessionStorage.user,
+          name: sessionStorage.name,
+          foto: sessionStorage.foto || fotoDefault,
+          sessionId: sessionId,
+          destino: DestinoUser,
+          message: '',
+          file: imgGlobalExtern,
+          fileName: imgGlobalExtern.split('.').shift(),
+          comment: $('.textCommentImgFile').val(),
+          typeFile: 'image'
+        });
+        imgExternVeri = false;
+        // imgGlobalExtern = "";
+        return;
+      }
       let closeDisabled = document.querySelector('.closeTabFiles');
       let panelFilesContent = document.querySelector('.panel-files-content');
       panelFilesContent.style.cursor = 'progress';
@@ -1641,26 +1671,138 @@ function insertHTML(img) {
   }
   return doc.getElementById(id);
 };
-
+  let imgExternVeri = false;
+  let imgGlobalExtern = "";
   document.addEventListener("paste", async function(e){
     if(e.target.classList.contains('textMessage')) {
       console.log("paste handler");
+      
       var s = e.clipboardData.getData("text/html").replace("this", "that");
+      // console.log(s.allTrim());
       if(s.allTrim().includes(`<html> <body> <!--StartFragment--><img src="`) && s.allTrim().includes(`<!--EndFragment--> </body> </html>`)) {
         var re = /http([^"'\s]+)/g,
         text = s,
         encontrados = text.match(re);
+        
+        // console.log(encontrados[0]);
+        
+        let uriDestino = "";
+        if(DestinoUser != "Todos") {
+          uriDestino = DestinoUser;
+        }
+        if(noMobileAct) {
+          $(`#panelM${uriDestino}`).append(`<div class="panel-files-content d-none">
+          <div class="card-header text-white headerFilesPanel">
+            <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+            <div class="d-inline">
+              Vista Previa
+            </div>
+          </div>
+          <div class="card-body text-white bodyFilesPanel">
+            <div class="loader-page-files d-flex"></div>
+          </div>
+          <div class="btnSendFile text-white text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+          </div>
+          <div class="card-footer footerFilesPanel">
+            <div class="reserve-file">
+            <img src="${encontrados[0]}" alt="" class="iconImgFiles">
+            </div>
+          </div>
+        </div>`);
+         } else {
+          $(`#panelM${uriDestino}`).append(`<div class="panel-files-content d-none">
+          <div class="card-header text-white headerFilesPanel">
+            <span class="d-inline ml-1 mr-3 closeTabFiles" style="color: rgb(200,200,200);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style=" margin-top: -5px; cursor: pointer;"><path fill="currentColor" d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"></path></svg></span>
+            <div class="d-inline">
+              Vista Previa
+            </div>
+          </div>
+          <div class="card-body text-white bodyFilesPanel">
+            <div class="loader-page-files d-flex"></div>
+          </div>
+        </div>`);
+         }
+         var div = $(".panel-files-content");
 
-        console.log(encontrados[0]);
-        let file = await fetch(encontrados[0] , {
-          method: 'GET',
-          mode: 'no-cors', // no-cors, *cors, same-origin
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
+         var height = div.removeClass('d-none').height();
+  
+         div.css({
+             overflow: "hidden",
+             marginTop: height,
+             height: 0
+         }).animate({
+             marginTop: 0,
+             height: height
+         }, 180, function () {
+             $('.panel-files-content').css({
+                 display: "",
+                 overflow: "",
+                 height: "",
+                 marginTop: ""
+             });
+         });
+         let closeDisabled = document.querySelector('.closeTabFiles');
+        let panelFilesContent = document.querySelector('.panel-files-content');
+        panelFilesContent.style.cursor = 'progress';
+        disableClicks(closeDisabled);
+        let url = '/downloadImgExtern';
+        let payload = {fileSrc: encontrados[0]};
+        let data = new FormData();
+        data.append( "json", JSON.stringify( payload ) );
+        let response = await fetch(url, {
+          method: 'POST',
+          body: data
         });
+        let res = await response.text();
+        console.log(res);
+
+        let file = await fetch(res);
         let blobFile = await file.blob();
         let newUrl = URL.createObjectURL(blobFile);
-        console.log('Imagen', newUrl);
+        // console.log('Imagen', newUrl);
+        
+         if(noMobileAct) {
+            $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${newUrl}">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        } else {
+            $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${newUrl}">
+          <div class="content-upload-movil">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;"><div class="btnSendFile text-white text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+                </div>
+            </div>`);         
+          $('.imgPreviewUpload').attr('style', `
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 0px;
+            margin-bottom: 65px;
+          `);
+          $('.btnSendFile').attr('style', `
+            position: initial;
+            background-color: #00af9c;
+            border-radius: 35px;
+            width: 48px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;      
+          `);
+        }
+       
+        
+        $('.textCommentImgFile').focus();
+        panelFilesContent.style.cursor = 'auto';
+        enableClicks(closeDisabled);
+        imgGlobalExtern = res;
+        socket.emit('changeStatusFile', {
+          url: imgGlobalExtern,
+          exist: true
+        });
+        imgExternVeri = true;
+        $('.textMessage').html('');
         return;
       }
       // insertHTML(s);
@@ -1832,6 +1974,11 @@ function insertHTML(img) {
       let numTotal = parseInt($('.numberNoti').text());
       let resTotal = numTotal - numPrevious;
       $('.numberNoti').text(resTotal);
+      if(resTotal > 0) {
+        document.title = `Chat Private (${resTotal})`;
+      } else {
+        document.title = `Chat Private`;
+      }
       $(this).find('.myNumberNoti').text('0');
       if(parseInt($('.numberNoti').text()) > 0) {
         $('.numberNoti').show();
@@ -2243,6 +2390,10 @@ var textolisto = "";
         
         // URL.revokeObjectURL(newUrl);
         if(sessionStorage.user == data.user) {
+          socket.emit('changeStatusFile', {
+            url: imgGlobalExtern,
+            exist: false
+          });
           let veriAddEmoji = ``;
           if(noMobileAct) {
             veriAddEmoji = `<button class="btn btn-primary btnEmojis emoji_01 btnMessageIcons">
@@ -2542,7 +2693,7 @@ var textolisto = "";
           msgConvertNoti = `<i class="far fa-sticky-note"></i> Ha enviado un sticker.`;
         } else if(data.message.includes('<video width="340"')) {
           msgConvertNoti = `<i class="fas fa-microphone-alt"></i> Ha enviado un audio.`;
-        } else if(data.message.includes('<video') || data.message.includes('<img') || data.message.includes('<audio')) {
+        } else if(data.message.includes('<video') || data.message.includes('<img data-title') || data.message.includes('<audio')) {
           msgConvertNoti = `<i class="far fa-file"></i> Ha enviado un archivo adjuntado.`;
         }
         // console.log($(`#userhistory${data.user}`)[0], `#userhistory${data.user}`);
@@ -2555,6 +2706,11 @@ var textolisto = "";
                 notiTotal += parseInt($(this).text());
             });
             $('.numberNoti').text(notiTotal);
+            if(notiTotal > 0) {
+              document.title = `Chat Private (${notiTotal})`;
+            } else {
+              document.title = `Chat Private`;
+            }
             $('.numberNoti').show();
             $(`#userhistory-1`).find('.myNumberNoti').show();
             $(`#userhistory-1`).addClass('newMessage');
@@ -2595,6 +2751,12 @@ var textolisto = "";
               notiTotal += parseInt($(this).text());
             });
             $('.numberNoti').text(notiTotal);
+            if(notiTotal > 0) {
+              document.title = `Chat Private (${notiTotal})`;
+            } else {
+              document.title = `Chat Private`;
+            }
+            
             $('.numberNoti').show();
             $(`#userhistory${data.user}`).find('.myNumberNoti').show();
             $(`#userhistory${data.user}`).addClass('newMessage');
@@ -3792,10 +3954,10 @@ var textolisto = "";
       //     <source src="/upload/8e4c64bc-26e2-4ce8-adf0-87072e2e5871.webm" type="video/webm">
       //   </video>
       // console.log(message);
-     
+
         if(message.includes('<img class="sticker"')) {
           message = 'Ha enviado un sticker.';
-        } else if(message.includes('<img')) {
+        } else if(message.includes('<img data-title') && !message.includes('<img class="emoji"')) {
           message = 'Ha enviado un archivo adjuntado';
         }
         if(message.includes('<video width="340" height="50" controls>')) {

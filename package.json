@@ -36,6 +36,7 @@
     "passport-local": "^1.0.0",
     "passport-outlook": "^2.3.0",
     "path": "^0.12.7",
+    "request": "^2.88.2",
     "socket.io": "^3.0.3",
     "socket.io-stream": "^0.9.1",
     "uuid": "^8.3.1"

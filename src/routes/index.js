@@ -35,6 +35,14 @@ const image = require("../controllers/image.controller");
 const audio = require("../controllers/audio.controller");
 const upload = require('../controllers/upload.controller');
 
+function validateCors(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+
+  next();
+};
 // router.get('/', validarUser, home.index);
 router.get("/login", redirectHome, home.login);
 router.get("/register", home.register);
@@ -49,6 +57,7 @@ router.get("/logout", home.logout);
 router.post("/images", image.create);
 router.post("/audio", audio.create);
 router.post('/createUrl', upload.createUrl);
+router.post('/downloadImgExtern', upload.downloadImgExtern);
 router.get('/removeFile/:id', upload.removeFile);
 router.get('/removeAudio/:id', audio.removeAudio);
 router.post("/successFirebase", home.successFirebase);
