@@ -61,7 +61,9 @@
       ('partials/content-message')%> <%- include ('partials/content-history')%>
       <%- include ('partials/content-users')%> <%- include
       ('partials/content-config')%> <% } else { %> <% if(redirect ==
-      'newSession') { %> <%- include ('sessions/newSession')%> <% }else
+      'newSession') { %> 
+    
+         <% }else
       if(redirect == 'login-form') { %> <%- include
       ('authentication/login-form')%> <% } else { %> <%- include
       ('authentication/register-form')%> <% } %> <% } %>

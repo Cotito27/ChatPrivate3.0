@@ -70,10 +70,10 @@ ctrl.newSession = (req, res) => {
   // console.log(req.user);
   // console.log(req.session.redirectTo);
   // console.log(req);
-  res.render('index', {
+  let user = req.user;
+  res.render('home', {
     title: 'Chat Private',
-    isValidate: false,
-    redirect: 'newSession'
+    user
   });
 }
 

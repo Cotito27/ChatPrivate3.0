@@ -182,6 +182,7 @@ a {
 a:hover {
   color: #38d39f;
 }
+
 #irLink {
   text-align: center;
   display: initial;
@@ -210,9 +211,11 @@ a:hover {
   margin: 1rem 0;
   cursor: pointer;
   transition: 0.5s;
+  font-weight: 550;
 }
 .btn:hover {
   background-position: right;
+  color: #fff;
 }
 
 @media screen and (max-width: 1050px) {
@@ -419,6 +422,7 @@ span.buttonText {
 .btn-google:hover,
 .btn-outlook:hover {
   background-position: right;
+  color: rgb(70, 70, 70);
 }
 .title-btn-google,
 .title-btn-outlook {
@@ -454,6 +458,7 @@ span.buttonText {
 }
 .btn-facebook:hover {
   background-position: right;
+  color: whitesmoke;
 }
 .title-btn-fb {
   margin-top: 11px;
