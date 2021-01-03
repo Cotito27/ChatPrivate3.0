@@ -112,7 +112,8 @@ module.exports = [
       });
       socket.on('disconnect', function() {
         if(socket.request.session.fileStored) {
-          if(socket.request.session.fileStored.exist) {
+          // console.log(socket.request.session.fileStored.url);
+          if(socket.request.session.fileStored.exist && socket.request.session.fileStored.url != '') {
             fs.unlink(path.resolve(`src/public/${socket.request.session.fileStored.url}`));
           }
         }

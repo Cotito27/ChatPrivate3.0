@@ -1683,8 +1683,10 @@ function insertHTML(img) {
         var re = /http([^"'\s]+)/g,
         text = s,
         encontrados = text.match(re);
-        
-        // console.log(encontrados[0]);
+        if(s.includes('blob:http')) {
+          encontrados[0] = `blob:${encontrados[0]}`;
+        }
+        console.log(encontrados[0]);
         
         let uriDestino = "";
         if(DestinoUser != "Todos") {
@@ -1746,23 +1748,23 @@ function insertHTML(img) {
         let panelFilesContent = document.querySelector('.panel-files-content');
         panelFilesContent.style.cursor = 'progress';
         disableClicks(closeDisabled);
-        let url = '/downloadImgExtern';
-        let payload = {fileSrc: encontrados[0]};
-        let data = new FormData();
-        data.append( "json", JSON.stringify( payload ) );
-        let response = await fetch(url, {
-          method: 'POST',
-          body: data
-        });
-        let res = await response.text();
-        console.log(res);
+        if(!encontrados[0].includes('blob:http')) {
+          let url = '/downloadImgExtern';
+          let payload = {fileSrc: encontrados[0]};
+          let data = new FormData();
+          data.append( "json", JSON.stringify( payload ) );
+          let response = await fetch(url, {
+            method: 'POST',
+            body: data
+          });
+          let res = await response.text();
+          console.log(res);
 
-        let file = await fetch(res);
-        let blobFile = await file.blob();
-        let newUrl = URL.createObjectURL(blobFile);
-        // console.log('Imagen', newUrl);
-        
-         if(noMobileAct) {
+          let file = await fetch(res);
+          let blobFile = await file.blob();
+          let newUrl = URL.createObjectURL(blobFile);
+          // console.log('Imagen', newUrl);
+          if(noMobileAct) {
             $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${newUrl}">
             <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
         } else {
@@ -1797,6 +1799,44 @@ function insertHTML(img) {
         panelFilesContent.style.cursor = 'auto';
         enableClicks(closeDisabled);
         imgGlobalExtern = res;
+        } else {
+          if(noMobileAct) {
+            $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${encontrados[0]}">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;">`);
+        } else {
+            $('.bodyFilesPanel').html(`<img class="imgPreviewUpload" src="${encontrados[0]}">
+          <div class="content-upload-movil">
+            <input type="text" placeholder="Ingrese algún comentario" class="form-control bg-dark textCommentImgFile" style="width:100%;"><div class="btnSendFile text-white text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+                </div>
+            </div>`);         
+          $('.imgPreviewUpload').attr('style', `
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 0px;
+            margin-bottom: 65px;
+          `);
+          $('.btnSendFile').attr('style', `
+            position: initial;
+            background-color: #00af9c;
+            border-radius: 35px;
+            width: 48px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;      
+          `);
+        }
+       
+        
+        $('.textCommentImgFile').focus();
+        panelFilesContent.style.cursor = 'auto';
+        enableClicks(closeDisabled);
+        imgGlobalExtern = "";
+        }
+         
         socket.emit('changeStatusFile', {
           url: imgGlobalExtern,
           exist: true
@@ -2334,9 +2374,12 @@ var textolisto = "";
         let file = await fetch(data.file);
         let blobFile = await file.blob();
         if(sessionStorage.user == data.user) {
-          let response = await fetch(`/removeFile/${data.file.replace('/upload/', '')}`);
-          let res = await response.text();
-          console.log(res);
+          if(!data.file.includes('blob:http')) {
+            let response = await fetch(`/removeFile/${data.file.replace('/upload/', '')}`);
+            let res = await response.text();
+            console.log(res);
+          }
+          
         }
         // let blobFile = b64toBlob(data.file, extName);
         // let newFile = URL.createObjectURL(data.file);

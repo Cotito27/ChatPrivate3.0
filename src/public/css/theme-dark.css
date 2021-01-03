@@ -139,6 +139,11 @@ textarea,
   color: #f1f1f2 !important;
   background-color: rgb(36, 36, 36);
 }
+
+.comment-img-file {
+  color: whitesmoke !important;
+}
+
 .form-control:focus {
   background-color: rgb(36, 36, 36);
 }
